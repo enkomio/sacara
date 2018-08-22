@@ -1,0 +1,69 @@
+﻿%{
+
+open System
+open ES.Sacara.Ir.Parser.IrAst
+open ES.Sacara.Ir.Parser.IrParserUtility
+
+%}
+
+%start program
+%token PROC ENDP PUSH POP ADD NOP CALL NCALL WRITE NWRITE READ NREAD GETIP RET JUMP JUMPIFL JUMPIFLE JUMPIFG JUMPIFGE ALLOCA
+%token BYTE WORD DWORD
+%token NEWLINE COMMA
+%token EOF
+
+%token <bool> BOOLEAN
+%token <string> STRING
+%token <string> IDENTIFIER
+%token <string> LABEL
+%token <int32> INTEGER
+
+%type < Program > program
+
+%%
+
+program:
+    | sourceElementList EOF																	{ Program (List.rev $1) }
+
+sourceElementList:
+	| procDefinition																		{ [$1] }
+	| sourceElementList procDefinition														{ $2::$1 }
+
+procDefinition:
+	| PROC IDENTIFIER statementList ENDP													{ procedureDefinition($2, List.rev $3) }
+
+statementList:
+	| statement																				{ [$1] }
+	| statementList statement																{ $2::$1 }
+
+statement:
+	| LABEL statementNoLabel																{ label($1, $2) }
+	| statementNoLabel																		{ $1 }
+
+statementNoLabel:
+	| RET																					{ ret() }
+	| NOP																					{ nop() }
+	| ADD																					{ add() }
+	| PUSH expression																		{ push($2) }
+	| POP IDENTIFIER																		{ pop($2) }
+	| CALL expression																		{ call($2) }
+	| JUMP expression																		{ jump($2) }
+	| JUMPIFL expression																	{ jumpIf($2, false, true) }
+	| JUMPIFLE expression																	{ jumpIf($2, true, true) }
+	| JUMPIFG expression																	{ jumpIf($2, false, false) }
+	| JUMPIFGE expression																	{ jumpIf($2, true, false) }
+	| NCALL expression																		{ callNative($2) }
+	| READ expression																		{ read($2) }
+	| NREAD expression																		{ readNative($2) }
+	| WRITE expression COMMA INTEGER														{ write($2, $4) }
+	| NWRITE expression	COMMA INTEGER														{ writeNative($2, $4) }
+	| ALLOCA INTEGER																		{ alloca($2) }
+	| BYTE INTEGER																			{ memoryByte($2) }
+	| WORD INTEGER																			{ memoryWord($2) }
+	| DWORD INTEGER																			{ memoryDword($2) }
+	| GETIP																					{ getIp() }
+	
+
+expression:
+	| INTEGER																				{ number($1) }
+	| IDENTIFIER																			{ identifier($1) }

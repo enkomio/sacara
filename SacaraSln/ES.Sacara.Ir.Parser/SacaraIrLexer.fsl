@@ -1,0 +1,43 @@
+﻿{
+
+module ES.Sacara.Ir.Parser.SacaraIrLexer
+
+open ES.Sacara.Ir.Parser.IrLexerUtility
+open Microsoft.FSharp.Text.Lexing
+open ES.Sacara.Ir.Parser.SacaraIrParser
+
+}
+
+// atom
+let digit = ['0' - '9']
+let hexDigit = ['0'-'9' 'a'-'f' 'A'-'F']
+let character = ['a'-'z' 'A'-'Z']
+
+// identifier
+let identifier = character (character | digit | '_')*
+let label = identifier ':'
+
+// number types
+let integer = digit+  | "0x" hexDigit+
+
+// formatting
+let linuxLineTerminator = "\n"
+let windowsLineTerminator = "\r\n"
+let lineTerminator = windowsLineTerminator | linuxLineTerminator
+let whitespace = [' ' '\t' ]
+
+rule irCode = parse	
+	| integer															{ integer lexbuf }
+	| label																{ label lexbuf }
+	| identifier														{ identifier lexbuf }	
+	| ','																{ newToken COMMA lexbuf }
+	| lineTerminator													{ newToken NEWLINE (nextLine lexbuf) }
+	| whitespace														{ irCode(noToken lexbuf) }
+	| "/*" 																{ multilineComment lexbuf; irCode lexbuf }
+	| eof																{ newToken EOF lexbuf }
+	
+and multilineComment = parse
+	| "*/"																{ () }
+	| [^'*' '\r' '\n']+													{ multilineComment lexbuf }
+	| lineTerminator													{ multilineComment(nextLine lexbuf) }
+	| _																	{ multilineComment lexbuf }
