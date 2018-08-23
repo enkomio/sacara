@@ -1,6 +1,11 @@
 ﻿namespace ES.Sacara.Ir.Assembler
 
 open System
+open System.Reflection
+open System.Collections.Generic
+open Newtonsoft.Json
+open System.IO
+open Microsoft.FSharp.Reflection
 
 [<Struct>]
 // the operand direction is the same as the one specified in INTEL syntax, that is: <op> <dst>, <src>
@@ -73,7 +78,7 @@ type IrOpCodes =
     // eg. jumpifge label
     | JumpIfGreatEquals
 
-    // Allocate a given amount of stakc space. The argument is the number of DWORD to allocate in the managed stack
+    // Allocate a given amount of stack space. The argument is the number of DWORD to allocate in the managed stack
     // eg. alloca 2
     | Alloca
 
@@ -88,6 +93,14 @@ type IrOpCodes =
     // Write a raw double word
     // eg. byte 0xFFFFFFFF
     | DoubleWord
+
+    // Stop the VM
+    // eg. halt
+    | Halt
+
+    // Compare two values from the stack and set the appropriate flags
+    // eg. cmp
+    | Cmp
 
     with
         member this.AcceptVariable() =
@@ -149,43 +162,28 @@ type VmOpCodes =
     | VmByte
     | VmWord
     | VmDoubleWord
+    | VmHalt
+    | VmCmp
 
 module Instructions =
-    let bytes = 
-        [
-            // each VM opcode can have different format. This was generate with the GenerateVmOpCodes utility
-            (VmRet, [0x8550; 0xDE86; 0xF6D6])
-            (VmNop, [0x12E8; 0x3E64; 0x6F97])
-            (VmAdd, [0x698B; 0x63D7; 0xB2A4; 0x8B84; 0x68E0])
-            (VmPushImmediate, [0xE1D6; 0x5481; 0x506C; 0xF8F8])
-            (VmPushVariable, [0x2FD5; 0x2A20; 0xB7D1])
-            (VmPop, [0x4578; 0x48DD])
-            (VmCallImmediate, [0x4E7F; 0xED84; 0xF7F6; 0x86B8; 0x6A9E])
-            (VmCallVariable, [0x1D1B; 0x8AAC; 0x2FC1])
-            (VmNativeCallImmediate, [0xA68E; 0xFF15; 0x3397; 0xF1E9; 0x7CC8])
-            (VmNativeCallVariable, [0xC149; 0xE227; 0xBF7C; 0x28A7; 0x8B0B])
-            (VmReadImmediate, [0xB01A; 0x8F28])
-            (VmReadVariable, [0x92D9; 0xDB14; 0xFB34])
-            (VmNativeReadImmediate, [0xCD7D; 0xDDB8])
-            (VmNativeReadVariable, [0x221D; 0x292D; 0xEFE4; 0x8211])
-            (VmWriteImmediate, [0xE2D2; 0xF938; 0x34FF; 0x6E73; 0xDE32])
-            (VmWriteVariable, [0xFE80; 0xADF2; 0x5156; 0xC56A])
-            (VmNativeWriteImmediate, [0xB30B; 0x2F50; 0xF686])
-            (VmNativeWriteVariable, [0x85FB; 0x2040])
-            (VmGetIp, [0x176F; 0x3D73; 0x68D8])
-            (VmJumpImmediate, [0xD7C4; 0xA298])
-            (VmJumpVariable, [0x5DA2; 0x6242])
-            (VmJumpIfLessImmediate, [0xF525; 0xDD01])
-            (VmJumpIfLessVariable, [0x20F; 0xFAB5])
-            (VmJumpIfLessEqualsImmediate, [0xDE76; 0xE8EE])
-            (VmJumpIfLessEqualsVariable, [0xBA32; 0xACD8; 0xB176; 0xB199])
-            (VmJumpIfGreatImmediate, [0x4CC; 0xCD6E; 0x7CDA; 0x4832; 0xFDC2])
-            (VmJumpIfGreatVariable, [0xBF13; 0x2B75; 0x1E6; 0xCA74; 0xD87E])
-            (VmJumpIfGreatEqualsImmediate, [0x73BA; 0xB233; 0x217E])
-            (VmJumpIfGreatEqualsVariable, [0x4C97; 0x8099; 0x2369; 0xF8E3])
-            (VmAlloca, [0x7453; 0xBAFF; 0x5C3E; 0xB855])
-            (VmByte, [0x1819; 0x35C0])
-            (VmWord, [0x660C; 0xB1DE; 0x65F7; 0x8BD9; 0x87A3])
-            (VmDoubleWord, [0xA5F; 0x25C8])
-        ] |> Map.ofList
+    type VmOpCodeItem() =
+        member val Name = String.Empty with get, set
+        member val Bytes = new List<Int32>() with get, set
 
+    let readVmOpCodeBinding() =
+        let currentDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
+        let filename = Path.Combine(currentDir, "vm_opcodes.json")
+        let json = File.ReadAllText(filename)
+        JsonConvert.DeserializeObject<List<VmOpCodeItem>>(json)
+        |> Seq.map(fun item ->
+            let vmOpCode =
+                FSharpType.GetUnionCases typeof<VmOpCodes>
+                |> Array.find(fun case -> case.Name.Equals(item.Name, StringComparison.OrdinalIgnoreCase))
+                |> fun case -> FSharpValue.MakeUnion(case,[||]) :?> VmOpCodes
+            let bytes = item.Bytes |> Seq.toList
+            (vmOpCode, bytes)
+        )
+        |> Map.ofSeq        
+
+    // each VM opcode can have different format. The file was generate with the GenerateVmOpCodes utility
+    let bytes = readVmOpCodeBinding()

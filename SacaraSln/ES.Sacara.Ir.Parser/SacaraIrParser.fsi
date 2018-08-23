@@ -32,6 +32,8 @@ type token =
   | JUMPIFG
   | JUMPIFGE
   | ALLOCA
+  | HALT
+  | CMP
 type tokenId = 
     | TOKEN_INTEGER
     | TOKEN_LABEL
@@ -64,6 +66,8 @@ type tokenId =
     | TOKEN_JUMPIFG
     | TOKEN_JUMPIFGE
     | TOKEN_ALLOCA
+    | TOKEN_HALT
+    | TOKEN_CMP
     | TOKEN_end_of_input
     | TOKEN_error
 type nonTerminalId = 

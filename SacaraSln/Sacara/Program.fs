@@ -22,6 +22,7 @@ module Program =
             label2:
             call modify_code
             pop ip_var
+            halt
             ret
         endp
 
@@ -38,4 +39,16 @@ module Program =
 
 
         Console.WriteLine(vmListing)
+        let bytesTring = 
+            vmBytes 
+            |> Seq.map(fun b -> b.ToString("X") + "h") 
+            |> Seq.map(fun b -> 
+                if 
+                    b.StartsWith("a", StringComparison.OrdinalIgnoreCase) || b.StartsWith("b", StringComparison.OrdinalIgnoreCase) ||
+                    b.StartsWith("c", StringComparison.OrdinalIgnoreCase) || b.StartsWith("d", StringComparison.OrdinalIgnoreCase) ||
+                    b.StartsWith("e", StringComparison.OrdinalIgnoreCase) || b.StartsWith("f", StringComparison.OrdinalIgnoreCase)
+                then "0" + b
+                else b
+            )
+        Console.WriteLine("MASM: " + String.Join(",", bytesTring))
         0

@@ -27,6 +27,8 @@ module IrAst =
         | GetIp
         | Add
         | Empty
+        | Halt
+        | Cmp
 
     and Program = 
         | Program of Statement list  

@@ -7,7 +7,7 @@ open ES.Sacara.Ir.Parser.IrParserUtility
 %}
 
 %start program
-%token PROC ENDP PUSH POP ADD NOP CALL NCALL WRITE NWRITE READ NREAD GETIP RET JUMP JUMPIFL JUMPIFLE JUMPIFG JUMPIFGE ALLOCA
+%token PROC ENDP PUSH POP ADD NOP CALL NCALL WRITE NWRITE READ NREAD GETIP RET JUMP JUMPIFL JUMPIFLE JUMPIFG JUMPIFGE ALLOCA HALT CMP
 %token BYTE WORD DWORD
 %token NEWLINE COMMA
 %token EOF
@@ -61,7 +61,9 @@ statementNoLabel:
 	| BYTE INTEGER																			{ memoryByte($2) }
 	| WORD INTEGER																			{ memoryWord($2) }
 	| DWORD INTEGER																			{ memoryDword($2) }
+	| CMP																					{ compare() }
 	| GETIP																					{ getIp() }
+	| HALT																					{ halt() }
 	
 
 expression:

@@ -1,0 +1,283 @@
+[
+  {
+    "Name": "VmRet",
+    "Bytes": [
+      10446,
+      8728
+    ]
+  },
+  {
+    "Name": "VmNop",
+    "Bytes": [
+      17759,
+      37128,
+      16539
+    ]
+  },
+  {
+    "Name": "VmAdd",
+    "Bytes": [
+      50946,
+      47596
+    ]
+  },
+  {
+    "Name": "VmPushImmediate",
+    "Bytes": [
+      55317,
+      29558,
+      2899,
+      10779,
+      54572
+    ]
+  },
+  {
+    "Name": "VmPushVariable",
+    "Bytes": [
+      18448,
+      62274,
+      10800,
+      3801
+    ]
+  },
+  {
+    "Name": "VmPop",
+    "Bytes": [
+      29412,
+      18048,
+      53140,
+      43348,
+      53623
+    ]
+  },
+  {
+    "Name": "VmCallImmediate",
+    "Bytes": [
+      29057,
+      38588
+    ]
+  },
+  {
+    "Name": "VmCallVariable",
+    "Bytes": [
+      45554,
+      37151,
+      12889
+    ]
+  },
+  {
+    "Name": "VmNativeCallImmediate",
+    "Bytes": [
+      48340,
+      10467,
+      48359,
+      36702
+    ]
+  },
+  {
+    "Name": "VmNativeCallVariable",
+    "Bytes": [
+      56826,
+      62559,
+      17616
+    ]
+  },
+  {
+    "Name": "VmReadImmediate",
+    "Bytes": [
+      1271,
+      25871
+    ]
+  },
+  {
+    "Name": "VmReadVariable",
+    "Bytes": [
+      2965,
+      60293,
+      29454,
+      37416
+    ]
+  },
+  {
+    "Name": "VmNativeReadImmediate",
+    "Bytes": [
+      41558,
+      1893
+    ]
+  },
+  {
+    "Name": "VmNativeReadVariable",
+    "Bytes": [
+      25840,
+      46569
+    ]
+  },
+  {
+    "Name": "VmWriteImmediate",
+    "Bytes": [
+      42790,
+      39946,
+      49039,
+      16184,
+      37794
+    ]
+  },
+  {
+    "Name": "VmWriteVariable",
+    "Bytes": [
+      19124,
+      9391
+    ]
+  },
+  {
+    "Name": "VmNativeWriteImmediate",
+    "Bytes": [
+      16678,
+      32305,
+      27974
+    ]
+  },
+  {
+    "Name": "VmNativeWriteVariable",
+    "Bytes": [
+      59386,
+      47281,
+      43046,
+      19509
+    ]
+  },
+  {
+    "Name": "VmGetIp",
+    "Bytes": [
+      37523,
+      20975
+    ]
+  },
+  {
+    "Name": "VmJumpImmediate",
+    "Bytes": [
+      27279,
+      4566,
+      50668
+    ]
+  },
+  {
+    "Name": "VmJumpVariable",
+    "Bytes": [
+      65138,
+      1182
+    ]
+  },
+  {
+    "Name": "VmJumpIfLessImmediate",
+    "Bytes": [
+      4006,
+      35267,
+      2741
+    ]
+  },
+  {
+    "Name": "VmJumpIfLessVariable",
+    "Bytes": [
+      1780,
+      19787
+    ]
+  },
+  {
+    "Name": "VmJumpIfLessEqualsImmediate",
+    "Bytes": [
+      62290,
+      35733
+    ]
+  },
+  {
+    "Name": "VmJumpIfLessEqualsVariable",
+    "Bytes": [
+      24774,
+      5258,
+      54857,
+      57415
+    ]
+  },
+  {
+    "Name": "VmJumpIfGreatImmediate",
+    "Bytes": [
+      22123,
+      36194
+    ]
+  },
+  {
+    "Name": "VmJumpIfGreatVariable",
+    "Bytes": [
+      50873,
+      43564,
+      19657
+    ]
+  },
+  {
+    "Name": "VmJumpIfGreatEqualsImmediate",
+    "Bytes": [
+      47919,
+      3390,
+      53851,
+      25604,
+      39437
+    ]
+  },
+  {
+    "Name": "VmJumpIfGreatEqualsVariable",
+    "Bytes": [
+      35390,
+      63905
+    ]
+  },
+  {
+    "Name": "VmAlloca",
+    "Bytes": [
+      38190,
+      11196
+    ]
+  },
+  {
+    "Name": "VmByte",
+    "Bytes": [
+      5394,
+      48442,
+      13947,
+      22017,
+      26203
+    ]
+  },
+  {
+    "Name": "VmWord",
+    "Bytes": [
+      53817,
+      50525,
+      7323
+    ]
+  },
+  {
+    "Name": "VmDoubleWord",
+    "Bytes": [
+      47537,
+      32275,
+      31652,
+      24907
+    ]
+  },
+  {
+    "Name": "VmHalt",
+    "Bytes": [
+      47977,
+      14483,
+      38813
+    ]
+  },
+  {
+    "Name": "VmCmp",
+    "Bytes": [
+      23152,
+      7441
+    ]
+  }
+]

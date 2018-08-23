@@ -6,5 +6,9 @@
   <ItemGroup>
     <None Include="const.inc" />
     <None Include="utility.inc" />
+    <None Include="vm.inc" />
+    <None Include="vm_halt.inc" />
+    <None Include="vm_handlers.inc" />
+    <None Include="vm_nop.inc" />
   </ItemGroup>
 </Project>

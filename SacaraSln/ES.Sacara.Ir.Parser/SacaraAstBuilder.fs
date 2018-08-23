@@ -24,7 +24,6 @@ type SacaraAstBuilder() =
         EndPos = lexbuf.EndPos
     }
         
-
     let rec tokenizeLexBuffer(lexbuf: LexBuffer<_>) = [
         let nextToken = irCode lexbuf        
         

@@ -1,10 +1,57 @@
-include const.inc
+; arguments: start_memory, size, marker
+find_marker PROC
+	push ebp
+	mov ebp, esp
+	mov edi, [ebp+arg0] ; memory
+	mov ecx, [ebp+arg1] ; size		
 
-.data
+search_header_loop:
+	; search the first marker
+	cmp dword ptr [edi], marker1
+	je first_marker_found
+	inc edi
+	loopne search_header_loop
+	jne not_found	
+	
+first_marker_found:
+	; check the second hardcoded marker
+	add edi, 4
+	cmp dword ptr [edi], marker2
+	jne search_header_loop	
 
-kernel_32 DWORD 0
+	; function header found, read the number of supported opcode
+	mov eax, edi
+	add eax, 4
+	push ecx
+	mov edx, [eax] ; read the number of possible opcodes
+	mov ecx, edx
+	
+	; search for the given opcode
+	mov esi, [ebp+arg2] ; opcode to search for
+search_opcode_loop:	
+	add eax, 4
+	cmp dword ptr [eax], esi
+	loopne search_opcode_loop
 
-.code
+	; jump if this is not the header that we are searching for	
+	pop ecx
+	jne search_header_loop
+
+	; function found, save the read address in EAX
+	; EDI contains the address of marker2
+	lea eax, [edi + 4*edx + 8]
+	jmp found
+
+not_found:
+	xor eax, eax
+found:
+	mov ebp, esp
+	pop ebp
+	ret 0Ch
+find_marker ENDP
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 compute_hash proc
 	push ebp
 	mov ebp, esp
@@ -49,7 +96,7 @@ invoke_kernel32 proc
 	
 	mov eax, [eax+0ch] ; Ldr
 	mov eax, [eax+14h] ; InMemoryOrderModuleList
-	mov [ebp + local_0], eax	
+	mov [ebp + local0], eax	
 
 find_func:
 	push eax
@@ -60,8 +107,8 @@ find_func:
 	pop eax
 
 	mov eax, [eax]
-	mov ecx, [ebp + local_0]
-	cmp [ebp + local_0], eax
+	mov ecx, [ebp + local0]
+	cmp [ebp + local0], eax
 	jne find_func
 
 	add esp, 4h

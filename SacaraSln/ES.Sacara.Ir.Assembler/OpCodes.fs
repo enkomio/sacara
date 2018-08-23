@@ -89,8 +89,7 @@ and IrOpCode(opType: IrOpCodes) =
             then opCodes.[rnd.Next(opCodes.Length)]
             else opCodes.[0]
         |> uint16
-        |> BitConverter.GetBytes
-        
+        |> BitConverter.GetBytes        
         // to make the result little endian
         |> Array.rev
     
@@ -138,6 +137,10 @@ and IrOpCode(opType: IrOpCodes) =
             | Byte -> getSimpleOpCode(VmByte, settings)
             | Word -> getSimpleOpCode(VmWord, settings)
             | DoubleWord -> getSimpleOpCode(VmDoubleWord, settings)
+            | Halt -> getSimpleOpCode(VmHalt, settings)
+            | Cmp -> getSimpleOpCode(VmCmp, settings)
+            // to make the result little endian
+            |> Array.rev
 
         // encode the operands
         this.Operands

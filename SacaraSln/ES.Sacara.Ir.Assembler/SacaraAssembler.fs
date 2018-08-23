@@ -114,6 +114,10 @@ type SacaraAssembler() =
             let dword = new IrOpCode(IrOpCodes.DoubleWord)
             dword.Operands.Add(new Operand(dw))
             addOperand(dword)
+        | Halt ->
+            addOperand(new IrOpCode(IrOpCodes.Halt))
+        | Cmp ->
+            addOperand(new IrOpCode(IrOpCodes.Cmp))
 
     let parseAst(ast: Program) =
         match ast with

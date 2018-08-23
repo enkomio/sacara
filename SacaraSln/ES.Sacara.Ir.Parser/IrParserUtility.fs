@@ -77,3 +77,9 @@ module internal IrParserUtility =
     let ret() =
         Ret
 
+    let halt() =
+        Halt
+
+    let compare() =
+        Cmp
+

@@ -37,6 +37,8 @@ module internal IrLexerUtility =
             ("byte", BYTE)
             ("word", WORD)
             ("dword", DWORD)
+            ("halt", HALT)
+            ("cmp", CMP)
         ] |> Map.ofList
 
     let getString (lexbuf : LexBuffer<_>) = 
