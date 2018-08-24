@@ -105,6 +105,18 @@ type IrOpCodes =
     // eg. cmp
     | Cmp
 
+    // push in the stack the offset of the current VM stack location
+    // eg. getsp
+    | GetSp
+
+    // pop two values from the stack, which are the managed address of the stack and the value to write. 
+    // eg. swrite
+    | StackWrite
+
+    // pop a value from the stack, which is the vm address of the tsack to read. Push the result value in the stack
+    // eg. sread
+    | StackRead
+
 // these are the op codes of the VM. 
 // The operand size is 2 bytes if it is a varaible (the meaning if the offset of the variable in the stack).
 // If the operand is an immediate the size is 4 bytes.
@@ -135,6 +147,9 @@ type VmOpCodes =
     | VmAlloca
     | VmHalt
     | VmCmp
+    | VmGetSp
+    | VmStackWrite
+    | VmStackRead
 
 module Instructions =
     type VmOpCodeItem() =

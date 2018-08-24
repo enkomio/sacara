@@ -83,3 +83,12 @@ module internal IrParserUtility =
     let compare() =
         Cmp
 
+    let getSp() =
+        GetSp
+
+    let stackWrite() =
+        StackWrite
+
+    let stackRead() =
+        StackRead
+

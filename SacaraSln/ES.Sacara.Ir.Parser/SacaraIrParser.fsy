@@ -7,10 +7,9 @@ open ES.Sacara.Ir.Parser.IrParserUtility
 %}
 
 %start program
-%token PROC ENDP PUSH POP ADD NOP CALL NCALL WRITE NWRITE READ NREAD GETIP RET JUMP JUMPIFL JUMPIFLE JUMPIFG JUMPIFGE ALLOCA HALT CMP
-%token BYTE WORD DWORD
-%token NEWLINE COMMA
-%token EOF
+%token PROC ENDP PUSH POP ADD NOP CALL NCALL WRITE NWRITE READ NREAD 
+%token GETIP RET JUMP JUMPIFL JUMPIFLE JUMPIFG JUMPIFGE ALLOCA HALT 
+%token CMP GETSP SWRITE SREAD BYTE WORD DWORD NEWLINE COMMA EOF
 
 %token <bool> BOOLEAN
 %token <string> STRING
@@ -64,6 +63,9 @@ statementNoLabel:
 	| HALT																					{ halt() }
 	| CALL																					{ call() }
 	| NCALL																					{ callNative() }
+	| GETSP																					{ getSp() }
+	| SWRITE																				{ stackWrite() }
+	| SREAD																					{ stackRead() }
 	
 expression:
 	| INTEGER																				{ number($1) }

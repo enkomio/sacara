@@ -29,6 +29,9 @@ module IrAst =
         | Empty
         | Halt
         | Cmp
+        | GetSp
+        | StackWrite
+        | StackRead
 
     and Program = 
         | Program of Statement list  

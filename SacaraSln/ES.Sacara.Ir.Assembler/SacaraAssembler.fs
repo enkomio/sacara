@@ -70,7 +70,7 @@ type SacaraAssembler() =
         | Nop -> 
             addOperand(new IrOpCode(IrOpCodes.Nop))
         | GetIp ->
-            addOperand(new IrOpCode(IrOpCodes.GetIp))
+            addOperand(new IrOpCode(IrOpCodes.GetIp))        
         | Add ->
             addOperand(new IrOpCode(IrOpCodes.Add))
         | Ret ->
@@ -111,6 +111,12 @@ type SacaraAssembler() =
             addOperand(new IrOpCode(IrOpCodes.Halt))
         | Cmp ->
             addOperand(new IrOpCode(IrOpCodes.Cmp))
+        | GetSp ->
+            addOperand(new IrOpCode(IrOpCodes.GetSp))
+        | StackRead ->
+            addOperand(new IrOpCode(IrOpCodes.StackRead))
+        | StackWrite ->
+            addOperand(new IrOpCode(IrOpCodes.StackWrite))
 
     let parseAst(ast: Program) =
         match ast with

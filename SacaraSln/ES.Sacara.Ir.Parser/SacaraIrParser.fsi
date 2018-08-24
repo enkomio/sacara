@@ -6,12 +6,25 @@ type token =
   | IDENTIFIER of (string)
   | STRING of (string)
   | BOOLEAN of (bool)
-  | EOF
-  | NEWLINE
-  | COMMA
+  | CMP
+  | GETSP
+  | SWRITE
+  | SREAD
   | BYTE
   | WORD
   | DWORD
+  | NEWLINE
+  | COMMA
+  | EOF
+  | GETIP
+  | RET
+  | JUMP
+  | JUMPIFL
+  | JUMPIFLE
+  | JUMPIFG
+  | JUMPIFGE
+  | ALLOCA
+  | HALT
   | PROC
   | ENDP
   | PUSH
@@ -24,28 +37,31 @@ type token =
   | NWRITE
   | READ
   | NREAD
-  | GETIP
-  | RET
-  | JUMP
-  | JUMPIFL
-  | JUMPIFLE
-  | JUMPIFG
-  | JUMPIFGE
-  | ALLOCA
-  | HALT
-  | CMP
 type tokenId = 
     | TOKEN_INTEGER
     | TOKEN_LABEL
     | TOKEN_IDENTIFIER
     | TOKEN_STRING
     | TOKEN_BOOLEAN
-    | TOKEN_EOF
-    | TOKEN_NEWLINE
-    | TOKEN_COMMA
+    | TOKEN_CMP
+    | TOKEN_GETSP
+    | TOKEN_SWRITE
+    | TOKEN_SREAD
     | TOKEN_BYTE
     | TOKEN_WORD
     | TOKEN_DWORD
+    | TOKEN_NEWLINE
+    | TOKEN_COMMA
+    | TOKEN_EOF
+    | TOKEN_GETIP
+    | TOKEN_RET
+    | TOKEN_JUMP
+    | TOKEN_JUMPIFL
+    | TOKEN_JUMPIFLE
+    | TOKEN_JUMPIFG
+    | TOKEN_JUMPIFGE
+    | TOKEN_ALLOCA
+    | TOKEN_HALT
     | TOKEN_PROC
     | TOKEN_ENDP
     | TOKEN_PUSH
@@ -58,16 +74,6 @@ type tokenId =
     | TOKEN_NWRITE
     | TOKEN_READ
     | TOKEN_NREAD
-    | TOKEN_GETIP
-    | TOKEN_RET
-    | TOKEN_JUMP
-    | TOKEN_JUMPIFL
-    | TOKEN_JUMPIFLE
-    | TOKEN_JUMPIFG
-    | TOKEN_JUMPIFGE
-    | TOKEN_ALLOCA
-    | TOKEN_HALT
-    | TOKEN_CMP
     | TOKEN_end_of_input
     | TOKEN_error
 type nonTerminalId = 
