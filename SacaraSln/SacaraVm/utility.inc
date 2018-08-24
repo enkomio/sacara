@@ -1,5 +1,7 @@
+; *****************************
 ; arguments: start_memory, size, marker
-find_marker PROC
+; *****************************
+find_handler PROC
 	push ebp
 	mov ebp, esp
 	mov edi, [ebp+arg0] ; memory
@@ -48,7 +50,7 @@ found:
 	mov ebp, esp
 	pop ebp
 	ret 0Ch
-find_marker ENDP
+find_handler ENDP
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
