@@ -38,7 +38,6 @@ module IrAst =
     }
 
     and CallType = {
-        Operand: Expression
         Native: Boolean
     }
 
@@ -53,13 +52,10 @@ module IrAst =
     }
 
     and ReadType = {
-        Operand: Expression
         Native: Boolean
     }
 
     and WriteType = {
-        DestOperand: Expression
-        SourceOperand: Int32
         Native: Boolean
     }
 

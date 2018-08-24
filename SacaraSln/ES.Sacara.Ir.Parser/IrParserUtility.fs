@@ -25,23 +25,23 @@ module internal IrParserUtility =
     let label(name: String, statement: Statement) =
         Label {Name=name.Substring(0, name.Length-1); Statement=statement}
 
-    let call(operand: Expression) =
-        Call {Operand=operand; Native=false}
+    let call() =
+        Call {Native=false}
 
-    let callNative(operand: Expression) =
-        Call {Operand=operand; Native=true}
+    let callNative() =
+        Call {Native=true}
 
-    let read(operand: Expression) =
-        Read {Operand=operand; Native=false}
+    let read() =
+        Read {Native=false}
 
-    let readNative(operand: Expression) =
-        Read {Operand=operand; Native=true}
+    let readNative() =
+        Read {Native=true}
 
-    let write(destOperand: Expression, srcOperand: Int32) =
-        Write {DestOperand=destOperand; SourceOperand=srcOperand; Native=false}
+    let write() =
+        Write {Native=false}
 
-    let writeNative(destOperand: Expression, srcOperand: Int32) =
-        Write {DestOperand=destOperand; SourceOperand=srcOperand; Native=true}
+    let writeNative() =
+        Write {Native=true}
 
     let jumpIf(destination: Expression, equals: Boolean, less: Boolean) =
         JumpIf {Destination=destination; JumpIfEquals=equals; JumpIfLess=less}

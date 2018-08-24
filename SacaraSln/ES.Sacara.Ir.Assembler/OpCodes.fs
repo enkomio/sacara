@@ -16,18 +16,32 @@ type Symbol = {
 type Operand(value: Object) =
     member val Value = value with get, set
 
-    member this.Encode(symbolTable: SymbolTable, offset: Int32, opCodeType: IrOpCodes) =
+    member this.Encode(symbolTable: SymbolTable, offset: Int32, vmOpCodeType: VmOpCodes) =
         match this.Value with
         | :? Int32 -> BitConverter.GetBytes(this.Value :?> Int32)
         | :? String ->
-            if opCodeType.AcceptLabel() then 
-                symbolTable.GetLabel(this.Value.ToString(), offset).Offset
-                |> uint32
-                |> BitConverter.GetBytes
-            else 
-                symbolTable.GetVariable(this.Value.ToString()).Offset
+            let identifier = this.Value.ToString()
+            match vmOpCodeType with
+            | VmPushVariable                
+            | VmJumpVariable
+            | VmJumpIfLessVariable
+            | VmJumpIfLessEqualsVariable
+            | VmJumpIfGreatVariable
+            | VmJumpIfGreatEqualsVariable ->
+                if symbolTable.IsLabel(identifier) then
+                    symbolTable.GetLabel(identifier, offset).Offset
+                    |> uint32
+                    |> BitConverter.GetBytes
+                else
+                    symbolTable.GetVariable(identifier).Offset
+                    |> uint16
+                    |> BitConverter.GetBytes
+            | VmPop ->
+                symbolTable.GetVariable(identifier).Offset
                 |> uint16
                 |> BitConverter.GetBytes
+            | _ -> failwith("The Vm OpCode '" + vmOpCodeType.ToString() + "' doesn't accept an identifier as parameter")
+
         | _ -> failwith "Unrecognized symbol type"
         // to make the result little endian
         |> Array.rev
@@ -95,16 +109,22 @@ and IrOpCode(opType: IrOpCodes) =
     
     let getSimpleOpCode(opCode: VmOpCodes, settings: AssemblerSettings) =
         let opCodes = Instructions.bytes.[opCode]
-        chooseRepresentation(opCodes, settings)
+        (chooseRepresentation(opCodes, settings), opCode)
     
     let resolveOpCodeForImmOrVariable(operands: Operand seq, indexes: VmOpCodes list, settings: AssemblerSettings) =                
         let firstOperand = operands |> Seq.head
-        let opCodes =
+        let vmOpCode = 
             match firstOperand.Value with
-            | :? Int32 -> Instructions.bytes.[indexes.[0]]
-            | :? String -> Instructions.bytes.[indexes.[1]]
+            | :? Int32 -> indexes.[0]
+            | :? String -> indexes.[1]
             | _ -> failwith "Invalid operand type"
-        chooseRepresentation(opCodes, settings)
+
+        let opCodes = Instructions.bytes.[vmOpCode]
+        (chooseRepresentation(opCodes, settings), vmOpCode)
+
+    let getMacroOpCodeBytes() =
+        // macro doesn't have any opCode
+        (Array.empty<Byte>, VmNop)
 
     member val Type = opType with get
     member val Operands = new List<Operand>() with get
@@ -114,19 +134,19 @@ and IrOpCode(opType: IrOpCodes) =
         let operands = new List<Byte array>()
         
         // encode the operation
-        let opBytes =
+        let (opBytes, vmOpCode) =
             match this.Type with
             | Ret -> getSimpleOpCode(VmRet, settings)
             | Nop -> getSimpleOpCode(VmNop, settings)
             | Add -> getSimpleOpCode(VmAdd, settings)
             | Push -> resolveOpCodeForImmOrVariable(this.Operands, [VmPushImmediate; VmPushVariable], settings)
             | Pop -> getSimpleOpCode(VmPop, settings)
-            | Call -> resolveOpCodeForImmOrVariable(this.Operands, [VmCallImmediate; VmCallVariable], settings)
-            | NativeCall -> resolveOpCodeForImmOrVariable(this.Operands, [VmNativeCallImmediate; VmNativeCallVariable], settings)
-            | Read -> resolveOpCodeForImmOrVariable(this.Operands, [VmReadImmediate; VmReadVariable], settings)
-            | NativeRead -> resolveOpCodeForImmOrVariable(this.Operands, [VmNativeReadImmediate; VmNativeReadVariable], settings)
-            | Write -> resolveOpCodeForImmOrVariable(this.Operands, [VmWriteImmediate; VmWriteVariable], settings)
-            | NativeWrite -> resolveOpCodeForImmOrVariable(this.Operands, [VmNativeWriteImmediate; VmNativeWriteVariable], settings)
+            | Call -> getSimpleOpCode(VmCall, settings)
+            | NativeCall -> getSimpleOpCode(VmNativeCall, settings)
+            | Read -> getSimpleOpCode(VmRead, settings)
+            | NativeRead -> getSimpleOpCode(VmNativeRead, settings)
+            | Write -> getSimpleOpCode(VmWrite, settings)
+            | NativeWrite -> getSimpleOpCode(VmNativeWrite, settings)
             | GetIp -> getSimpleOpCode(VmGetIp, settings)
             | Jump -> resolveOpCodeForImmOrVariable(this.Operands, [VmJumpImmediate; VmJumpVariable], settings)
             | JumpIfLess -> resolveOpCodeForImmOrVariable(this.Operands, [VmJumpIfLessImmediate; VmJumpIfLessVariable], settings)
@@ -134,22 +154,20 @@ and IrOpCode(opType: IrOpCodes) =
             | JumpIfGreat -> resolveOpCodeForImmOrVariable(this.Operands, [VmJumpIfGreatImmediate; VmJumpIfGreatVariable], settings)
             | JumpIfGreatEquals -> resolveOpCodeForImmOrVariable(this.Operands, [VmJumpIfGreatEqualsImmediate; VmJumpIfGreatEqualsVariable], settings)
             | Alloca -> getSimpleOpCode(VmAlloca, settings)
-            | Byte -> getSimpleOpCode(VmByte, settings)
-            | Word -> getSimpleOpCode(VmWord, settings)
-            | DoubleWord -> getSimpleOpCode(VmDoubleWord, settings)
             | Halt -> getSimpleOpCode(VmHalt, settings)
             | Cmp -> getSimpleOpCode(VmCmp, settings)
-            // to make the result little endian
-            |> Array.rev
-
+            | Byte -> getMacroOpCodeBytes()
+            | Word -> getMacroOpCodeBytes()
+            | DoubleWord -> getMacroOpCodeBytes()            
+            
         // encode the operands
         this.Operands
         |> Seq.iter(fun operand ->
-            operands.Add(operand.Encode(symbolTable, ip + opBytes.Length, this.Type))
+            operands.Add(operand.Encode(symbolTable, ip + opBytes.Length, vmOpCode))
         )
 
         // return the VM opcode
-        VmOpCode.Assemble(opBytes, operands, ip, this)
+        VmOpCode.Assemble(opBytes |> Array.rev, operands, ip, this)
 
     override this.ToString() =
         let ops = String.Join(", ", this.Operands)
@@ -162,16 +180,25 @@ and IrOpCode(opType: IrOpCodes) =
 and SymbolTable() =
     let _variables = new Dictionary<String, Symbol>()    
     let _labels = new Dictionary<String, Symbol>()
+    let _labelNames = new List<String>()
     let _placeholders = new List<String * Int32>()
 
     member this.StartFunction() =
         _variables.Clear()
 
     member this.AddLocalVariable(name: String) =
+        if _labelNames.Contains(name)
+        then failwith("Unable to add the local variable '" + name + "', since already exists a function/label with the same name")
         _variables.[name] <- {Name=name; Offset=_variables.Count+1; Type=LocalVar}
 
     member this.AddLabel(name: String, offset: Int32) =
         _labels.[name] <- {Name=name; Offset=offset; Type=Label}
+
+    member this.AddLabelName(funcName: String) =
+        _labelNames.Add(funcName)
+
+    member this.IsLabel(funcName: String) =
+        _labelNames.Contains(funcName)
 
     member this.GetVariable(name: String) : Symbol =
         if _variables.ContainsKey(name) then 

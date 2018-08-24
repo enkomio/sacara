@@ -20,7 +20,8 @@ module Program =
             jump label2
             byte 0xff
             label2:
-            call modify_code
+            push modify_code
+            call
             pop ip_var
             halt
             ret

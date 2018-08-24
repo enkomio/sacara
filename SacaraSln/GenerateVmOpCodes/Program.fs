@@ -30,7 +30,6 @@ module Program =
 
     let saveOpCodeInAssemblerDir(opCodes: Dictionary<String, VmOpCodeItem>) =
         let opCodeJson = JsonConvert.SerializeObject(opCodes.Values, Formatting.Indented)
-        Console.WriteLine(opCodeJson)
         
         // copy file
         let curDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
@@ -69,11 +68,10 @@ module Program =
         )
 
         let fileContent = sb.ToString()
-        Console.WriteLine(fileContent)
         
         // copy file
         let curDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
-        let vmSrcFile = Path.Combine(curDir, "..", "..", "..", "SacaraVm", "vm_handlers.inc")
+        let vmSrcFile = Path.Combine(curDir, "..", "..", "..", "SacaraVm", "vm_instructions_headers.inc")
         File.WriteAllText(vmSrcFile, fileContent)
         Console.WriteLine("Files copied to: " + vmSrcFile)
 

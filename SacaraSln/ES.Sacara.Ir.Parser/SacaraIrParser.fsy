@@ -45,18 +45,16 @@ statementNoLabel:
 	| NOP																					{ nop() }
 	| ADD																					{ add() }
 	| PUSH expression																		{ push($2) }
-	| POP IDENTIFIER																		{ pop($2) }
-	| CALL expression																		{ call($2) }
+	| POP IDENTIFIER																		{ pop($2) }	
 	| JUMP expression																		{ jump($2) }
 	| JUMPIFL expression																	{ jumpIf($2, false, true) }
 	| JUMPIFLE expression																	{ jumpIf($2, true, true) }
 	| JUMPIFG expression																	{ jumpIf($2, false, false) }
-	| JUMPIFGE expression																	{ jumpIf($2, true, false) }
-	| NCALL expression																		{ callNative($2) }
-	| READ expression																		{ read($2) }
-	| NREAD expression																		{ readNative($2) }
-	| WRITE expression COMMA INTEGER														{ write($2, $4) }
-	| NWRITE expression	COMMA INTEGER														{ writeNative($2, $4) }
+	| JUMPIFGE expression																	{ jumpIf($2, true, false) }	
+	| READ																					{ read() }
+	| NREAD																					{ readNative() }
+	| WRITE																					{ write() }
+	| NWRITE																				{ writeNative() }
 	| ALLOCA INTEGER																		{ alloca($2) }
 	| BYTE INTEGER																			{ memoryByte($2) }
 	| WORD INTEGER																			{ memoryWord($2) }
@@ -64,8 +62,9 @@ statementNoLabel:
 	| CMP																					{ compare() }
 	| GETIP																					{ getIp() }
 	| HALT																					{ halt() }
+	| CALL																					{ call() }
+	| NCALL																					{ callNative() }
 	
-
 expression:
 	| INTEGER																				{ number($1) }
 	| IDENTIFIER																			{ identifier($1) }

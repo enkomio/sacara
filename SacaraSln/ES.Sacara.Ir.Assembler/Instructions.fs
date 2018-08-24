@@ -10,7 +10,7 @@ open Microsoft.FSharp.Reflection
 [<Struct>]
 // the operand direction is the same as the one specified in INTEL syntax, that is: <op> <dst>, <src>
 type IrOpCodes =
-    // Return to the caller. The value on top of the stack is the function result and is pushed into the caller stack    
+    // Return to the caller. If there is a value on top of the stack it is pushed in the caller stack as return value
     // eg. ret
     | Ret
 
@@ -18,11 +18,11 @@ type IrOpCodes =
     // eg. nop
     | Nop
 
-    // pop two value from the stack, sum them and push the result on the stack
+    // pop two values from the stack, sum them and push the result on the stack
     // eg. add
     | Add
 
-    // push a value in the stack
+    // push a value in the stack. The value can be an immediate a label or a variable
     // eg. push IMM/var
     | Push
 
@@ -30,100 +30,80 @@ type IrOpCodes =
     // eg. pop var
     | Pop
 
-    // call a managed method specified by offset or variable
-    // eg. call IMM/label
+    // call a managed method which offset is popped off the stack
+    // eg. call
     | Call
 
-    // call a native method specified by absolute address of variable
-    // eg. ncall IMM/var
+    // call a native method which offset is popped off the stack
+    // eg. ncall
     | NativeCall
 
-    // read a DWORD from the managed memory of the code segment and push the result into the stack
-    // eg. read IMM/label
+    // pop a value from the stack, which is the vm address to read. Push the result value in the stack
+    // eg. read
     | Read
 
-    // read a memory from the native process memory
-    // rg. nread IMM/var
+    // pop a value from the stack, which is the native address to read. Push the result value in the stack
+    // rg. nread
     | NativeRead
 
-    // write a DWORD into the managed memory of the code segment
-    // eg. write IMM/label, IMM
+    // pop two values from the stack, which are the managed address and the value to write. 
+    // Push the result back into the stack.
+    // eg. write
     | Write
 
-    // write a value into the native process memory
-    // eg. nwrite IMM/var, IMM
+    // pop two values from the stack, which are the native address and the value to write. 
+    // Push the result back into the stack.
+    // eg. nwrite
     | NativeWrite
 
     // push in the stack the offset of the next instruction that will be executed in the VM
     // eg. getip
     | GetIp
 
-    // Jump to the specified off in the VM
-    // eg. jump label
+    // jump to the specified vm address
+    // eg. jump label/var
     | Jump
 
-    // Jump if the value on the stack is less than 0
-    // eg. jumpifl label
+    // jump if the value popped value from the stack is less than 0
+    // eg. jumpifl label/var
     | JumpIfLess
 
-    // Jump if the value on the stack is less or equals to 0
-    // eg. jumpifle label
+    // jump if the value popped value from the stack is less or equals 0
+    // eg. jumpifle label/var
     | JumpIfLessEquals
 
-    // Jump if the value on the stack is great than 0
-    // eg. jumpifg label
+    // jump if the value popped value from the stack is greaten than 0
+    // eg. jumpifg label/var
     | JumpIfGreat
 
-    // Jump if the value on the stack is great or equals to 0
-    // eg. jumpifge label
+    // jump if the value popped value from the stack is greaten or equals 0
+    // eg. jumpifge label/var
     | JumpIfGreatEquals
 
-    // Allocate a given amount of stack space. The argument is the number of DWORD to allocate in the managed stack
+    // allocate a given amount of stack space. The argument is the number of DWORD to allocate in the managed stack
     // eg. alloca 2
     | Alloca
 
-    // Write a raw byte
+    // write a raw byte. This is a macro and doesn't have a corrispettive VM instruction
     // eg. byte 0xFF
     | Byte
 
-    // Write a raw word
+    // write a raw word. This is a macro and doesn't have a corrispettive VM instruction
     // eg. byte 0xFFFF
     | Word
 
-    // Write a raw double word
+    // write a raw double word. This is a macro and doesn't have a corrispettive VM instruction
     // eg. byte 0xFFFFFFFF
     | DoubleWord
 
-    // Stop the VM
+    // stop the execution of VM
     // eg. halt
     | Halt
 
-    // Compare two values from the stack and set the appropriate flags
+    // pop two values from the stack, compare them, and push the result  into the stack.
+    // The result will be 0 if they are equals, 1 if the first value if grathen then the second, -1 otherwise.
     // eg. cmp
     | Cmp
-
-    with
-        member this.AcceptVariable() =
-            match this with
-            | Push
-            | Pop
-            | NativeCall
-            | NativeRead
-            | NativeWrite -> true
-            | _ -> false
-
-
-        member this.AcceptLabel() =
-            match this with
-            | Call
-            | Read
-            | Write
-            | Jump
-            | JumpIfLess
-            | JumpIfLessEquals
-            | JumpIfGreat
-            | JumpIfGreatEquals -> true
-            | _ -> false
 
 // these are the op codes of the VM. 
 // The operand size is 2 bytes if it is a varaible (the meaning if the offset of the variable in the stack).
@@ -135,18 +115,12 @@ type VmOpCodes =
     | VmPushImmediate
     | VmPushVariable
     | VmPop
-    | VmCallImmediate
-    | VmCallVariable
-    | VmNativeCallImmediate
-    | VmNativeCallVariable
-    | VmReadImmediate
-    | VmReadVariable
-    | VmNativeReadImmediate
-    | VmNativeReadVariable
-    | VmWriteImmediate
-    | VmWriteVariable
-    | VmNativeWriteImmediate
-    | VmNativeWriteVariable
+    | VmCall
+    | VmNativeCall
+    | VmRead
+    | VmNativeRead
+    | VmWrite
+    | VmNativeWrite
     | VmGetIp
     | VmJumpImmediate
     | VmJumpVariable
@@ -159,9 +133,6 @@ type VmOpCodes =
     | VmJumpIfGreatEqualsImmediate
     | VmJumpIfGreatEqualsVariable
     | VmAlloca
-    | VmByte
-    | VmWord
-    | VmDoubleWord
     | VmHalt
     | VmCmp
 

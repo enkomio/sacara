@@ -62,18 +62,11 @@ type SacaraAssembler() =
             _currentLabel <- Some labelType.Name
             parseStatement(labelType.Statement)
         | Call callType -> 
-            let call = new IrOpCode(if callType.Native then IrOpCodes.NativeCall else IrOpCodes.Call)
-            call.Operands.Add(parseExpression(callType.Operand))
-            addOperand(call)
+            addOperand(new IrOpCode(if callType.Native then IrOpCodes.NativeCall else IrOpCodes.Call))
         | Read readType ->
-            let read = new IrOpCode(if readType.Native then IrOpCodes.NativeRead else IrOpCodes.Read)
-            read.Operands.Add(parseExpression(readType.Operand))
-            addOperand(read)
+            addOperand(new IrOpCode(if readType.Native then IrOpCodes.NativeRead else IrOpCodes.Read))
         | Write writeType ->
-            let write = new IrOpCode(if writeType.Native then IrOpCodes.NativeWrite else IrOpCodes.Write)
-            write.Operands.Add(parseExpression(writeType.DestOperand))
-            write.Operands.Add(new Operand(writeType.SourceOperand))
-            addOperand(write)
+            addOperand(new IrOpCode(if writeType.Native then IrOpCodes.NativeWrite else IrOpCodes.Write))
         | Nop -> 
             addOperand(new IrOpCode(IrOpCodes.Nop))
         | GetIp ->
@@ -140,8 +133,13 @@ type SacaraAssembler() =
         let allVariables = new HashSet<String>()
 
         // extract all local variables
+        let opCodeAcceptingVariables = [
+            IrOpCodes.Push; IrOpCodes.Pop; IrOpCodes.Jump
+            IrOpCodes.JumpIfLess; IrOpCodes.JumpIfLessEquals
+            IrOpCodes.JumpIfGreat; IrOpCodes.JumpIfGreatEquals
+        ]
         opCodes
-        |> Seq.filter(fun opCode -> opCode.Type.AcceptVariable())
+        |> Seq.filter(fun opCode -> opCodeAcceptingVariables |> List.contains opCode.Type)
         |> Seq.iter(fun opCode -> 
             opCode.Operands
             |> Seq.iter(fun operand ->
@@ -187,11 +185,24 @@ type SacaraAssembler() =
                 |> Seq.toList
 
         entryPointFunction::otherFunctions
-        
+
+    let addLabelNamesToSymbolTable(symbolTable: SymbolTable, functions: List<IrFunction>) =        
+        functions
+        |> Seq.iter(fun irFunction -> 
+            symbolTable.AddLabelName(irFunction.Name)
+            irFunction.Body
+            |> Seq.filter(fun irOpCode -> irOpCode.Label.IsSome)
+            |> Seq.iter(fun irOpCode -> symbolTable.AddLabelName(irOpCode.Label.Value))
+        )
+
     member val Settings = new AssemblerSettings() with get
 
     member this.GenerateBinaryCode(functions: List<IrFunction>) =
         let symbolTable = new SymbolTable()
+
+        // add all function names and labels to the symbol table, in order to be 
+        // able to correctly assemble specific VM opCode
+        addLabelNamesToSymbolTable(symbolTable, functions)
         
         // assemble the code
         let vmFunctions =
