@@ -41,7 +41,7 @@ search_opcode_loop:
 
 	; function found, save the read address in EAX
 	; EDI contains the address of marker2
-	lea eax, [edi + 4*edx + 8]
+	lea eax, [edi+TYPE DWORD * edx+8]
 	jmp found
 
 not_found:
@@ -93,10 +93,8 @@ hash_iteration:
 	mov eax, edx
 
 loop_epilogue:
-	inc esi
-	dec ecx
-	test ecx, ecx
-	jnz hash_loop
+	inc esi	
+	loop hash_loop
 
 exit:
 	mov ebp, esp
@@ -119,7 +117,6 @@ find_module_base proc
 	assume fs:error
 	
 	; get head module list
-	; see: https://stackoverflow.com/questions/31512952/link-structures-ldr-peb
 	mov eax, [eax+0ch] ; Ldr
 	mov eax, [eax+14h] ; InMemoryOrderModuleList entry
 	mov [ebp+local0], eax ; head
@@ -176,3 +173,107 @@ module_not_found:
 	pop ebp
 	ret 4
 find_module_base endp
+
+; *****************************
+; arguments: dll base, function name hash
+; *****************************
+find_exported_func PROC
+	push ebp
+	mov ebp, esp
+
+	sub esp, 8
+	
+	; check MZ signature
+	mov ebx, [ebp+arg0] ; DLL base
+	mov ax, word ptr [ebx]
+	cmp ax, 'ZM'
+	jnz error
+
+	; check PE signature
+	lea ebx, [ebx+03Ch]
+	mov ebx, [ebx]
+	add ebx, [ebp+arg0]
+	mov ax, word ptr [ebx]
+	cmp ax, 'EP'
+	jnz error
+	
+	; go to Export table address
+	mov edx, [ebx+078h] ; Virtual Address
+	test edx, edx
+	jz error
+
+	; add base address to compute IMAGE_EXPORT_DIRECTORY
+	add edx, [ebp+arg0]
+	mov ecx, [edx+014h] ; NumberOfFunctions
+
+	; save index
+	xor eax, eax
+	mov [ebp+local0], edx ; save IMAGE_EXPORT_DIRECTORY
+	mov [ebp+local1], eax  ; save index
+
+function_name_loop:
+	mov edx, [ebp+local0] ; IMAGE_EXPORT_DIRECTORY
+	mov ebx, [ebp+local1] ; index
+
+	; get the i-th function name
+	mov esi, [edx+020h] ; AddressOfNames RVA
+	add esi, [ebp+arg0] ; AddressOfNames VA
+	lea esi, [esi+TYPE DWORD*ebx] ; point to the current index	
+	mov edi, [esi] ; function name RVA
+	add edi, [ebp+arg0] ; function name VA
+	
+	; scan to find the NULL char
+	push eax
+	xor eax, eax	
+	mov esi, edi
+	repnz scasb
+	pop eax
+
+	; compute name length
+	sub edi, esi
+	dec edi
+
+	; compute function name hash
+	push ecx
+	push edi
+	push esi
+	call hash_string
+	pop ecx
+
+	; compare hash
+	cmp eax, [ebp+arg1]
+	je function_name_found
+
+	; go to next name pointer
+	inc dword ptr [ebp+local1]
+
+	loop function_name_loop
+	jmp error
+
+function_name_found:
+	mov edx, [ebp+local0] ; IMAGE_EXPORT_DIRECTORY
+	mov ebx, [ebp+local1] ; index
+
+	; get the i-th function ordinal
+	mov esi, [edx+024h] ; AddressOfNameOrdinals RVA
+	add esi, [ebp+arg0] ; AddressOfNameOrdinals VA
+	lea esi, [esi+TYPE WORD*ebx] ; point to the current index	
+	movzx eax, word ptr [esi] ; ordinal
+		
+	; get the i-th function address
+	mov esi, [edx+01Ch] ; AddressOfFunctions RVA
+	add esi, [ebp+arg0] ; AddressOfFunctions VA
+	lea esi, [esi+TYPE DWORD*eax] ; point to the current index	
+	mov eax, [esi] ; function addr RVA
+	add eax, [ebp+arg0] ; function addr VA
+	jmp finish
+
+error:
+	xor eax, eax
+	
+finish:
+	add esp, 8
+	mov ebp, esp
+	pop ebp
+	ret 8
+find_exported_func ENDP

@@ -54,6 +54,12 @@ main PROC
 	push hash_kernel32_dll
 	call find_module_base
 	
+	push hash_GetProcessHeap
+	push eax
+	call find_exported_func
+	
+	call eax ; call GetProcessHeap
+	
 	; allocate space on the stack for the VM context and initialize it	
 	sub esp, 10h
 	mov eax, vm_code_bytes_size

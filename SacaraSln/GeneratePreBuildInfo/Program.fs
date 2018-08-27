@@ -95,6 +95,10 @@ module Program =
         [
             "kernel32.dll"
             "ntdll.dll"
+            "GetProcessHeap"
+            "GetProcessGroupAffinity"
+            "HeapAlloc"
+            "HeapFree"
         ] 
         |> List.map(fun name -> (name, hashString(name)))
         |> List.iter(fun (name, hash) ->
