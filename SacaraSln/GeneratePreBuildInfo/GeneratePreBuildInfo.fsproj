@@ -5,14 +5,14 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>8a80a401-ee8f-4f91-b428-f976bbf94c87</ProjectGuid>
+    <ProjectGuid>38898a1f-0598-40fd-9edb-fe7b898197bf</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>GenerateVmOpCodes</RootNamespace>
-    <AssemblyName>GenerateVmOpCodes</AssemblyName>
+    <RootNamespace>GeneratePreBuildInfo</RootNamespace>
+    <AssemblyName>GeneratePreBuildInfo</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <UseStandardResourceNames>true</UseStandardResourceNames>
-    <Name>GenerateVmOpCodes</Name>
+    <Name>GeneratePreBuildInfo</Name>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -46,10 +46,10 @@
   <Import Project="$(FSharpTargetsPath)" />
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
-    <Compile Include="Program.fs" />
     <None Include="App.config" />
     <Content Include="packages.config" />
     <None Include="paket.references" />
+    <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Core">

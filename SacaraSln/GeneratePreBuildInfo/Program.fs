@@ -1,6 +1,6 @@
 ﻿/// This simple program produce a text output with VM opcodes. 
 /// The generated opcode are saved in the apprppriate src directory.
-namespace GenerateVmOpCodes
+namespace GeneratePreBuildInfo
 
 open System
 open System.Collections.Generic
@@ -66,18 +66,54 @@ module Program =
                 bytes
             ).AppendLine() |> ignore
         )
-
-        let fileContent = sb.ToString()
         
         // copy file
+        let fileContent = sb.ToString()
         let curDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
         let vmSrcFile = Path.Combine(curDir, "..", "..", "..", "SacaraVm", "vm_instructions_headers.inc")
         File.WriteAllText(vmSrcFile, fileContent)
         Console.WriteLine("Files copied to: " + vmSrcFile)
 
+    let private ror(operand: UInt32) =
+        let n = 6
+        (operand >>> n) ||| (operand <<< (32-n))
+
+    let private hashString(name: String) =
+        let mutable hash = uint32 0
+        name.ToUpperInvariant()
+        |> Seq.iter(fun c ->
+            let h1 = (hash + uint32 c) * uint32 1024
+            let h2 = ror h1
+            hash <- h1 ^^^ h2
+        )
+        hash
+
+    let computeStringHashes() =
+        let sb = new StringBuilder()
+        sb.AppendLine("; This file is auto generated, don't modify it") |> ignore
+
+        [
+            "kernel32.dll"
+            "ntdll.dll"
+        ] 
+        |> List.map(fun name -> (name, hashString(name)))
+        |> List.iter(fun (name, hash) ->
+            let cleanName = name.Replace('.', '_')
+            sb.AppendFormat("hash_{0} EQU 0{1}h", cleanName, hash.ToString("X")).AppendLine() |> ignore
+        )
+
+        // copy file
+        let fileContent = sb.ToString()
+        let curDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
+        let vmSrcFile = Path.Combine(curDir, "..", "..", "..", "SacaraVm", "strings.inc")
+        File.WriteAllText(vmSrcFile, fileContent)
+        Console.WriteLine("Files copied to: " + vmSrcFile)
+
     [<EntryPoint>]
     let main argv =         
-        let opCodes = generateOpCodes()
+        computeStringHashes()
+
+        let opCodes = generateOpCodes()        
         saveOpCodeInAssemblerDir(opCodes)
         saveOpCodeinVmDir(opCodes)
 

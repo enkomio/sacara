@@ -1,4 +1,4 @@
-﻿namespace GenerateVmOpCodes.AssemblyInfo
+﻿namespace GeneratePreBuildInfo.AssemblyInfo
 
 open System.Reflection
 open System.Runtime.CompilerServices
@@ -7,11 +7,11 @@ open System.Runtime.InteropServices
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[<assembly: AssemblyTitle("GenerateVmOpCodes")>]
+[<assembly: AssemblyTitle("GeneratePreBuildInfo")>]
 [<assembly: AssemblyDescription("")>]
 [<assembly: AssemblyConfiguration("")>]
 [<assembly: AssemblyCompany("")>]
-[<assembly: AssemblyProduct("GenerateVmOpCodes")>]
+[<assembly: AssemblyProduct("GeneratePreBuildInfo")>]
 [<assembly: AssemblyCopyright("Copyright ©  2018")>]
 [<assembly: AssemblyTrademark("")>]
 [<assembly: AssemblyCulture("")>]
@@ -22,7 +22,7 @@ open System.Runtime.InteropServices
 [<assembly: ComVisible(false)>]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[<assembly: Guid("8a80a401-ee8f-4f91-b428-f976bbf94c87")>]
+[<assembly: Guid("38898a1f-0598-40fd-9edb-fe7b898197bf")>]
 
 // Version information for an assembly consists of the following four values:
 //

@@ -123,13 +123,14 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="const.inc" />
-    <None Include="utility.inc" />
-    <None Include="vm.inc" />
-    <None Include="vm_alloca.inc" />
-    <None Include="vm_halt.inc" />
+    <None Include="strings.inc" />
+    <None Include="utility.asm" />
+    <None Include="vm.asm" />
+    <None Include="vm_alloca.asm" />
+    <None Include="vm_halt.asm" />
     <None Include="vm_instructions.inc" />
     <None Include="vm_instructions_headers.inc" />
-    <None Include="vm_nop.inc" />
+    <None Include="vm_nop.asm" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -35,7 +35,8 @@ vm_code_bytes_size EQU $-vm_code_bytes
 .code
 
 include const.inc
-include utility.inc
+include strings.inc
+include utility.asm
 include vm_instructions_headers.inc
 
 ; compute size of the code related to the VM. 
@@ -44,11 +45,14 @@ start_vm_instructions:
 include vm_instructions.inc
 vm_instructions_size DWORD $ - start_vm_instructions
 
-include vm.inc
+include vm.asm
 
 main PROC
 	push ebp
 	mov ebp, esp
+
+	push hash_kernel32_dll
+	call find_module_base
 	
 	; allocate space on the stack for the VM context and initialize it	
 	sub esp, 10h
