@@ -50,15 +50,6 @@ include vm.asm
 main PROC
 	push ebp
 	mov ebp, esp
-
-	push hash_kernel32_dll
-	call find_module_base
-	
-	push hash_GetProcessHeap
-	push eax
-	call find_exported_func
-	
-	call eax ; call GetProcessHeap
 	
 	; allocate space on the stack for the VM context and initialize it	
 	sub esp, 10h
@@ -69,8 +60,12 @@ main PROC
 	call vm_init
 	
 	; run VM
+	;push ebp
+	;call vm_main
+
+	; free vm
 	push ebp
-	call vm_main
+	call vm_free
 
 	; cleanup stack from vm_context structure
 	add esp, 10h

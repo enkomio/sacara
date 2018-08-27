@@ -93,12 +93,14 @@ module Program =
         sb.AppendLine("; This file is auto generated, don't modify it") |> ignore
 
         [
+            // module names
             "kernel32.dll"
             "ntdll.dll"
+
+            // function names
             "GetProcessHeap"
-            "GetProcessGroupAffinity"
-            "HeapAlloc"
-            "HeapFree"
+            "RtlAllocateHeap"
+            "RtlFreeHeap"
         ] 
         |> List.map(fun name -> (name, hashString(name)))
         |> List.iter(fun (name, hash) ->
@@ -120,7 +122,4 @@ module Program =
         let opCodes = generateOpCodes()        
         saveOpCodeInAssemblerDir(opCodes)
         saveOpCodeinVmDir(opCodes)
-
-        Console.WriteLine("Press enter to exit...")
-        Console.ReadLine() |> ignore
         0

@@ -7,23 +7,97 @@ vm_init PROC
 	mov eax, [ebp+arg0]
 	mov [eax+vm_ip], dword ptr 0h	; zero VM ip
 	mov [eax+vm_flags], dword ptr 0h; zero flags
+
+	sub esp, 8
+
+	; allocate space in the heap for the stack of the entry function
+	push hash_kernel32_dll
+	call find_module_base
+	mov [ebp+local0], eax ; save kernel32 base
+
+	push hash_ntdll_dll
+	call find_module_base
+	mov [ebp+local1], eax ; save ntdll base
 	
-	; TODO *****************************
-	; allocate vm stack space
-	mov [eax+vm_sp], dword ptr 0h	; zero VM sp
+	push hash_GetProcessHeap
+	push [ebp+local0]
+	call find_exported_func
+	
+	; call GetProcessHeap
+	call eax
+
+	; push HeapAlloc arguments
+	push 1000h ; size to alloc
+	push 00000008h ; HEAP_ZERO_MEMORY
+	push eax ; process heap
+
+	; resolve function
+	push hash_RtlAllocateHeap
+	push [ebp+local1]
+	call find_exported_func
+
+	; call HeapAlloc
+	call eax 
+	
+	; save the stack pointer
+	mov ecx, [ebp+arg0]
+	mov [ecx+vm_sp], eax
 	
 	; set the code pointer
 	mov ebx, [ebp+arg1]
-	mov [eax+vm_code], ebx
+	mov [ecx+vm_code], ebx
 
 	; set the code size
 	mov ebx, [ebp+arg2]
-	mov [eax+vm_code_size], ebx
+	mov [ecx+vm_code_size], ebx
 
+	add esp, 8
 	mov ebp, esp
 	pop ebp
 	ret 0Ch
 vm_init ENDP
+
+; *****************************
+; arguments: vm_context
+; *****************************
+vm_free PROC
+	push ebp
+	mov ebp, esp
+	sub esp, 8
+
+	; find kernel32
+	push hash_kernel32_dll
+	call find_module_base
+	mov [ebp+local0], eax ; save kernel32 base
+
+	; find ntdll
+	push hash_ntdll_dll
+	call find_module_base
+	mov [ebp+local1], eax ; save ntdll base
+	
+	; call GetProcessHeap
+	push hash_GetProcessHeap
+	push [ebp+local0]
+	call find_exported_func
+	call eax
+
+	; push HeapAlloc arguments
+	mov ebx, [ebp+arg0]
+	push [ebx+vm_sp] ; addr to free
+	push 0h ; flag
+	push eax ; process heap
+
+	; call RtlFreeHeap
+	push hash_RtlFreeHeap
+	push [ebp+local1]
+	call find_exported_func
+	call eax
+	
+	add esp, 8
+	mov ebp, esp
+	pop ebp
+	ret 0Ch
+vm_free ENDP
 
 ; *****************************
 ; arguments: vm_context, increment size

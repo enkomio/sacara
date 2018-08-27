@@ -2,5 +2,5 @@
 hash_kernel32_dll EQU 07985A0C0h
 hash_ntdll_dll EQU 0D325A0C0h
 hash_GetProcessHeap EQU 0D0795600h
-hash_HeapAlloc EQU 0C7A61F30h
-hash_HeapFree EQU 077507D50h
+hash_RtlAllocateHeap EQU 0E8995600h
+hash_RtlFreeHeap EQU 0A9995600h
