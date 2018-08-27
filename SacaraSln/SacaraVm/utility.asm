@@ -1,7 +1,7 @@
 ; *****************************
 ; arguments: start_memory, size, marker
 ; *****************************
-find_handler PROC
+find_vm_handler PROC
 	push ebp
 	mov ebp, esp
 	mov edi, [ebp+arg0] ; memory
@@ -50,35 +50,7 @@ found:
 	mov ebp, esp
 	pop ebp
 	ret 0Ch
-find_handler ENDP
-
-
-; *****************************
-; arguments: modulo hash
-; *****************************
-find_module PROC
-	push ebp
-	mov ebp, esp
-
-	sub esp, 4
-
-	; read PEB
-	assume fs:nothing
-	mov eax, fs:[30h]
-	assume fs:error
-
-	; read module list
-	mov eax, [eax+0ch] ; Ldr
-	mov eax, [eax+14h] ; InMemoryOrderModuleList
-	mov [ebp+local0], eax ; save location
-
-	add esp, 4
-
-	mov ebp, esp
-	pop ebp
-	ret 4h
-find_module ENDP
-
+find_vm_handler ENDP
 
 ; *****************************
 ; arguments: memory, size

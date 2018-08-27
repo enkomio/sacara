@@ -98,7 +98,7 @@ vm_execute PROC
 	push [ebp+arg1]	
 	push vm_instructions_size
 	push start_vm_instructions
-	call find_handler
+	call find_vm_handler
 
 	; invoke the handler if found
 	test eax, eax

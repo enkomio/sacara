@@ -40,7 +40,7 @@ include utility.asm
 include vm_instructions_headers.inc
 
 ; compute size of the code related to the VM. 
-; These offset are used by the find_handler routine
+; These offset are used by the find_vm_handler routine
 start_vm_instructions:
 include vm_instructions.inc
 vm_instructions_size DWORD $ - start_vm_instructions
