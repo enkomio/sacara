@@ -131,6 +131,7 @@
     <None Include="vm_instructions.inc" />
     <None Include="vm_instructions_headers.inc" />
     <None Include="vm_nop.asm" />
+    <None Include="vm_pop.asm" />
     <None Include="vm_push_immediate.asm" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

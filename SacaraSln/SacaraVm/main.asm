@@ -27,9 +27,9 @@ ExitProcess proto,dwExitCode:dword
 
 .DATA
 
-vm_code_bytes BYTE 0F9h,93h,02h,0h,0h,0h		; push 2
-				BYTE 18h,09h					; nop				
-				BYTE 52h,1Dh					; alloca 
+vm_code_bytes BYTE 0F9h,93h,02h,0h,0h,0h		; push 2				
+				BYTE 1Dh,52h,05h,0h,0h,0h		; alloca 5, create space for 1 variable <------ da implementare
+				BYTE 4Bh,87h,01h,0h,0h,0h		; pop 1, set the variable 1 to 2		
 				BYTE 93h,38h					; halt
 vm_code_bytes_size EQU $-vm_code_bytes
 

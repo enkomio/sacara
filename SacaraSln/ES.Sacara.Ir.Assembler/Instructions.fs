@@ -80,7 +80,9 @@ type IrOpCodes =
     // eg. jumpifge label/var
     | JumpIfGreatEquals
 
-    // allocate a given amount of stack space. The argument is the number of DWORD to allocate in the managed stack
+    // allocate a given amount of space for local variables. The argument is the number of DWORD to allocate.
+    // If this instruction is invoked more than one time, the size for the local variables is updated and all 
+    // the previous value are deleted
     // eg. alloca 2
     | Alloca
 
@@ -109,11 +111,11 @@ type IrOpCodes =
     // eg. getsp
     | GetSp
 
-    // pop two values from the stack, which are the managed address of the stack and the value to write. 
+    // pop two values from the stack, which are the managed index of the stack and the value to write. 
     // eg. swrite
     | StackWrite
 
-    // pop a value from the stack, which is the vm address of the tsack to read. Push the result value in the stack
+    // pop a value from the stack, which is the vm index of the stack to read. Push the result value on top of the stack
     // eg. sread
     | StackRead
 

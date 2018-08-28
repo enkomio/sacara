@@ -1,4 +1,79 @@
 ; *****************************
+; arguments: vm context, var index, imm
+; *****************************
+vm_local_var_set PROC
+	push ebp
+	mov ebp, esp
+
+	; get the local var buffer
+	mov eax, [ebp+arg0]
+	mov eax, [eax+vm_sp]
+	mov eax, [eax+vm_local_vars]
+
+	; go to the given offset
+	mov ebx, [ebp+arg1]
+	lea eax, [eax+TYPE DWORD*ebx]
+
+	; set the value
+	mov ebx, [ebp+arg2]
+	mov [eax], ebx
+
+	mov ebp, esp
+	pop ebp
+	ret 0Ch
+vm_local_var_set ENDP
+
+
+; *****************************
+; arguments: vm context, imm
+; *****************************
+vm_stack_push PROC
+	push ebp
+	mov ebp, esp
+
+	; read stack frame header
+	mov ebx, [ebp+arg0]
+	mov ebx, [ebx+vm_sp] 
+	
+	; set value to top of the stack
+	mov ecx, [ebx+vm_stack_top]
+	mov eax, [ebp+arg1]
+	mov [ecx], eax
+
+	; increment stack by 1
+	lea ecx, [ecx+TYPE DWORD]
+	mov [ebx+vm_stack_top], ecx
+
+	mov ebp, esp
+	pop ebp
+	ret 8h
+vm_stack_push ENDP
+
+; *****************************
+; arguments: vm context
+; *****************************
+vm_stack_pop PROC
+	push ebp
+	mov ebp, esp
+
+	; read stack frame header
+	mov ebx, [ebp+arg0]
+	mov ebx, [ebx+vm_sp] 
+
+	; decrement stack by 1
+	mov ecx, [ebx+vm_stack_top]
+	lea ecx, [ecx-TYPE DWORD]
+	mov [ebx+vm_stack_top], ecx
+
+	; read value
+	mov eax, [ecx]
+
+	mov ebp, esp
+	pop ebp
+	ret 4h
+vm_stack_pop ENDP
+
+; *****************************
 ; arguments: stack memory, previous stack frame pointer
 ; *****************************
 vm_init_stack_frame PROC
@@ -44,7 +119,7 @@ vm_init PROC
 	mov [ecx+vm_sp], eax
 
 	; init stack frame
-	push 0h
+	push 0h ; no previous stack frame
 	push eax
 	call vm_init_stack_frame
 		

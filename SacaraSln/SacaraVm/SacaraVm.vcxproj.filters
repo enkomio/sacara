@@ -14,5 +14,6 @@
     <None Include="strings.inc" />
     <None Include="vm_push_immediate.asm" />
     <None Include="vm_alloca.asm" />
+    <None Include="vm_pop.asm" />
   </ItemGroup>
 </Project>

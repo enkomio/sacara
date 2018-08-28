@@ -8,17 +8,9 @@ vm_push_immediate PROC
 	push [ebp+arg0]
 	call vm_read_opcode
 
-	; read stack frame header
-	mov ebx, [ebp+arg0]
-	mov ebx, [ebx+vm_sp] 
-	
-	; set value to top of the stack
-	mov ecx, [ebx+vm_stack_top]
-	mov [ecx], eax
-
-	; increment stack by 1
-	lea ecx, [ecx+TYPE DWORD]
-	mov [ebx+vm_stack_top], ecx
+	push eax
+	push [ebp+arg0]
+	call vm_stack_push
 	
 	mov ebp, esp
 	pop ebp
