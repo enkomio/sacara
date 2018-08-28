@@ -4,7 +4,7 @@ vm_halt PROC
 	mov ebp, esp
 	mov ebx, [ebp+arg0] ; read context
 	mov eax, [ebx+vm_flags]
-	or eax, 80000000h
+	or eax, 80000000h ; set halt flag
 	mov [ebx+vm_flags], eax
 	mov ebp, esp
 	pop ebp

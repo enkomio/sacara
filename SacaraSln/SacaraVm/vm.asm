@@ -1,4 +1,25 @@
 ; *****************************
+; arguments: stack memory, previous stack frame pointer
+; *****************************
+vm_init_stack_frame PROC
+	push ebp
+	mov ebp, esp
+	mov eax, [ebp+arg0] ; read stack base
+	mov edx, [ebp+arg1] ; previous stack frame pointer
+
+	; fill stack frame header
+	lea ebx, [eax+TYPE DWORD*3 ]
+	mov dword ptr [eax], edx
+	mov [eax+4], ebx ; base stack frame
+	mov [eax+8h], ebx ; top stack frame
+
+	mov ebp, esp
+	pop ebp
+	ret 8h
+vm_init_stack_frame ENDP
+
+
+; *****************************
 ; arguments: vm_context, vm_code, vm_code_size
 ; *****************************
 vm_init PROC
@@ -27,8 +48,8 @@ vm_init PROC
 	call eax
 
 	; push HeapAlloc arguments
-	push 1000h ; size to alloc
-	push 00000008h ; HEAP_ZERO_MEMORY
+	push vm_stack_size
+	push HEAP_ZERO_MEMORY
 	push eax ; process heap
 
 	; resolve function
@@ -38,6 +59,11 @@ vm_init PROC
 
 	; call HeapAlloc
 	call eax 
+
+	; init stack frame
+	push 0h
+	push eax
+	call vm_init_stack_frame
 	
 	; save the stack pointer
 	mov ecx, [ebp+arg0]
