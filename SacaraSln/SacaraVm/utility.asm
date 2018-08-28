@@ -1,4 +1,88 @@
 ; *****************************
+; arguments: size to alloc
+; *****************************
+heap_alloc PROC
+	push ebp
+	mov ebp, esp
+	sub esp, 8
+
+	; allocate space in the heap for the stack of the entry function
+	push hash_kernel32_dll
+	call find_module_base
+	mov [ebp+local0], eax ; save kernel32 base
+
+	push hash_ntdll_dll
+	call find_module_base
+	mov [ebp+local1], eax ; save ntdll base
+	
+	push hash_GetProcessHeap
+	push [ebp+local0]
+	call find_exported_func
+	
+	; call GetProcessHeap
+	call eax
+
+	; push HeapAlloc arguments
+	push [ebp+arg0] ; size
+	push HEAP_ZERO_MEMORY
+	push eax ; process heap
+
+	; resolve function
+	push hash_RtlAllocateHeap
+	push [ebp+local1]
+	call find_exported_func
+
+	; call HeapAlloc
+	call eax 
+
+	add esp, 8
+	mov ebp, esp
+	pop ebp
+	ret 4h
+heap_alloc ENDP
+
+; *****************************
+; arguments: memory
+; *****************************
+heap_free PROC
+	push ebp
+	mov ebp, esp
+	sub esp, 8
+
+	; find kernel32
+	push hash_kernel32_dll
+	call find_module_base
+	mov [ebp+local0], eax ; save kernel32 base
+
+	; find ntdll
+	push hash_ntdll_dll
+	call find_module_base
+	mov [ebp+local1], eax ; save ntdll base
+	
+	; call GetProcessHeap
+	push hash_GetProcessHeap
+	push [ebp+local0]
+	call find_exported_func
+	call eax
+
+	; push HeapAlloc arguments
+	push [ebp+arg0] ; addr to free
+	push 0h ; flag
+	push eax ; process heap
+
+	; call RtlFreeHeap
+	push hash_RtlFreeHeap
+	push [ebp+local1]
+	call find_exported_func
+	call eax
+	
+	add esp, 8
+	mov ebp, esp
+	pop ebp
+	ret 04h
+heap_free ENDP
+
+; *****************************
 ; arguments: start_memory, size, marker
 ; *****************************
 find_vm_handler PROC

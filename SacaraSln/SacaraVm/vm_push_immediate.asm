@@ -1,5 +1,5 @@
-header_VmAlloca
-vm_alloca PROC
+header_VmPushImmediate
+vm_push_immediate PROC
 	push ebp
 	mov ebp, esp	
 
@@ -12,12 +12,15 @@ vm_alloca PROC
 	mov ebx, [ebp+arg0]
 	mov ebx, [ebx+vm_sp] 
 	
-	; increment stack	
+	; set value to top of the stack
 	mov ecx, [ebx+vm_stack_top]
-	lea ecx, [ecx+TYPE DWORD*eax]
+	mov [ecx], eax
+
+	; increment stack by 1
+	lea ecx, [ecx+TYPE DWORD]
 	mov [ebx+vm_stack_top], ecx
 	
 	mov ebp, esp
 	pop ebp
 	ret
-vm_alloca ENDP
+vm_push_immediate ENDP

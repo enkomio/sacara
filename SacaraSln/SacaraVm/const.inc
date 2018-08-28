@@ -11,6 +11,11 @@ arg3 EQU 14h
 ; each stack frame has the following header:
 ; <previous stack frame pointer>|<base stack frame>|<top stack frame>
 vm_stack_size EQU 1024
+vm_stack_vars_size EQU 1024
+vm_stack_previous_frame EQU 0h
+vm_stack_base EQU 4h
+vm_stack_top EQU 8h
+vm_local_vars EQU 0Ch
 
 ; VM context
 vm_ip EQU 0h

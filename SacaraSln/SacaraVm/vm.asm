@@ -8,10 +8,16 @@ vm_init_stack_frame PROC
 	mov edx, [ebp+arg1] ; previous stack frame pointer
 
 	; fill stack frame header
-	lea ebx, [eax+TYPE DWORD*3 ]
-	mov dword ptr [eax], edx
-	mov [eax+4], ebx ; base stack frame
-	mov [eax+8h], ebx ; top stack frame
+	lea ebx, [eax+TYPE DWORD*4 ]
+	mov dword ptr [eax+vm_stack_previous_frame], edx
+	mov [eax+vm_stack_base], ebx
+	mov [eax+vm_stack_top], ebx
+
+	; allocate space for local vars
+	push vm_stack_vars_size
+	call heap_alloc
+	mov ebx, [ebp+arg0]
+	mov [ebx+vm_local_vars], eax
 
 	mov ebp, esp
 	pop ebp
@@ -29,55 +35,28 @@ vm_init PROC
 	mov [eax+vm_ip], dword ptr 0h	; zero VM ip
 	mov [eax+vm_flags], dword ptr 0h; zero flags
 
-	sub esp, 8
-
-	; allocate space in the heap for the stack of the entry function
-	push hash_kernel32_dll
-	call find_module_base
-	mov [ebp+local0], eax ; save kernel32 base
-
-	push hash_ntdll_dll
-	call find_module_base
-	mov [ebp+local1], eax ; save ntdll base
-	
-	push hash_GetProcessHeap
-	push [ebp+local0]
-	call find_exported_func
-	
-	; call GetProcessHeap
-	call eax
-
-	; push HeapAlloc arguments
+	; allocate space for the stack
 	push vm_stack_size
-	push HEAP_ZERO_MEMORY
-	push eax ; process heap
-
-	; resolve function
-	push hash_RtlAllocateHeap
-	push [ebp+local1]
-	call find_exported_func
-
-	; call HeapAlloc
-	call eax 
+	call heap_alloc
+	
+	; save the stack pointer
+	mov ecx, [ebp+arg0]
+	mov [ecx+vm_sp], eax
 
 	; init stack frame
 	push 0h
 	push eax
 	call vm_init_stack_frame
-	
-	; save the stack pointer
-	mov ecx, [ebp+arg0]
-	mov [ecx+vm_sp], eax
-	
+		
 	; set the code pointer
 	mov ebx, [ebp+arg1]
+	mov ecx, [ebp+arg0]
 	mov [ecx+vm_code], ebx
 
 	; set the code size
 	mov ebx, [ebp+arg2]
 	mov [ecx+vm_code_size], ebx
 
-	add esp, 8
 	mov ebp, esp
 	pop ebp
 	ret 0Ch
@@ -89,40 +68,23 @@ vm_init ENDP
 vm_free PROC
 	push ebp
 	mov ebp, esp
-	sub esp, 8
 
-	; find kernel32
-	push hash_kernel32_dll
-	call find_module_base
-	mov [ebp+local0], eax ; save kernel32 base
+	; get stack pointer addr
+	mov eax, [ebp+arg0]
+	mov eax, [eax+vm_sp]
 
-	; find ntdll
-	push hash_ntdll_dll
-	call find_module_base
-	mov [ebp+local1], eax ; save ntdll base
+	; free vars buffer
+	push [eax+vm_local_vars]
+	call heap_free
+
+	; free stack frame	
+	mov eax, [ebp+arg0]
+	push [eax+vm_sp]
+	call heap_free
 	
-	; call GetProcessHeap
-	push hash_GetProcessHeap
-	push [ebp+local0]
-	call find_exported_func
-	call eax
-
-	; push HeapAlloc arguments
-	mov ebx, [ebp+arg0]
-	push [ebx+vm_sp] ; addr to free
-	push 0h ; flag
-	push eax ; process heap
-
-	; call RtlFreeHeap
-	push hash_RtlFreeHeap
-	push [ebp+local1]
-	call find_exported_func
-	call eax
-	
-	add esp, 8
 	mov ebp, esp
 	pop ebp
-	ret 0Ch
+	ret 4h
 vm_free ENDP
 
 ; *****************************
@@ -142,7 +104,7 @@ vm_increment_ip PROC
 vm_increment_ip ENDP
 
 ; *****************************
-; arguments: vm_context
+; arguments: vm_context, size
 ; *****************************
 vm_read_opcode PROC
 	push ebp
@@ -157,34 +119,27 @@ vm_read_opcode PROC
 	mov esi, [eax+vm_code]
 	lea esi, [esi+ebx]
 	xor eax, eax
+
+	cmp dword ptr [ebp+arg1], TYPE DWORD
+	je read_four_bytes
 	mov ax, word ptr [esi]
+	jmp finish
 
-	mov ebp, esp
-	pop ebp
-	ret 4
-vm_read_opcode ENDP
-
-; *****************************
-; arguments: vm_context
-; *****************************
-vm_read_dword_argument PROC
-	push ebp
-	mov ebp, esp
-
-	; read vm ip
-	mov ebp, esp
-	mov eax, [ebp+arg0]
-	mov ebx, [eax+vm_ip]
-
-	; read dword argument
-	mov esi, [eax+vm_code]
-	lea esi, [esi+ebx]	
+read_four_bytes:
 	mov eax, dword ptr [esi]
 
+finish:
+	push eax
+	; increment the VM ip
+	push [ebp+arg1]
+	push [ebp+arg0]
+	call vm_increment_ip
+	pop eax
+
 	mov ebp, esp
 	pop ebp
-	ret 4
-vm_read_dword_argument ENDP
+	ret 8
+vm_read_opcode ENDP
 
 ; *****************************
 ; arguments: vm_context, extracted opcode
@@ -202,7 +157,7 @@ vm_execute PROC
 
 	; invoke the handler if found
 	test eax, eax
-	je end_execution
+	je error
 
 	push [ebp+arg0] ; all handlers take 1 argument which is the VM context
 	call eax
@@ -210,8 +165,12 @@ vm_execute PROC
 	jmp end_execution
 
 error:
-	; TODO *****************************
-	; set the error flag in context here
+	; invalid opcode, set the halt flag
+	mov eax, [ebp+arg0]
+	mov ebx, [eax+vm_flags]
+	or ebx, 80000000h
+	mov [eax+vm_flags], ebx
+	xor eax, eax
 
 end_execution:
 	mov ebp, esp
@@ -227,17 +186,13 @@ vm_main PROC
 	mov ebp, esp
 		
 vm_loop:		
-	; read the opcode to execute		
-	push [ebp+arg0]
-	call vm_read_opcode
-	push eax
-
-	; increment the VM ip
+	; read the opcode to execute	
 	push 2
 	push [ebp+arg0]
-	call vm_increment_ip
-
+	call vm_read_opcode
+	
 	; execute the VM instruction
+	push eax
 	push [ebp+arg0]
 	call vm_execute
 		

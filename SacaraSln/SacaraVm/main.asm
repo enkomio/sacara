@@ -25,14 +25,15 @@ An esaxmple of bytecode is:
 .stack 4096
 ExitProcess proto,dwExitCode:dword
 
-.data
+.DATA
 
-vm_code_bytes BYTE 18h,09h ; nop
-				BYTE 0BCh,02Bh,02h,00h,00h,00h ; alloca 2
-				BYTE 93h,38h ; halt
+vm_code_bytes BYTE 0F9h,93h,02h,0h,0h,0h		; push 2
+				BYTE 18h,09h					; nop				
+				BYTE 52h,1Dh					; alloca 
+				BYTE 93h,38h					; halt
 vm_code_bytes_size EQU $-vm_code_bytes
 
-.code
+.CODE
 
 include const.inc
 include strings.inc
@@ -60,8 +61,8 @@ main PROC
 	call vm_init
 	
 	; run VM
-	;push ebp
-	;call vm_main
+	push ebp
+	call vm_main
 
 	; free vm
 	push ebp
