@@ -9,10 +9,9 @@ vm_alloca PROC
 	push [eax+vm_local_vars]
 	call heap_free
 	
-	; read the immediate	
-	push 4
+	; pop the value to alloca
 	push [ebp+arg0]
-	call vm_read_opcode
+	call vm_stack_pop
 
 	; allocate the new memory
 	lea eax, [eax*TYPE DWORD]

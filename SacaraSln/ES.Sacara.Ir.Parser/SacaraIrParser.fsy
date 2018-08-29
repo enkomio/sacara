@@ -54,7 +54,7 @@ statementNoLabel:
 	| NREAD																					{ readNative() }
 	| WRITE																					{ write() }
 	| NWRITE																				{ writeNative() }
-	| ALLOCA INTEGER																		{ alloca($2) }
+	| ALLOCA																				{ alloca() }
 	| BYTE INTEGER																			{ memoryByte($2) }
 	| WORD INTEGER																			{ memoryWord($2) }
 	| DWORD INTEGER																			{ memoryDword($2) }

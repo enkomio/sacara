@@ -49,8 +49,8 @@ module internal IrParserUtility =
     let jump(destination: Expression) =
         Jump {Destination=destination}
 
-    let alloca(space: Int32) =
-        Alloca(space)
+    let alloca() =
+        Alloca
 
     let memoryByte(value: Int32) =
         if value > 255 

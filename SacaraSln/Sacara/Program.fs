@@ -8,27 +8,17 @@ module Program =
     let main argv = 
         let irCode = """
         proc main
-            jump label1
-            label1: push 52
-            /* this is a 
-            multi
-            line
-            comment */ 
-            push 62            
-            add    
-            pop local_var
-            jump label2
-            byte 0xff
-            label2:
-            push modify_code
+            push local_var
+            push get_code
             call
-            pop ip_var
-            halt
+        some_label:
+            pop result_var
+            push some_label
             ret
         endp
 
-        proc modify_code
-            getip
+        proc get_code
+            push 0x42
             ret
         endp
         """
@@ -37,8 +27,7 @@ module Program =
 
         let vmBytes = code.GetBuffer()
         let vmListing = code.ToString()
-
-
+        
         Console.WriteLine(vmListing)
         let bytesTring = 
             vmBytes 

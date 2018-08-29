@@ -18,7 +18,7 @@ module IrAst =
         | Jump of JumpType
         | Read of ReadType
         | Write of WriteType
-        | Alloca of Int32
+        | Alloca
         | Byte of Int32
         | Word of Int32
         | DoubleWord of Int32

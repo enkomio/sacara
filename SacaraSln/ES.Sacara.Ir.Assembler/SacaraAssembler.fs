@@ -22,7 +22,7 @@ type IrAssemblyCode = {
         |> List.map(fun vmOpCode ->
             let bytes = BitConverter.ToString(vmOpCode.Buffer).Replace("-", String.Empty).PadLeft(12)
             let offset = vmOpCode.Offset.ToString("X").PadLeft(8, '0')
-            let operands = BitConverter.ToString(vmOpCode.Operands |> Seq.concat |> Seq.toArray).Replace("-", String.Empty)
+            let operands = BitConverter.ToString(vmOpCode.Operands |> Seq.concat |> Seq.toArray |> Array.rev).Replace("-", String.Empty)
             String.Format("/* {0} */ {1}: {2} {3}", bytes, offset, vmOpCode.IrOp.Type, operands)
         )
         |> fun l -> String.Join(Environment.NewLine, l)
@@ -91,9 +91,8 @@ type SacaraAssembler() =
             jump.Operands.Add(parseExpression(jumpType.Destination))
             addOperand(jump)
         | Empty -> ()
-        | Alloca stackItems ->
+        | Alloca ->
             let alloca = new IrOpCode(IrOpCodes.Alloca)
-            alloca.Operands.Add(new Operand(stackItems))
             addOperand(alloca)
         | Byte b ->
             let byte = new IrOpCode(IrOpCodes.Byte)
@@ -135,7 +134,7 @@ type SacaraAssembler() =
         |> Seq.map(assemblyIrOpCode(symbolTable, settings))
         |> Seq.toList
         
-    let addAllocaInstruction(opCodes: IrOpCode list) =
+    let addAllocaInstruction(symbolTable: SymbolTable, opCodes: IrOpCode list) =
         let allVariables = new HashSet<String>()
 
         // extract all local variables
@@ -150,16 +149,18 @@ type SacaraAssembler() =
             opCode.Operands
             |> Seq.iter(fun operand ->
                 match operand.Value with
-                | :? String -> allVariables.Add(operand.Value.ToString()) |> ignore
+                | :? String when symbolTable.IsLabel(operand.Value.ToString()) -> allVariables.Add(operand.Value.ToString()) |> ignore
                 | _ -> ()
             )
         )
         
         // create alloca instruction
         if allVariables.Count > 0 then
+            let pushInstr = new IrOpCode(IrOpCodes.Push)
+            pushInstr.Operands.Add(new Operand(allVariables.Count))
+
             let allocaInstr = new IrOpCode(IrOpCodes.Alloca)
-            allocaInstr.Operands.Add(new Operand(allVariables.Count))
-            allocaInstr::opCodes
+            [pushInstr;allocaInstr]@opCodes
         else    
             opCodes
 
@@ -170,7 +171,7 @@ type SacaraAssembler() =
         symbolTable.AddLabel(irFunction.Name, _currentIp)
 
         // add alloca instruction to compute stack space
-        let fullBody = addAllocaInstruction(irFunction.Body |> Seq.toList)
+        let fullBody = addAllocaInstruction(symbolTable, irFunction.Body |> Seq.toList)
                             
         // proceed to assemble VM opcodes        
         {Body=assemblyFunctionBody(fullBody, symbolTable, settings)}
@@ -200,7 +201,7 @@ type SacaraAssembler() =
             |> Seq.filter(fun irOpCode -> irOpCode.Label.IsSome)
             |> Seq.iter(fun irOpCode -> symbolTable.AddLabelName(irOpCode.Label.Value))
         )
-
+        
     member val Settings = new AssemblerSettings() with get
 
     member this.GenerateBinaryCode(functions: List<IrFunction>) =
@@ -209,7 +210,7 @@ type SacaraAssembler() =
         // add all function names and labels to the symbol table, in order to be 
         // able to correctly assemble specific VM opCode
         addLabelNamesToSymbolTable(symbolTable, functions)
-        
+                
         // assemble the code
         let vmFunctions =
             orderFunctions(functions, this.Settings)

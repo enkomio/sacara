@@ -40,11 +40,13 @@ type Operand(value: Object) =
                 symbolTable.GetVariable(identifier).Offset
                 |> uint16
                 |> BitConverter.GetBytes
-            | _ -> failwith("The Vm OpCode '" + vmOpCodeType.ToString() + "' doesn't accept an identifier as parameter")
+            | _ ->
+                // by default use 32 bit operand
+                symbolTable.GetLabel(identifier, offset).Offset
+                |> uint32
+                |> BitConverter.GetBytes
 
-        | _ -> failwith "Unrecognized symbol type"
-        // to make the result little endian
-        |> Array.rev
+        | _ -> failwith "Unrecognized symbol type"        
 
     override this.ToString() =
         this.Value.ToString()
@@ -103,20 +105,23 @@ and IrOpCode(opType: IrOpCodes) =
             then opCodes.[rnd.Next(opCodes.Length)]
             else opCodes.[0]
         |> uint16
-        |> BitConverter.GetBytes        
-        // to make the result little endian
-        |> Array.rev
+        |> BitConverter.GetBytes
     
     let getSimpleOpCode(opCode: VmOpCodes, settings: AssemblerSettings) =
         let opCodes = Instructions.bytes.[opCode]
         (chooseRepresentation(opCodes, settings), opCode)
     
-    let resolveOpCodeForImmOrVariable(operands: Operand seq, indexes: VmOpCodes list, settings: AssemblerSettings) =                
+    let resolveOpCodeForImmOrVariable(operands: Operand seq, symbolTable: SymbolTable, indexes: VmOpCodes list, settings: AssemblerSettings) =                
         let firstOperand = operands |> Seq.head
         let vmOpCode = 
             match firstOperand.Value with
             | :? Int32 -> indexes.[0]
-            | :? String -> indexes.[1]
+            | :? String -> 
+                // check the identifier, if is a label (or a functiona name) then we had to emit an immediate
+                let identifier = firstOperand.Value.ToString()
+                if symbolTable.IsLabel(identifier)
+                then indexes.[0]                
+                else indexes.[1]
             | _ -> failwith "Invalid operand type"
 
         let opCodes = Instructions.bytes.[vmOpCode]
@@ -139,7 +144,7 @@ and IrOpCode(opType: IrOpCodes) =
             | Ret -> getSimpleOpCode(VmRet, settings)
             | Nop -> getSimpleOpCode(VmNop, settings)
             | Add -> getSimpleOpCode(VmAdd, settings)
-            | Push -> resolveOpCodeForImmOrVariable(this.Operands, [VmPushImmediate; VmPushVariable], settings)
+            | Push -> resolveOpCodeForImmOrVariable(this.Operands, symbolTable, [VmPushImmediate; VmPushVariable], settings)
             | Pop -> getSimpleOpCode(VmPop, settings)
             | Call -> getSimpleOpCode(VmCall, settings)
             | NativeCall -> getSimpleOpCode(VmNativeCall, settings)
@@ -148,11 +153,11 @@ and IrOpCode(opType: IrOpCodes) =
             | Write -> getSimpleOpCode(VmWrite, settings)
             | NativeWrite -> getSimpleOpCode(VmNativeWrite, settings)
             | GetIp -> getSimpleOpCode(VmGetIp, settings)
-            | Jump -> resolveOpCodeForImmOrVariable(this.Operands, [VmJumpImmediate; VmJumpVariable], settings)
-            | JumpIfLess -> resolveOpCodeForImmOrVariable(this.Operands, [VmJumpIfLessImmediate; VmJumpIfLessVariable], settings)
-            | JumpIfLessEquals -> resolveOpCodeForImmOrVariable(this.Operands, [VmJumpIfLessEqualsImmediate; VmJumpIfLessEqualsVariable], settings)
-            | JumpIfGreat -> resolveOpCodeForImmOrVariable(this.Operands, [VmJumpIfGreatImmediate; VmJumpIfGreatVariable], settings)
-            | JumpIfGreatEquals -> resolveOpCodeForImmOrVariable(this.Operands, [VmJumpIfGreatEqualsImmediate; VmJumpIfGreatEqualsVariable], settings)
+            | Jump -> resolveOpCodeForImmOrVariable(this.Operands, symbolTable, [VmJumpImmediate; VmJumpVariable], settings)
+            | JumpIfLess -> resolveOpCodeForImmOrVariable(this.Operands, symbolTable, [VmJumpIfLessImmediate; VmJumpIfLessVariable], settings)
+            | JumpIfLessEquals -> resolveOpCodeForImmOrVariable(this.Operands, symbolTable, [VmJumpIfLessEqualsImmediate; VmJumpIfLessEqualsVariable], settings)
+            | JumpIfGreat -> resolveOpCodeForImmOrVariable(this.Operands, symbolTable, [VmJumpIfGreatImmediate; VmJumpIfGreatVariable], settings)
+            | JumpIfGreatEquals -> resolveOpCodeForImmOrVariable(this.Operands, symbolTable, [VmJumpIfGreatEqualsImmediate; VmJumpIfGreatEqualsVariable], settings)
             | Alloca -> getSimpleOpCode(VmAlloca, settings)
             | Halt -> getSimpleOpCode(VmHalt, settings)
             | Cmp -> getSimpleOpCode(VmCmp, settings)
@@ -166,11 +171,12 @@ and IrOpCode(opType: IrOpCodes) =
         // encode the operands
         this.Operands
         |> Seq.iter(fun operand ->
-            operands.Add(operand.Encode(symbolTable, ip + opBytes.Length, vmOpCode))
+            let operandBytes = operand.Encode(symbolTable, ip + opBytes.Length, vmOpCode)
+            operands.Add(operandBytes)
         )
 
         // return the VM opcode
-        VmOpCode.Assemble(opBytes |> Array.rev, operands, ip, this)
+        VmOpCode.Assemble(opBytes, operands, ip, this)
 
     override this.ToString() =
         let ops = String.Join(", ", this.Operands)
@@ -230,10 +236,7 @@ and SymbolTable() =
                 if vmOpCode.IsInOffset(offset) then
                     // I found the VM opcode that need to be fixed
                     let relativeOffsetToFix = offset - vmOpCode.Offset
-                    let bytes = 
-                        BitConverter.GetBytes(_labels.[name].Offset)
-                        // to make the result little endian
-                        |> Array.rev
+                    let bytes = BitConverter.GetBytes(_labels.[name].Offset)
 
                     // fix the buffer
                     Array.Copy(bytes, 0, vmOpCode.Buffer, relativeOffsetToFix, bytes.Length)

@@ -4,20 +4,19 @@ This is the implementation of the Sacara VM.
 
 An esaxmple of bytecode is:
 
-/* 2E9500000002 */ 00000000: Alloca 00000002
-/* 72FE0000000C */ 00000006: Jump 0000000C
-/* 15D800000034 */ 0000000C: Push 00000034
-/* 15D80000003E */ 00000012: Push 0000003E
-/*         02C7 */ 00000018: Add
-/*     E4720001 */ 0000001A: Pop 0001
-/* 72FE0000002A */ 0000001E: Jump 0000002A
-/* 1215000000FF */ 00000024: Byte 000000FF
-/* F2B100000038 */ 0000002A: Call 00000038
-/*     E4720002 */ 00000030: Pop 0002
-/*         69BB */ 00000034: Halt
-/*         CE28 */ 00000036: Ret
-/*         9392 */ 00000038: GetIp
-/*         CE28 */ 0000003A: Ret
+/* 722202000000 */ 00000000: Push 00000002
+/*         AB53 */ 00000006: Alloca
+/*     B1E20100 */ 00000008: Push 0001
+/* 722220000000 */ 0000000C: Push 00000020
+/*         023B */ 00000012: Call
+/*     429A0200 */ 00000014: Pop 0002
+/* 722214000000 */ 00000018: Push 00000014
+/*         30E3 */ 0000001E: Ret
+/* 722242000000 */ 00000020: Push 00000042
+/*         30E3 */ 00000026: Ret
+
+MASM: ,0B1h,0E2h,1h,0h,72h,22h,20h,0h,0h,0h,2h,3Bh,42h,9Ah,2h,0h,72h,22h,14h,0h,0h,0h,30h,0E3h,72h,22h,42h,0h,0h,0h,30h,0E3h
+
 !
 
 .386
@@ -27,11 +26,9 @@ ExitProcess proto,dwExitCode:dword
 
 .DATA
 
-vm_code_bytes BYTE 72h,022h,02h,0h,0h,0h		; push immediate 2. Stack = 2
-				BYTE 0BCh,01h					; halt
-				; call
-				; ret
-				BYTE 93h,38h					; halt
+vm_code_bytes BYTE 72h,22h,2h,0h,0h,0h ; push_immediate 2
+			BYTE 0ABh,53h ; alloca
+			BYTE 0BCh,01h ; halt
 vm_code_bytes_size EQU $-vm_code_bytes
 
 .CODE
