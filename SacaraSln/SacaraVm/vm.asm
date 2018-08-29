@@ -23,6 +23,30 @@ vm_local_var_set PROC
 	ret 0Ch
 vm_local_var_set ENDP
 
+; *****************************
+; arguments: vm context, var index
+; *****************************
+vm_local_var_get PROC
+	push ebp
+	mov ebp, esp
+
+	; get the local var buffer
+	mov eax, [ebp+arg0]
+	mov eax, [eax+vm_sp]
+	mov eax, [eax+vm_local_vars]
+
+	; go to the given offset
+	mov ebx, [ebp+arg1]
+	lea eax, [eax+TYPE DWORD*ebx]
+
+	; read the value
+	mov eax, [eax]
+
+	mov ebp, esp
+	pop ebp
+	ret 8h
+vm_local_var_get ENDP
+
 
 ; *****************************
 ; arguments: vm context, imm
@@ -35,7 +59,7 @@ vm_stack_push PROC
 	mov ebx, [ebp+arg0]
 	mov ebx, [ebx+vm_sp] 
 	
-	; set value to top of the stack
+	; set value on top of the stack
 	mov ecx, [ebx+vm_stack_top]
 	mov eax, [ebp+arg1]
 	mov [ecx], eax
@@ -61,12 +85,13 @@ vm_stack_pop PROC
 	mov ebx, [ebx+vm_sp] 
 
 	; decrement stack by 1
-	mov ecx, [ebx+vm_stack_top]
+	mov ecx, [ebx+vm_stack_top]	
 	lea ecx, [ecx-TYPE DWORD]
 	mov [ebx+vm_stack_top], ecx
 
 	; read value
 	mov eax, [ecx]
+	mov dword ptr [ecx], 0h ; zero the value
 
 	mov ebp, esp
 	pop ebp
@@ -218,6 +243,7 @@ vm_read_opcode ENDP
 
 ; *****************************
 ; arguments: vm_context, extracted opcode
+; return: 0 on success, opcode index on error
 ; *****************************
 vm_execute PROC
 	push ebp
@@ -237,17 +263,20 @@ vm_execute PROC
 	push [ebp+arg0] ; all handlers take 1 argument which is the VM context
 	call eax
 	add esp, 4
+	xor eax, eax
 	jmp end_execution
 
 error:
-	; invalid opcode, set the halt flag
+	; invalid opcode, set the halt flag and error flag
 	mov eax, [ebp+arg0]
 	mov ebx, [eax+vm_flags]
-	or ebx, 80000000h
+	or ebx, 0C0000000h
 	mov [eax+vm_flags], ebx
-	xor eax, eax
 
-end_execution:
+	; set eax to the offset of the opcode that generated the error
+	mov eax, [eax+vm_ip]
+
+end_execution:	
 	mov ebp, esp
 	pop ebp
 	ret 8
@@ -255,6 +284,7 @@ vm_execute ENDP
 
 ; *****************************
 ; arguments: vm_context
+; return: 0 on success, opcode index on error
 ; *****************************
 vm_main PROC
 	push ebp
@@ -272,9 +302,9 @@ vm_loop:
 	call vm_execute
 		
 	; check the finish flag in the context
-	mov eax, [ebp+arg0]
-	mov eax, [eax+vm_flags]
-	test eax, 80000000h
+	mov ebx, [ebp+arg0]
+	mov ebx, [ebx+vm_flags]
+	test ebx, 80000000h
 	je vm_loop
 	
 	mov ebp, esp

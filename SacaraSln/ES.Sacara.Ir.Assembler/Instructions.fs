@@ -111,11 +111,11 @@ type IrOpCodes =
     // eg. getsp
     | GetSp
 
-    // pop two values from the stack, which are the managed index of the stack and the value to write. 
+    // pop two values from the stack, which are the managed index of the stack starting from the base and the value to write. 
     // eg. swrite
     | StackWrite
 
-    // pop a value from the stack, which is the vm index of the stack to read. Push the result value on top of the stack
+    // pop a value from the stack, which is the vm index of the stack starting from the base to read. Push the result value on top of the stack
     // eg. sread
     | StackRead
 

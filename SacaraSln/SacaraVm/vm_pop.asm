@@ -16,8 +16,8 @@ vm_pop PROC
 	call vm_read_opcode
 
 	; set the local var
-	push eax
 	push [ebp+local0]
+	push eax	
 	push [ebp+arg0]
 	call vm_local_var_set
 	

@@ -133,6 +133,9 @@
     <None Include="vm_nop.asm" />
     <None Include="vm_pop.asm" />
     <None Include="vm_push_immediate.asm" />
+    <None Include="vm_push_variable.asm" />
+    <None Include="vm_stack_read.asm" />
+    <None Include="vm_stack_write.asm" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

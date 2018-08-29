@@ -3,3 +3,6 @@ include vm_nop.asm
 include vm_push_immediate.asm
 include vm_pop.asm
 include vm_alloca.asm
+include vm_push_variable.asm
+include vm_stack_read.asm
+include vm_stack_write.asm
