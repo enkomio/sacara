@@ -25,3 +25,4 @@ vm_stack_read PROC
 	pop ebp
 	ret
 vm_stack_read ENDP
+header_end

@@ -16,3 +16,4 @@ vm_push_immediate PROC
 	pop ebp
 	ret
 vm_push_immediate ENDP
+header_end

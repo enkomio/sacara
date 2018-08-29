@@ -43,29 +43,41 @@ module Program =
         let wordString = String.Join(String.Empty, wordBytes |> Seq.map(fun b -> b.ToString("X")))
         String.Format("0{0}h", wordString)
 
-    let saveOpCodeinVmDir(opCodes: Dictionary<String, VmOpCodeItem>) =
+    let xorOpCode(length: Int32)(word32: Int32) =
+        ((word32 ^^^ 0xB5) + length) &&& 0xFFFF
+
+    let saveOpCodeInVmDir(opCodes: Dictionary<String, VmOpCodeItem>) =
         let sb = new StringBuilder()
         sb.AppendLine("; This file is auto generated, don't modify it") |> ignore
 
         let rnd = new Random()
-        let marker1 = uint32(rnd.Next(0, 0xFFFF) <<< 18 ||| rnd.Next(0, 0xFFFF)).ToString("X").PadLeft(8, '0')
-        let marker2 = uint32(rnd.Next(0, 0xFFFF) <<< 18 ||| rnd.Next(0, 0xFFFF)).ToString("X").PadLeft(8, '0')
+        let generateMarker() = uint32(rnd.Next(0, 0xFFFF) <<< 18 ||| rnd.Next(0, 0xFFFF)).ToString("X").PadLeft(8, '0')
+        let marker1 = generateMarker()
+        let marker2 = generateMarker()
         sb.AppendFormat("marker1 EQU 0{0}h", marker1).AppendLine() |> ignore
-        sb.AppendFormat("marker2 EQU 0{0}h", marker2).AppendLine() |> ignore
+        sb.AppendFormat("marker2 EQU 0{0}h", marker2).AppendLine().AppendLine() |> ignore
         
         opCodes
         |> Seq.map(fun kv -> kv.Value)
         |> Seq.iter(fun opCode ->
-            let bytes = String.Join(", ", opCode.Bytes |> Seq.map convertToDword)
+            let bytes = String.Join(", ", opCode.Bytes |> Seq.map(xorOpCode opCode.Bytes.Count) |> Seq.map convertToDword)
+            let realBytes = String.Join(", ", opCode.Bytes |> Seq.map convertToDword)
+
             sb.AppendFormat(
-                "header_{0} EQU <DWORD 0{1}h, 0{2}h, {3}h, {4}>", 
+                "; real opcodes: {1}{0}header_{2} EQU <DWORD 0{3}h, 0{4}h, {5}h, {6}>{0}", 
+                Environment.NewLine,
+                realBytes,
                 opCode.Name,
                 marker1, 
                 marker2, 
                 opCode.Bytes.Count, 
                 bytes
+                
             ).AppendLine() |> ignore
         )
+
+        // write end marker
+        sb.AppendFormat("header_end EQU <DWORD 0{0}h, 0{1}h>", marker2, marker1).AppendLine() |> ignore
         
         // copy file
         let fileContent = sb.ToString()
@@ -121,5 +133,5 @@ module Program =
 
         let opCodes = generateOpCodes()        
         saveOpCodeInAssemblerDir(opCodes)
-        saveOpCodeinVmDir(opCodes)
+        saveOpCodeInVmDir(opCodes)
         0

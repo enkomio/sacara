@@ -27,17 +27,10 @@ ExitProcess proto,dwExitCode:dword
 
 .DATA
 
-vm_code_bytes BYTE 0F9h,93h,02h,0h,0h,0h		; push 2. Stack = 2
-				BYTE 1Dh,52h,05h,0h,0h,0h		; alloca 5, create space for 1 variable
-				BYTE 4Bh,87h,01h,0h				; pop <1>, set the variable 1 to 2.. Stack = <>, vars= 0|2
-				BYTE 0F9h,93h,01h,0h,0h,0h		; push_immediate 1. Stack = 1
-				BYTE 0FDh,0F3h,01h,0h			; push <1>, push the value of the variable 1 into the stack. Stack = 1|2
-				BYTE 0F9h,93h,04h,0h,0h,0h		; push_immediate 4. Stack = 1|2|4
-				BYTE 0F9h,93h,05h,0h,0h,0h		; push_immediate 5. Stack = 1|2|4|5
-				BYTE 0F9h,93h,02h,0h,0h,0h		; push_immediate 2. Stack = 1|2|4|5|2
-				BYTE 07Bh,081h					; sread. read the value of the stack at offset 2 and put it on top. Stack = 1|2|4|5|4
-				BYTE 0F9h,93h,03h,0h,0h,0h		; push_immediate 3. Stack = 1|2|4|5|4|3
-				BYTE 94h,0DBh					; swrite; Stack = 1|2|4|4
+vm_code_bytes BYTE 72h,022h,02h,0h,0h,0h		; push immediate 2. Stack = 2
+				BYTE 0BCh,01h					; halt
+				; call
+				; ret
 				BYTE 93h,38h					; halt
 vm_code_bytes_size EQU $-vm_code_bytes
 

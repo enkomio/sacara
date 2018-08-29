@@ -28,3 +28,4 @@ vm_alloca PROC
 	pop ebp
 	ret
 vm_alloca ENDP
+header_end

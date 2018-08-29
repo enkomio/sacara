@@ -26,3 +26,4 @@ vm_pop PROC
 	pop ebp
 	ret
 vm_pop ENDP
+header_end

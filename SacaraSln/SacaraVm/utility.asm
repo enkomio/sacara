@@ -114,6 +114,10 @@ first_marker_found:
 	
 	; search for the given opcode
 	mov esi, [ebp+arg2] ; opcode to search for
+
+	; decode the opcode
+	xor esi, 0B5h
+	add si, cx
 search_opcode_loop:	
 	add eax, 4
 	cmp dword ptr [eax], esi
@@ -125,7 +129,7 @@ search_opcode_loop:
 
 	; function found, save the read address in EAX
 	; EDI contains the address of marker2
-	lea eax, [edi+TYPE DWORD * edx+8]
+	lea eax, [edi+TYPE DWORD*edx+8]
 	jmp found
 
 not_found:
