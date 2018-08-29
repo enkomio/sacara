@@ -18,5 +18,6 @@
     <None Include="vm_push_variable.asm" />
     <None Include="vm_stack_read.asm" />
     <None Include="vm_stack_write.asm" />
+    <None Include="vm_call.asm" />
   </ItemGroup>
 </Project>

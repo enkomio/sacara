@@ -2,21 +2,6 @@ comment !
 This is the implementation of the Sacara VM.
 2018 (C) Antonio 's4tan' Parata
 
-An esaxmple of bytecode is:
-
-/* 722202000000 */ 00000000: Push 00000002
-/*         AB53 */ 00000006: Alloca
-/*     B1E20100 */ 00000008: Push 0001
-/* 722220000000 */ 0000000C: Push 00000020
-/*         023B */ 00000012: Call
-/*     429A0200 */ 00000014: Pop 0002
-/* 722214000000 */ 00000018: Push 00000014
-/*         30E3 */ 0000001E: Ret
-/* 722242000000 */ 00000020: Push 00000042
-/*         30E3 */ 00000026: Ret
-
-MASM: ,0B1h,0E2h,1h,0h,72h,22h,20h,0h,0h,0h,2h,3Bh,42h,9Ah,2h,0h,72h,22h,14h,0h,0h,0h,30h,0E3h,72h,22h,42h,0h,0h,0h,30h,0E3h
-
 !
 
 .386
@@ -25,11 +10,17 @@ MASM: ,0B1h,0E2h,1h,0h,72h,22h,20h,0h,0h,0h,2h,3Bh,42h,9Ah,2h,0h,72h,22h,14h,0h,
 ExitProcess proto,dwExitCode:dword
 
 .DATA
-
-vm_code_bytes BYTE 72h,22h,2h,0h,0h,0h ; push_immediate 2
-			BYTE 0ABh,53h ; alloca
-			BYTE 0BCh,01h ; halt
-vm_code_bytes_size EQU $-vm_code_bytes
+code_0 BYTE 6Dh,0C6h,2h,0h,0h,0h ; /* 6DC602000000 */ 00000000: Push 00000002
+code_1 BYTE 23h,2Dh ; /*         232D */ 00000006: Alloca
+code_2 BYTE 7Fh,88h,1h,0h ; /*     7F880100 */ 00000008: Push 0001
+code_3 BYTE 6Dh,0C6h,20h,0h,0h,0h ; /* 6DC620000000 */ 0000000C: Push 00000020
+code_4 BYTE 0E8h,22h ; /*         E822 */ 00000012: Call
+code_5 BYTE 0F2h,0C9h,2h,0h ; /*     F2C90200 */ 00000014: Pop 0002
+code_6 BYTE 6Dh,0C6h,14h,0h,0h,0h ; /* 6DC614000000 */ 00000018: Push 00000014
+code_7 BYTE 7h,0D7h ; /*         07D7 */ 0000001E: Ret
+code_8 BYTE 6Dh,0C6h,42h,0h,0h,0h ; /* 6DC642000000 */ 00000020: Push 00000042
+code_9 BYTE 7h,0D7h ; /*         07D7 */ 00000026: Ret
+vm_code_bytes_size EQU $-code_0
 
 .CODE
 
@@ -54,7 +45,7 @@ main PROC
 	sub esp, 10h
 	mov eax, vm_code_bytes_size
 	push eax
-	push offset vm_code_bytes
+	push offset code_0
 	push ebp
 	call vm_init
 	

@@ -19,12 +19,7 @@ type IrAssemblyCode = {
         this.Functions
         |> List.map(fun vmFunction -> vmFunction.Body)
         |> List.concat
-        |> List.map(fun vmOpCode ->
-            let bytes = BitConverter.ToString(vmOpCode.Buffer).Replace("-", String.Empty).PadLeft(12)
-            let offset = vmOpCode.Offset.ToString("X").PadLeft(8, '0')
-            let operands = BitConverter.ToString(vmOpCode.Operands |> Seq.concat |> Seq.toArray |> Array.rev).Replace("-", String.Empty)
-            String.Format("/* {0} */ {1}: {2} {3}", bytes, offset, vmOpCode.IrOp.Type, operands)
-        )
+        |> List.map(fun vmOpCode -> vmOpCode.ToString())
         |> fun l -> String.Join(Environment.NewLine, l)
 
 type SacaraAssembler() =

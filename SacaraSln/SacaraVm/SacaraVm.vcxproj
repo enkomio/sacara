@@ -127,6 +127,7 @@
     <None Include="utility.asm" />
     <None Include="vm.asm" />
     <None Include="vm_alloca.asm" />
+    <None Include="vm_call.asm" />
     <None Include="vm_halt.asm" />
     <None Include="vm_instructions.inc" />
     <None Include="vm_instructions_headers.inc" />

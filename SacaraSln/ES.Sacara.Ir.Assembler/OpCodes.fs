@@ -61,6 +61,12 @@ and VmOpCode = {
 
     member this.IsInOffset(offset: Int32) =
         offset >= this.Offset && this.Offset + this.Buffer.Length > offset
+
+    override this.ToString() =
+        let bytes = BitConverter.ToString(this.Buffer).Replace("-", String.Empty).PadLeft(12)
+        let offset = this.Offset.ToString("X").PadLeft(8, '0')
+        let operands = BitConverter.ToString(this.Operands |> Seq.concat |> Seq.toArray |> Array.rev).Replace("-", String.Empty)
+        String.Format("/* {0} */ {1}: {2} {3}", bytes, offset, this.IrOp.Type, operands)
     
     static member Assemble(vmOp: Byte array, operands: List<Byte array>, offset: Int32, irOp: IrOpCode) =
         let totalSize = vmOp.Length + (operands |> Seq.sumBy(fun op -> op.Length))

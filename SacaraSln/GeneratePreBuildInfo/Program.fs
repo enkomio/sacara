@@ -40,11 +40,14 @@ module Program =
     let convertToDword(word32: Int32) =
         let word16 = UInt16.Parse(word32.ToString())
         let wordBytes = BitConverter.GetBytes(word16) |> Array.rev
-        let wordString = String.Join(String.Empty, wordBytes |> Seq.map(fun b -> b.ToString("X")))
+        let wordString = String.Join(String.Empty, wordBytes |> Seq.map(fun b -> b.ToString("X").PadLeft(2, '0')))
         String.Format("0{0}h", wordString)
 
-    let xorOpCode(length: Int32)(word32: Int32) =
-        ((word32 ^^^ 0xB5) + length) &&& 0xFFFF
+    let xorOpCode(length: Int32) (word32: Int32) =
+        let word16 = uint16 word32
+        let length16 = uint16 length
+        let result = ((word16 ^^^ uint16 0xB5) + length16)
+        int32 result
 
     let saveOpCodeInVmDir(opCodes: Dictionary<String, VmOpCodeItem>) =
         let sb = new StringBuilder()
