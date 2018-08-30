@@ -9,4 +9,4 @@ include vm_stack_write.asm
 include vm_call.asm
 include vm_ret.asm
 include vm_cmp.asm
-include vm_jmp_immediate.asm
+include vm_jmp.asm

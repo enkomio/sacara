@@ -21,6 +21,6 @@
     <None Include="vm_call.asm" />
     <None Include="vm_ret.asm" />
     <None Include="vm_cmp.asm" />
-    <None Include="vm_jmp_immediate.asm" />
+    <None Include="vm_jmp.asm" />
   </ItemGroup>
 </Project>
