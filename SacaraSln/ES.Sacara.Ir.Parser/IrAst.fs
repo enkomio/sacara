@@ -14,14 +14,14 @@ module IrAst =
         | Procedure of ProcedureType
         | Label of LabelType
         | Call of CallType
-        | JumpIf of JumpIfType
-        | Jump of JumpType
+        | JumpIf of JumpIfType        
         | Read of ReadType
-        | Write of WriteType
-        | Alloca
+        | Write of WriteType        
         | Byte of Int32
         | Word of Int32
         | DoubleWord of Int32
+        | Alloca
+        | Jump
         | Ret
         | Nop
         | GetIp
@@ -44,12 +44,7 @@ module IrAst =
         Native: Boolean
     }
 
-    and JumpType = {
-        Destination: Expression
-    }
-
     and JumpIfType = {
-        Destination: Expression
         JumpIfEquals: Boolean
         JumpIfLess: Boolean
     }

@@ -78,17 +78,12 @@ type SacaraAssembler() =
                 | (false, true) -> IrOpCodes.JumpIfLess
                 | (false, false) -> IrOpCodes.JumpIfGreat
 
-            let jumpIf = new IrOpCode(opCode)
-            jumpIf.Operands.Add(parseExpression(jumpIfType.Destination))
-            addOperand(jumpIf)
-        | Jump jumpType ->
-            let jump = new IrOpCode(IrOpCodes.Jump)
-            jump.Operands.Add(parseExpression(jumpType.Destination))
-            addOperand(jump)
+            addOperand(new IrOpCode(opCode))
+        | Jump ->
+            addOperand(new IrOpCode(IrOpCodes.Jump))
         | Empty -> ()
         | Alloca ->
-            let alloca = new IrOpCode(IrOpCodes.Alloca)
-            addOperand(alloca)
+            addOperand(new IrOpCode(IrOpCodes.Alloca))
         | Byte b ->
             let byte = new IrOpCode(IrOpCodes.Byte)
             byte.Operands.Add(new Operand(b))

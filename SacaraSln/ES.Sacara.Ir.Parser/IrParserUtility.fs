@@ -43,11 +43,11 @@ module internal IrParserUtility =
     let writeNative() =
         Write {Native=true}
 
-    let jumpIf(destination: Expression, equals: Boolean, less: Boolean) =
-        JumpIf {Destination=destination; JumpIfEquals=equals; JumpIfLess=less}
+    let jumpIf(equals: Boolean, less: Boolean) =
+        JumpIf {JumpIfEquals=equals; JumpIfLess=less}
 
-    let jump(destination: Expression) =
-        Jump {Destination=destination}
+    let jump() =
+        Jump
 
     let alloca() =
         Alloca

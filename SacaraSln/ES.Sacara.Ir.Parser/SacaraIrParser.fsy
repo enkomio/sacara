@@ -45,11 +45,11 @@ statementNoLabel:
 	| ADD																					{ add() }
 	| PUSH expression																		{ push($2) }
 	| POP IDENTIFIER																		{ pop($2) }	
-	| JUMP expression																		{ jump($2) }
-	| JUMPIFL expression																	{ jumpIf($2, false, true) }
-	| JUMPIFLE expression																	{ jumpIf($2, true, true) }
-	| JUMPIFG expression																	{ jumpIf($2, false, false) }
-	| JUMPIFGE expression																	{ jumpIf($2, true, false) }	
+	| JUMP																					{ jump() }
+	| JUMPIFL																				{ jumpIf(false, true) }
+	| JUMPIFLE																				{ jumpIf(true, true) }
+	| JUMPIFG																				{ jumpIf(false, false) }
+	| JUMPIFGE																				{ jumpIf(true, false) }	
 	| READ																					{ read() }
 	| NREAD																					{ readNative() }
 	| WRITE																					{ write() }

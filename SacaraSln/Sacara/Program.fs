@@ -8,6 +8,12 @@ module Program =
     let main argv = 
         let irCode = """
         proc main
+            push label1
+            jump
+            nop
+            nop
+        label1:
+            nop
             push get_code
             call
             halt

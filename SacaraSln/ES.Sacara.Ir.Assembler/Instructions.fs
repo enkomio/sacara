@@ -60,24 +60,24 @@ type IrOpCodes =
     // eg. getip
     | GetIp
 
-    // jump to the specified vm address
-    // eg. jump label/var
+    // jump to an offset popped from the stack
+    // eg. jump
     | Jump
 
-    // jump if the value popped value from the stack is less than 0
-    // eg. jumpifl label/var
+    // pop two values from the stack and jump to the first value is the second is less than 0
+    // eg. jumpifl
     | JumpIfLess
 
-    // jump if the value popped value from the stack is less or equals 0
-    // eg. jumpifle label/var
+    // pop two values from the stack and jump to the first value is the second is less or equals 0
+    // eg. jumpifle
     | JumpIfLessEquals
 
-    // jump if the value popped value from the stack is greaten than 0
-    // eg. jumpifg label/var
+    // pop two values from the stack and jump to the first value is the second is greaten than 0
+    // eg. jumpifg
     | JumpIfGreat
 
-    // jump if the value popped value from the stack is greaten or equals 0
-    // eg. jumpifge label/var
+    // pop two values from the stack and jump to the first value is the second is greaten or equals 0
+    // eg. jumpifge
     | JumpIfGreatEquals
 
     // allocate a given amount of space for local variables. The argument is the number of DWORD to allocate.
@@ -136,16 +136,11 @@ type VmOpCodes =
     | VmWrite
     | VmNativeWrite
     | VmGetIp
-    | VmJumpImmediate
-    | VmJumpVariable
-    | VmJumpIfLessImmediate
-    | VmJumpIfLessVariable
-    | VmJumpIfLessEqualsImmediate
-    | VmJumpIfLessEqualsVariable
-    | VmJumpIfGreatImmediate
-    | VmJumpIfGreatVariable
-    | VmJumpIfGreatEqualsImmediate
-    | VmJumpIfGreatEqualsVariable
+    | VmJump
+    | VmJumpIfLess
+    | VmJumpIfLessEquals
+    | VmJumpIfGreat
+    | VmJumpIfGreatEquals
     | VmAlloca
     | VmHalt
     | VmCmp

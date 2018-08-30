@@ -22,12 +22,7 @@ type Operand(value: Object) =
         | :? String ->
             let identifier = this.Value.ToString()
             match vmOpCodeType with
-            | VmPushVariable                
-            | VmJumpVariable
-            | VmJumpIfLessVariable
-            | VmJumpIfLessEqualsVariable
-            | VmJumpIfGreatVariable
-            | VmJumpIfGreatEqualsVariable ->
+            | VmPushVariable ->
                 if symbolTable.IsLabel(identifier) then
                     symbolTable.GetLabel(identifier, offset).Offset
                     |> uint32
@@ -125,11 +120,11 @@ and IrOpCode(opType: IrOpCodes) =
         |> uint16
         |> BitConverter.GetBytes
     
-    let getSimpleOpCode(opCode: VmOpCodes, settings: AssemblerSettings) =
+    let getVmOpCode(opCode: VmOpCodes, settings: AssemblerSettings) =
         let opCodes = Instructions.bytes.[opCode]
         (chooseRepresentation(opCodes, settings), opCode)
     
-    let resolveOpCodeForImmOrVariable(operands: Operand seq, symbolTable: SymbolTable, indexes: VmOpCodes list, settings: AssemblerSettings) =                
+    let getNotPureStackBasedVmOpCode(operands: Operand seq, symbolTable: SymbolTable, indexes: VmOpCodes list, settings: AssemblerSettings) =                
         let firstOperand = operands |> Seq.head
         let vmOpCode = 
             match firstOperand.Value with
@@ -159,29 +154,29 @@ and IrOpCode(opType: IrOpCodes) =
         // encode the operation
         let (opBytes, vmOpCode) =
             match this.Type with
-            | Ret -> getSimpleOpCode(VmRet, settings)
-            | Nop -> getSimpleOpCode(VmNop, settings)
-            | Add -> getSimpleOpCode(VmAdd, settings)
-            | Push -> resolveOpCodeForImmOrVariable(this.Operands, symbolTable, [VmPushImmediate; VmPushVariable], settings)
-            | Pop -> getSimpleOpCode(VmPop, settings)
-            | Call -> getSimpleOpCode(VmCall, settings)
-            | NativeCall -> getSimpleOpCode(VmNativeCall, settings)
-            | Read -> getSimpleOpCode(VmRead, settings)
-            | NativeRead -> getSimpleOpCode(VmNativeRead, settings)
-            | Write -> getSimpleOpCode(VmWrite, settings)
-            | NativeWrite -> getSimpleOpCode(VmNativeWrite, settings)
-            | GetIp -> getSimpleOpCode(VmGetIp, settings)
-            | Jump -> resolveOpCodeForImmOrVariable(this.Operands, symbolTable, [VmJumpImmediate; VmJumpVariable], settings)
-            | JumpIfLess -> resolveOpCodeForImmOrVariable(this.Operands, symbolTable, [VmJumpIfLessImmediate; VmJumpIfLessVariable], settings)
-            | JumpIfLessEquals -> resolveOpCodeForImmOrVariable(this.Operands, symbolTable, [VmJumpIfLessEqualsImmediate; VmJumpIfLessEqualsVariable], settings)
-            | JumpIfGreat -> resolveOpCodeForImmOrVariable(this.Operands, symbolTable, [VmJumpIfGreatImmediate; VmJumpIfGreatVariable], settings)
-            | JumpIfGreatEquals -> resolveOpCodeForImmOrVariable(this.Operands, symbolTable, [VmJumpIfGreatEqualsImmediate; VmJumpIfGreatEqualsVariable], settings)
-            | Alloca -> getSimpleOpCode(VmAlloca, settings)
-            | Halt -> getSimpleOpCode(VmHalt, settings)
-            | Cmp -> getSimpleOpCode(VmCmp, settings)
-            | GetSp -> getSimpleOpCode(VmGetSp, settings)
-            | StackWrite -> getSimpleOpCode(VmStackWrite, settings)
-            | StackRead -> getSimpleOpCode(VmStackRead, settings)
+            | Ret -> getVmOpCode(VmRet, settings)
+            | Nop -> getVmOpCode(VmNop, settings)
+            | Add -> getVmOpCode(VmAdd, settings)
+            | Push -> getNotPureStackBasedVmOpCode(this.Operands, symbolTable, [VmPushImmediate; VmPushVariable], settings)
+            | Pop -> getVmOpCode(VmPop, settings)
+            | Call -> getVmOpCode(VmCall, settings)
+            | NativeCall -> getVmOpCode(VmNativeCall, settings)
+            | Read -> getVmOpCode(VmRead, settings)
+            | NativeRead -> getVmOpCode(VmNativeRead, settings)
+            | Write -> getVmOpCode(VmWrite, settings)
+            | NativeWrite -> getVmOpCode(VmNativeWrite, settings)
+            | GetIp -> getVmOpCode(VmGetIp, settings)
+            | Jump -> getVmOpCode(VmJump, settings)
+            | JumpIfLess -> getVmOpCode(VmJumpIfLess, settings)
+            | JumpIfLessEquals -> getVmOpCode(VmJumpIfLessEquals, settings)
+            | JumpIfGreat -> getVmOpCode(VmJumpIfGreat, settings)
+            | JumpIfGreatEquals -> getVmOpCode(VmJumpIfGreatEquals, settings)
+            | Alloca -> getVmOpCode(VmAlloca, settings)
+            | Halt -> getVmOpCode(VmHalt, settings)
+            | Cmp -> getVmOpCode(VmCmp, settings)
+            | GetSp -> getVmOpCode(VmGetSp, settings)
+            | StackWrite -> getVmOpCode(VmStackWrite, settings)
+            | StackRead -> getVmOpCode(VmStackRead, settings)
             | Byte -> getMacroOpCodeBytes()
             | Word -> getMacroOpCodeBytes()
             | DoubleWord -> getMacroOpCodeBytes()            
