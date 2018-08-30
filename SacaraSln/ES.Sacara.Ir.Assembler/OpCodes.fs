@@ -54,6 +54,7 @@ type Operand(value: Object) =
 and VmOpCode = {
     IrOp: IrOpCode
     VmOp: Byte array
+    Type: VmOpCodes
     Operands: List<Byte array>
     Buffer: Byte array
     Offset: Int32
@@ -76,9 +77,9 @@ and VmOpCode = {
             |> Seq.map(fun num -> String.Format("0x{0}", num))
             |> fun nums -> String.Join(", ", nums)
 
-        String.Format("/* {0} */ loc_{1}: {2} {3}", bytes, offset, this.IrOp.Type, operands)
+        String.Format("/* {0} */ loc_{1}: {2} {3}", bytes, offset, this.Type, operands)
     
-    static member Assemble(vmOp: Byte array, operands: List<Byte array>, offset: Int32, irOp: IrOpCode) =
+    static member Assemble(vmType: VmOpCodes, vmOp: Byte array, operands: List<Byte array>, offset: Int32, irOp: IrOpCode) =
         let totalSize = vmOp.Length + (operands |> Seq.sumBy(fun op -> op.Length))
 
         let buffer = Array.zeroCreate<Byte>(totalSize)
@@ -97,6 +98,7 @@ and VmOpCode = {
         {
             IrOp = irOp
             VmOp = vmOp
+            Type = vmType
             Operands = operands
             Buffer = buffer
             Offset = offset
@@ -192,7 +194,7 @@ and IrOpCode(opType: IrOpCodes) =
         )
 
         // return the VM opcode
-        VmOpCode.Assemble(opBytes, operands, ip, this)
+        VmOpCode.Assemble(vmOpCode, opBytes, operands, ip, this)
 
     override this.ToString() =
         let ops = String.Join(", ", this.Operands)

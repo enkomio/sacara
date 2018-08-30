@@ -10,16 +10,16 @@ This is the implementation of the Sacara VM.
 ExitProcess proto,dwExitCode:dword
 
 .DATA
-code_0 BYTE 6Dh,0C6h,2h,0h,0h,0h     ; /* 6DC602000000 */ loc_00000000: Push 0x2
-code_1 BYTE 23h,2Dh                  ; /*         232D */ loc_00000006: Alloca
-code_2 BYTE 7Fh,88h,0h,0h            ; /*     7F880000 */ loc_00000008: Push 0x0
-code_3 BYTE 6Dh,0C6h,20h,0h,0h,0h    ; /* 6DC620000000 */ loc_0000000C: Push 0x20
-code_4 BYTE 0E8h,22h                 ; /*         E822 */ loc_00000012: Call
-code_5 BYTE 0F2h,0C9h,1h,0h          ; /*     F2C90100 */ loc_00000014: Pop 0x1
-code_6 BYTE 6Dh,0C6h,14h,0h,0h,0h    ; /* 6DC614000000 */ loc_00000018: Push 0x14
-code_7 BYTE 6Fh,4Fh                  ; /*         6F4F */ loc_0000001E: Halt
-code_8 BYTE 6Dh,0C6h,42h,0h,0h,0h    ; /* 6DC642000000 */ loc_00000020: Push 0x42
-code_9 BYTE 7h,0D7h                  ; /*         07D7 */ loc_00000026: Ret
+code_0 BYTE 6Dh,0C6h,1h,0h,0h,0h           ; /* 6DC601000000 */ loc_00000000: VmPushImmediate 0x1
+code_1 BYTE 23h,2Dh                        ; /*         232D */ loc_00000006: VmAlloca
+code_2 BYTE 6Dh,0C6h,12h,0h,0h,0h          ; /* 6DC612000000 */ loc_00000008: VmPushImmediate 0x12
+code_3 BYTE 0E8h,22h                       ; /*         E822 */ loc_0000000E: VmCall
+code_4 BYTE 6Fh,4Fh                        ; /*         6F4F */ loc_00000010: VmHalt
+code_5 BYTE 6Dh,0C6h,42h,0h,0h,0h          ; /* 6DC642000000 */ loc_00000012: VmPushImmediate 0x42
+;code_6 BYTE 6Dh,0C6h,0F6h,0FFh,0FFh,0FFh   ; /* 6DC6F6FFFFFF */ loc_00000018: VmPushImmediate 0xFFFFFFF6
+code_6 BYTE 6Dh,0C6h,30h,0h,0h,0h
+code_7 BYTE 2Fh,0DDh                       ; /*         2FDD */ loc_0000001E: VmCmp
+code_8 BYTE 7h,0D7h                        ; /*         07D7 */ loc_00000020: VmRet
 vm_code_bytes_size EQU $-code_0
 
 .CODE

@@ -8,17 +8,15 @@ module Program =
     let main argv = 
         let irCode = """
         proc main
-            push local_var
             push get_code
             call
-        some_label:
-            pop result_var
-            push some_label
             halt
         endp
 
         proc get_code
             push 0x42
+            push -10
+            cmp
             ret
         endp
         """
@@ -46,7 +44,7 @@ module Program =
                         then "0" + b
                         else b
                     )
-                Console.WriteLine("code_{0} BYTE {1} ; {2}", index, String.Join(",", bytesTring).PadRight(24), opCode.ToString())
+                Console.WriteLine("code_{0} BYTE {1} ; {2}", index, String.Join(",", bytesTring).PadRight(30), opCode.ToString())
                 index <- index + 1
             )
         )

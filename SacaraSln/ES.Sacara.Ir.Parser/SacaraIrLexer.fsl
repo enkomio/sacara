@@ -18,7 +18,7 @@ let identifier = character (character | digit | '_')*
 let label = identifier ':'
 
 // number types
-let integer = digit+  | "0x" hexDigit+
+let integer = ("+"|"-") digit+ | digit+ | "0x" hexDigit+
 
 // formatting
 let linuxLineTerminator = "\n"
