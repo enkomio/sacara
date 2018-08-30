@@ -14,7 +14,7 @@ module Program =
         some_label:
             pop result_var
             push some_label
-            ret
+            halt
         endp
 
         proc get_code
@@ -46,7 +46,7 @@ module Program =
                         then "0" + b
                         else b
                     )
-                Console.WriteLine("code_{0} BYTE {1} ; {2}", index, String.Join(",", bytesTring), opCode.ToString())
+                Console.WriteLine("code_{0} BYTE {1} ; {2}", index, String.Join(",", bytesTring).PadRight(24), opCode.ToString())
                 index <- index + 1
             )
         )

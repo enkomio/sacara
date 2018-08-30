@@ -188,6 +188,31 @@ vm_free PROC
 vm_free ENDP
 
 ; *****************************
+; arguments: vm_context
+; *****************************
+vm_is_stack_empty PROC
+	push ebp
+	mov ebp, esp
+
+	; get stack pointer addr
+	mov ecx, [ebp+arg0]
+	mov ecx, [ecx+vm_sp]
+
+	mov ebx, [ecx+vm_stack_base]
+	xor eax, eax
+	cmp [ecx+vm_stack_top], ebx	
+	jz equals
+	jmp finish
+
+equals:
+	inc eax
+finish:
+	mov ebp, esp
+	pop ebp
+	ret 4h
+vm_is_stack_empty ENDP
+
+; *****************************
 ; arguments: vm_context, increment size
 ; *****************************
 vm_increment_ip PROC

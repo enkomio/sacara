@@ -65,8 +65,18 @@ and VmOpCode = {
     override this.ToString() =
         let bytes = BitConverter.ToString(this.Buffer).Replace("-", String.Empty).PadLeft(12)
         let offset = this.Offset.ToString("X").PadLeft(8, '0')
-        let operands = BitConverter.ToString(this.Operands |> Seq.concat |> Seq.toArray |> Array.rev).Replace("-", String.Empty)
-        String.Format("/* {0} */ {1}: {2} {3}", bytes, offset, this.IrOp.Type, operands)
+
+        let operands =
+            this.Operands
+            |> Seq.map(fun bytes -> 
+                if bytes.Length = 2
+                then BitConverter.ToInt16(bytes, 0).ToString("X")
+                else BitConverter.ToInt32(bytes, 0).ToString("X")
+            )
+            |> Seq.map(fun num -> String.Format("0x{0}", num))
+            |> fun nums -> String.Join(", ", nums)
+
+        String.Format("/* {0} */ loc_{1}: {2} {3}", bytes, offset, this.IrOp.Type, operands)
     
     static member Assemble(vmOp: Byte array, operands: List<Byte array>, offset: Int32, irOp: IrOpCode) =
         let totalSize = vmOp.Length + (operands |> Seq.sumBy(fun op -> op.Length))
@@ -204,7 +214,7 @@ and SymbolTable() =
     member this.AddLocalVariable(name: String) =
         if _labelNames.Contains(name)
         then failwith("Unable to add the local variable '" + name + "', since already exists a function/label with the same name")
-        _variables.[name] <- {Name=name; Offset=_variables.Count+1; Type=LocalVar}
+        _variables.[name] <- {Name=name; Offset=_variables.Count; Type=LocalVar}
 
     member this.AddLabel(name: String, offset: Int32) =
         _labels.[name] <- {Name=name; Offset=offset; Type=Label}

@@ -7,3 +7,4 @@ include vm_push_variable.asm
 include vm_stack_read.asm
 include vm_stack_write.asm
 include vm_call.asm
+include vm_ret.asm

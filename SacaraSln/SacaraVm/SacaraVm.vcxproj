@@ -132,6 +132,7 @@
     <None Include="vm_instructions.inc" />
     <None Include="vm_instructions_headers.inc" />
     <None Include="vm_nop.asm" />
+    <None Include="vm_ret.asm" />
     <None Include="vm_pop.asm" />
     <None Include="vm_push_immediate.asm" />
     <None Include="vm_push_variable.asm" />

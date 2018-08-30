@@ -19,5 +19,6 @@
     <None Include="vm_stack_read.asm" />
     <None Include="vm_stack_write.asm" />
     <None Include="vm_call.asm" />
+    <None Include="vm_ret.asm" />
   </ItemGroup>
 </Project>
