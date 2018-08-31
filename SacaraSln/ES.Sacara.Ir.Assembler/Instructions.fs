@@ -64,19 +64,19 @@ type IrOpCodes =
     // eg. jump
     | Jump
 
-    // pop two values from the stack and jump to the second value is the first is less than 0
+    // pop a values from the stack and jump to it if the sign flag is set
     // eg. jumpifl
     | JumpIfLess
 
-    // pop two values from the stack and jump to the second value is the first is less or equals 0
+    // pop a values from the stack and jump to it if the sign flag or the zero flag are set
     // eg. jumpifle
     | JumpIfLessEquals
 
-    // pop two values from the stack and jump to the second value is the first is greaten than 0
+    // pop a values from the stack and jump to it if the sign flag is not set
     // eg. jumpifg
     | JumpIfGreat
 
-    // pop two values from the stack and jump to the second value is the first is greaten or equals 0
+    // pop a values from the stack and jump to it if the sign flag or the zero flag are not set
     // eg. jumpifge
     | JumpIfGreatEquals
 
@@ -130,23 +130,25 @@ type VmOpCodes =
     | VmPushVariable
     | VmPop
     | VmCall
+    | VmJump
+    | VmAlloca
+    | VmHalt
+    | VmCmp
+    | VmStackWrite
+    | VmStackRead
+
     | VmNativeCall
     | VmRead
     | VmNativeRead
     | VmWrite
     | VmNativeWrite
-    | VmGetIp
-    | VmJump
+    | VmGetIp    
     | VmJumpIfLess
     | VmJumpIfLessEquals
     | VmJumpIfGreat
-    | VmJumpIfGreatEquals
-    | VmAlloca
-    | VmHalt
-    | VmCmp
+    | VmJumpIfGreatEquals   
     | VmGetSp
-    | VmStackWrite
-    | VmStackRead
+    
 
 module Instructions =
     type VmOpCodeItem() =

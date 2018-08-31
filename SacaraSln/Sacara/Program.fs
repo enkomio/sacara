@@ -8,22 +8,17 @@ module Program =
     let main argv = 
         let irCode = """
         proc main
-            push label1
-            jump
-            nop
-            nop
-        label1:
-            nop
-            push get_code
-            call
-            halt
-        endp
-
-        proc get_code
-            push 0x42
-            push -10
+            push 22
+            pop local_0
+            push 60
+            push 50
             cmp
-            ret
+            push label1
+            jumpifl
+            halt
+        label1:            
+            push 44
+            halt
         endp
         """
         let assembler = new SacaraAssembler()

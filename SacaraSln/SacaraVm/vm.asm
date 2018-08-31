@@ -60,11 +60,12 @@ vm_stack_push PROC
 	mov ebx, [ebx+vm_sp] 
 	
 	; increment stack by 1
-	inc dword ptr [ebx+vm_stack_top]
+	add dword ptr [ebx+vm_stack_top], TYPE DWORD
 	
 	; set value on top of the stack	
 	mov eax, [ebp+arg1]
-	mov [ebx+vm_stack_top], eax
+	mov ebx, [ebx+vm_stack_top]
+	mov [ebx], eax
 
 	mov ebp, esp
 	pop ebp
@@ -83,11 +84,12 @@ vm_stack_pop PROC
 	mov ebx, [ebx+vm_sp] 
 
 	; read value
-	mov eax, [ebx+vm_stack_top]	
-	mov dword ptr [ebx+vm_stack_top], 0h ; zero the value
+	mov ecx, [ebx+vm_stack_top]
+	mov eax, [ecx]
+	mov dword ptr [ecx], 0h ; zero the value
 
-	; decrement stack by 1
-	dec dword ptr [ebx+vm_stack_top]
+	; decrement stack by 1 DWORD
+	sub dword ptr [ebx+vm_stack_top], TYPE DWORD
 
 	mov ebp, esp
 	pop ebp
@@ -271,7 +273,6 @@ vm_execute PROC
 	mov ebp, esp		
 	
 	; find the handler
-	mov ebx, [ebp+arg0]
 	push [ebp+arg1]	
 	push vm_instructions_size
 	push start_vm_instructions

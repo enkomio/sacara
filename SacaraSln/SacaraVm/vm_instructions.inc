@@ -10,3 +10,4 @@ include vm_call.asm
 include vm_ret.asm
 include vm_cmp.asm
 include vm_jmp.asm
+include vm_jump_if_less.asm

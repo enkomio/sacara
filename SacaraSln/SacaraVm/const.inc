@@ -1,7 +1,9 @@
+; local vars
 local0 EQU -4h
 local1 EQU -8h
 local2 EQU -0Ch
 
+; arguments
 arg0 EQU 8h
 arg1 EQU 0Ch
 arg2 EQU 10h
@@ -16,6 +18,9 @@ vm_stack_previous_frame EQU 0h
 vm_stack_base EQU 4h
 vm_stack_top EQU 8h
 vm_local_vars EQU 0Ch
+
+; flags
+VM_SIGN_FLAG EQU 010000000h
 
 ; VM context
 vm_ip EQU 0h
