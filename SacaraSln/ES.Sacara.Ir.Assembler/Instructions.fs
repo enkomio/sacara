@@ -64,19 +64,19 @@ type IrOpCodes =
     // eg. jump
     | Jump
 
-    // pop two values from the stack and jump to the first value is the second is less than 0
+    // pop two values from the stack and jump to the second value is the first is less than 0
     // eg. jumpifl
     | JumpIfLess
 
-    // pop two values from the stack and jump to the first value is the second is less or equals 0
+    // pop two values from the stack and jump to the second value is the first is less or equals 0
     // eg. jumpifle
     | JumpIfLessEquals
 
-    // pop two values from the stack and jump to the first value is the second is greaten than 0
+    // pop two values from the stack and jump to the second value is the first is greaten than 0
     // eg. jumpifg
     | JumpIfGreat
 
-    // pop two values from the stack and jump to the first value is the second is greaten or equals 0
+    // pop two values from the stack and jump to the second value is the first is greaten or equals 0
     // eg. jumpifge
     | JumpIfGreatEquals
 
@@ -151,7 +151,8 @@ type VmOpCodes =
 module Instructions =
     type VmOpCodeItem() =
         member val Name = String.Empty with get, set
-        member val Bytes = new List<Int32>() with get, set
+        member val Bytes = new List<Byte array>() with get, set
+        member val OpCodes = new List<Int32>() with get, set
 
     let readVmOpCodeBinding() =
         let currentDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
@@ -163,7 +164,7 @@ module Instructions =
                 FSharpType.GetUnionCases typeof<VmOpCodes>
                 |> Array.find(fun case -> case.Name.Equals(item.Name, StringComparison.OrdinalIgnoreCase))
                 |> fun case -> FSharpValue.MakeUnion(case,[||]) :?> VmOpCodes
-            let bytes = item.Bytes |> Seq.toList
+            let bytes = item.OpCodes |> Seq.toList
             (vmOpCode, bytes)
         )
         |> Map.ofSeq        

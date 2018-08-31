@@ -27,6 +27,7 @@ module Program =
         endp
         """
         let assembler = new SacaraAssembler()
+        assembler.Settings.RandomlyEncryptOpCode <- true
         let code = assembler.Assemble(irCode)
 
         let vmListing = code.ToString()        

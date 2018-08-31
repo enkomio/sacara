@@ -10,20 +10,20 @@ This is the implementation of the Sacara VM.
 ExitProcess proto,dwExitCode:dword
 
 .DATA
-code_0 BYTE 37h,0BDh,2h,0h,0h,0h           ; /* 37BD02000000 */ loc_00000000: VmPushImmediate 0x2
-code_1 BYTE 0D7h,13h                       ; /*         D713 */ loc_00000006: VmAlloca
-code_2 BYTE 37h,0BDh,14h,0h,0h,0h          ; /* 37BD14000000 */ loc_00000008: VmPushImmediate 0x14
-code_3 BYTE 0D7h,41h                       ; /*         D741 */ loc_0000000E: VmJump
-code_4 BYTE 4h,7Eh                         ; /*         047E */ loc_00000010: VmNop
-code_5 BYTE 4h,7Eh                         ; /*         047E */ loc_00000012: VmNop
-code_6 BYTE 4h,7Eh                         ; /*         047E */ loc_00000014: VmNop
-code_7 BYTE 37h,0BDh,20h,0h,0h,0h          ; /* 37BD20000000 */ loc_00000016: VmPushImmediate 0x20
-code_8 BYTE 0E4h,50h                       ; /*         E450 */ loc_0000001C: VmCall
-code_9 BYTE 0FAh,0CEh                      ; /*         FACE */ loc_0000001E: VmHalt
-code_10 BYTE 37h,0BDh,42h,0h,0h,0h          ; /* 37BD42000000 */ loc_00000020: VmPushImmediate 0x42
-code_11 BYTE 37h,0BDh,0F6h,0FFh,0FFh,0FFh   ; /* 37BDF6FFFFFF */ loc_00000026: VmPushImmediate 0xFFFFFFF6
-code_12 BYTE 92h,0B8h                       ; /*         92B8 */ loc_0000002C: VmCmp
-code_13 BYTE 8Eh,0DEh                       ; /*         8EDE */ loc_0000002E: VmRet
+code_0 BYTE 97h,8Ch,2h,0h,0h,0h            ; /* 978C02000000 */ loc_00000000: VmPushImmediate 0x2
+code_1 BYTE 0FBh,3h                        ; /*         FB03 */ loc_00000006: VmAlloca
+code_2 BYTE 9Fh,8Ch,14h,0h,0h,0h           ; /* 9F8C14000000 */ loc_00000008: VmPushImmediate 0x14
+code_3 BYTE 0A4h,8Ah                       ; /*         A48A */ loc_0000000E: VmJump
+code_4 BYTE 0ADh,81h                       ; /*         AD81 */ loc_00000010: VmNop
+code_5 BYTE 0ABh,81h                       ; /*         AB81 */ loc_00000012: VmNop
+code_6 BYTE 0A9h,81h                       ; /*         A981 */ loc_00000014: VmNop
+code_7 BYTE 8Dh,8Ch,20h,0h,0h,0h           ; /* 8D8C20000000 */ loc_00000016: VmPushImmediate 0x20
+code_8 BYTE 0E8h,6h                        ; /*         E806 */ loc_0000001C: VmCall
+code_9 BYTE 16h,87h                        ; /*         1687 */ loc_0000001E: VmHalt
+code_10 BYTE 0CEh,0Ch,42h,0h,0h,0h          ; /* CE0C42000000 */ loc_00000020: VmPushImmediate 0x42
+code_11 BYTE 0CEh,0Ch,0F6h,0FFh,0FFh,0FFh   ; /* CE0CF6FFFFFF */ loc_00000026: VmPushImmediate 0xFFFFFFF6
+code_12 BYTE 65h,8Ah                        ; /*         658A */ loc_0000002C: VmCmp
+code_13 BYTE 1Ah,84h                        ; /*         1A84 */ loc_0000002E: VmRet
 vm_code_bytes_size EQU $-code_0
 
 .CODE

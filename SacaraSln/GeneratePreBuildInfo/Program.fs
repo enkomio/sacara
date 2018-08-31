@@ -21,10 +21,17 @@ module Program =
         FSharpType.GetUnionCases(typeof<VmOpCodes>)
         |> Array.iter(fun case ->            
             opCodes.Add(case.Name, new VmOpCodeItem(Name=case.Name))
-            for j=1 to rnd.Next(2, 6) do
-                let opCode = rnd.Next(10, 65535)
-                if opCodesBytes.Add(opCode) then
-                    opCodes.[case.Name].Bytes.Add(opCode)
+            let numberOfCases = rnd.Next(2, 6)
+            for j=1 to numberOfCases do
+                let mutable opCode = rnd.Next(10, 65534)
+
+                // clear initial 4 bits since they are flags
+                opCode <- opCode &&& 0x0FFF
+
+                if opCodesBytes.Add(opCode) then                    
+                    let bytes = BitConverter.GetBytes(uint16((opCode ^^^ 0xB5) + numberOfCases))
+                    opCodes.[case.Name].Bytes.Add(bytes)
+                    opCodes.[case.Name].OpCodes.Add(opCode)
         )
         opCodes
 
@@ -37,17 +44,14 @@ module Program =
         File.WriteAllText(assemblerSrcFile, opCodeJson)
         Console.WriteLine("Files copied to: " + assemblerSrcFile)
 
-    let convertToDword(word32: Int32) =
-        let word16 = UInt16.Parse(word32.ToString())
-        let wordBytes = BitConverter.GetBytes(word16) |> Array.rev
-        let wordString = String.Join(String.Empty, wordBytes |> Seq.map(fun b -> b.ToString("X").PadLeft(2, '0')))
+    let private convertBytesToDword(wordBytes: Byte array) =
+        let wordString = String.Join(String.Empty, wordBytes |> Seq.rev |> Seq.map(fun b -> b.ToString("X").PadLeft(2, '0')))
         String.Format("0{0}h", wordString)
 
-    let xorOpCode(length: Int32) (word32: Int32) =
-        let word16 = uint16 word32
-        let length16 = uint16 length
-        let result = ((word16 ^^^ uint16 0xB5) + length16)
-        int32 result
+    let private convertToDword(word32: Int32) =
+        let word16 = UInt16.Parse(word32.ToString())
+        let wordBytes = BitConverter.GetBytes(word16)
+        convertBytesToDword(wordBytes)    
 
     let saveOpCodeInVmDir(opCodes: Dictionary<String, VmOpCodeItem>) =
         let sb = new StringBuilder()
@@ -63,8 +67,8 @@ module Program =
         opCodes
         |> Seq.map(fun kv -> kv.Value)
         |> Seq.iter(fun opCode ->
-            let bytes = String.Join(", ", opCode.Bytes |> Seq.map(xorOpCode opCode.Bytes.Count) |> Seq.map convertToDword)
-            let realBytes = String.Join(", ", opCode.Bytes |> Seq.map convertToDword)
+            let obfuscatedBytes = String.Join(", ", opCode.Bytes |> Seq.map convertBytesToDword)
+            let realBytes = String.Join(", ", opCode.OpCodes |> Seq.map convertToDword)
 
             sb.AppendFormat(
                 "; real opcodes: {1}{0}header_{2} EQU <DWORD 0{3}h, 0{4}h, {5}h, {6}>{0}", 
@@ -74,8 +78,8 @@ module Program =
                 marker1, 
                 marker2, 
                 opCode.Bytes.Count, 
-                bytes
-                
+                obfuscatedBytes              
+              
             ).AppendLine() |> ignore
         )
 

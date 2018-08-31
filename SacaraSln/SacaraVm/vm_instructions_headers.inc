@@ -1,77 +1,77 @@
 ; This file is auto generated, don't modify it
-marker1 EQU 02E587B90h
-marker2 EQU 026981C2Fh
+marker1 EQU 0C75C252Eh
+marker2 EQU 0D0D4C208h
 
-; real opcodes: 0DE8Eh, 07660h
-header_VmRet EQU <DWORD 02E587B90h, 026981C2Fh, 2h, 0DE3Dh, 076D7h>
+; real opcodes: 00471h, 00183h
+header_VmRet EQU <DWORD 0C75C252Eh, 0D0D4C208h, 2h, 004C6h, 00138h>
 
-; real opcodes: 07E04h, 07FCEh
-header_VmNop EQU <DWORD 02E587B90h, 026981C2Fh, 2h, 07EB3h, 07F7Dh>
+; real opcodes: 001E4h, 00D4Bh, 002EEh
+header_VmNop EQU <DWORD 0C75C252Eh, 0D0D4C208h, 3h, 00154h, 00E01h, 0025Eh>
 
-; real opcodes: 0736Fh, 08B5Dh, 08B12h, 08937h
-header_VmAdd EQU <DWORD 02E587B90h, 026981C2Fh, 4h, 073DEh, 08BECh, 08BABh, 08986h>
+; real opcodes: 00CD3h, 0032Ah
+header_VmAdd EQU <DWORD 0C75C252Eh, 0D0D4C208h, 2h, 00C68h, 003A1h>
 
-; real opcodes: 0BD37h, 08B3Eh, 0563Ch
-header_VmPushImmediate EQU <DWORD 02E587B90h, 026981C2Fh, 3h, 0BD85h, 08B8Eh, 0568Ch>
+; real opcodes: 00CCEh, 0024Ch
+header_VmPushImmediate EQU <DWORD 0C75C252Eh, 0D0D4C208h, 2h, 00C7Dh, 002FBh>
 
-; real opcodes: 07A3Bh, 096E4h, 0007Ch, 03F94h, 0DC0Dh
-header_VmPushVariable EQU <DWORD 02E587B90h, 026981C2Fh, 5h, 07A93h, 09656h, 000CEh, 03F26h, 0DCBDh>
+; real opcodes: 00DE8h, 00E8Eh, 0028Bh, 00DAAh, 00BF9h
+header_VmPushVariable EQU <DWORD 0C75C252Eh, 0D0D4C208h, 5h, 00D62h, 00E40h, 00243h, 00D24h, 00B51h>
 
-; real opcodes: 0A913h, 0AFB0h, 0A53Bh, 04FFFh
-header_VmPop EQU <DWORD 02E587B90h, 026981C2Fh, 4h, 0A9AAh, 0AF09h, 0A592h, 04F4Eh>
+; real opcodes: 003C6h, 0097Fh, 00DCCh, 0069Dh
+header_VmPop EQU <DWORD 0C75C252Eh, 0D0D4C208h, 4h, 00377h, 009CEh, 00D7Dh, 0062Ch>
 
-; real opcodes: 050E4h, 022E6h, 0E5BAh, 04945h
-header_VmCall EQU <DWORD 02E587B90h, 026981C2Fh, 4h, 05055h, 02257h, 0E513h, 049F4h>
+; real opcodes: 006E8h, 00C03h, 00C52h, 001B7h
+header_VmCall EQU <DWORD 0C75C252Eh, 0D0D4C208h, 4h, 00661h, 00CBAh, 00CEBh, 00106h>
 
-; real opcodes: 0F3F3h, 0A0B0h, 08B68h, 00480h
-header_VmNativeCall EQU <DWORD 02E587B90h, 026981C2Fh, 4h, 0F34Ah, 0A009h, 08BE1h, 00439h>
+; real opcodes: 00AAFh, 0068Bh, 00515h, 009BAh
+header_VmNativeCall EQU <DWORD 0C75C252Eh, 0D0D4C208h, 4h, 00A1Eh, 00642h, 005A4h, 00913h>
 
-; real opcodes: 061CFh, 0E697h, 0E434h, 00546h, 082CFh
-header_VmRead EQU <DWORD 02E587B90h, 026981C2Fh, 5h, 0617Fh, 0E627h, 0E486h, 005F8h, 0827Fh>
+; real opcodes: 0088Dh, 0059Ah
+header_VmRead EQU <DWORD 0C75C252Eh, 0D0D4C208h, 2h, 0083Ah, 00531h>
 
-; real opcodes: 075FBh, 098F8h, 00E56h, 05941h
-header_VmNativeRead EQU <DWORD 02E587B90h, 026981C2Fh, 4h, 07552h, 09851h, 00EE7h, 059F8h>
+; real opcodes: 00A6Dh, 008D7h, 0022Eh, 00294h
+header_VmNativeRead EQU <DWORD 0C75C252Eh, 0D0D4C208h, 4h, 00ADCh, 00866h, 0029Fh, 00225h>
 
-; real opcodes: 07487h, 0312Dh, 08663h, 0ABB2h
-header_VmWrite EQU <DWORD 02E587B90h, 026981C2Fh, 4h, 07436h, 0319Ch, 086DAh, 0AB0Bh>
+; real opcodes: 003F1h, 002A0h, 006BEh
+header_VmWrite EQU <DWORD 0C75C252Eh, 0D0D4C208h, 3h, 00347h, 00218h, 0060Eh>
 
-; real opcodes: 0E026h, 01939h, 0770Bh, 03584h
-header_VmNativeWrite EQU <DWORD 02E587B90h, 026981C2Fh, 4h, 0E097h, 01990h, 077C2h, 03535h>
+; real opcodes: 00B39h, 004E3h, 009FEh, 00245h
+header_VmNativeWrite EQU <DWORD 0C75C252Eh, 0D0D4C208h, 4h, 00B90h, 0045Ah, 0094Fh, 002F4h>
 
-; real opcodes: 05C2Ch, 02E0Fh, 0EE4Fh, 03670h, 05092h
-header_VmGetIp EQU <DWORD 02E587B90h, 026981C2Fh, 5h, 05C9Eh, 02EBFh, 0EEFFh, 036CAh, 0502Ch>
+; real opcodes: 0028Ch, 00F99h, 008DCh, 00951h
+header_VmGetIp EQU <DWORD 0C75C252Eh, 0D0D4C208h, 4h, 0023Dh, 00F30h, 0086Dh, 009E8h>
 
-; real opcodes: 041D7h, 0DD4Fh, 08B45h, 01C91h
-header_VmJump EQU <DWORD 02E587B90h, 026981C2Fh, 4h, 04166h, 0DDFEh, 08BF4h, 01C28h>
+; real opcodes: 00AEFh, 00B07h, 00B05h
+header_VmJump EQU <DWORD 0C75C252Eh, 0D0D4C208h, 3h, 00A5Dh, 00BB5h, 00BB3h>
 
-; real opcodes: 051C6h, 002C1h, 01875h, 0B04Bh, 01C47h
-header_VmJumpIfLess EQU <DWORD 02E587B90h, 026981C2Fh, 5h, 05178h, 00279h, 018C5h, 0B103h, 01CF7h>
+; real opcodes: 00699h, 00B04h
+header_VmJumpIfLess EQU <DWORD 0C75C252Eh, 0D0D4C208h, 2h, 0062Eh, 00BB3h>
 
-; real opcodes: 05948h, 000D7h
-header_VmJumpIfLessEquals EQU <DWORD 02E587B90h, 026981C2Fh, 2h, 059FFh, 00064h>
+; real opcodes: 00884h, 00FD5h, 007B6h
+header_VmJumpIfLessEquals EQU <DWORD 0C75C252Eh, 0D0D4C208h, 3h, 00834h, 00F63h, 00706h>
 
-; real opcodes: 016C2h, 096EFh
-header_VmJumpIfGreat EQU <DWORD 02E587B90h, 026981C2Fh, 2h, 01679h, 0965Ch>
+; real opcodes: 00AA9h, 00559h, 008F2h
+header_VmJumpIfGreat EQU <DWORD 0C75C252Eh, 0D0D4C208h, 3h, 00A20h, 005F0h, 0084Bh>
 
-; real opcodes: 00D5Dh, 0DC5Ch, 0F1B7h, 05F60h, 09D91h
-header_VmJumpIfGreatEquals EQU <DWORD 02E587B90h, 026981C2Fh, 5h, 00DEDh, 0DCEEh, 0F107h, 05FDAh, 09D29h>
+; real opcodes: 0032Ch, 00036h, 0012Fh, 00F40h
+header_VmJumpIfGreatEquals EQU <DWORD 0C75C252Eh, 0D0D4C208h, 4h, 0039Dh, 00087h, 0019Eh, 00FF9h>
 
-; real opcodes: 013D7h, 08780h
-header_VmAlloca EQU <DWORD 02E587B90h, 026981C2Fh, 2h, 01364h, 08737h>
+; real opcodes: 003FBh, 00712h, 00F89h
+header_VmAlloca EQU <DWORD 0C75C252Eh, 0D0D4C208h, 3h, 00351h, 007AAh, 00F3Fh>
 
-; real opcodes: 0CEFAh, 00C29h
-header_VmHalt EQU <DWORD 02E587B90h, 026981C2Fh, 2h, 0CE51h, 00C9Eh>
+; real opcodes: 0076Dh
+header_VmHalt EQU <DWORD 0C75C252Eh, 0D0D4C208h, 1h, 007DAh>
 
-; real opcodes: 0B892h, 0F5E3h
-header_VmCmp EQU <DWORD 02E587B90h, 026981C2Fh, 2h, 0B829h, 0F558h>
+; real opcodes: 00A10h, 003FDh, 00579h, 000E7h
+header_VmCmp EQU <DWORD 0C75C252Eh, 0D0D4C208h, 4h, 00AA9h, 0034Ch, 005D0h, 00056h>
 
-; real opcodes: 03246h, 0E9A9h, 0342Eh, 0BBA7h, 0830Fh
-header_VmGetSp EQU <DWORD 02E587B90h, 026981C2Fh, 5h, 032F8h, 0E921h, 034A0h, 0BB17h, 083BFh>
+; real opcodes: 001E8h, 00AA8h
+header_VmGetSp EQU <DWORD 0C75C252Eh, 0D0D4C208h, 2h, 0015Fh, 00A1Fh>
 
-; real opcodes: 08454h, 022CAh
-header_VmStackWrite EQU <DWORD 02E587B90h, 026981C2Fh, 2h, 084E3h, 02281h>
+; real opcodes: 00F65h, 00783h, 00B9Eh, 00799h, 00FE3h
+header_VmStackWrite EQU <DWORD 0C75C252Eh, 0D0D4C208h, 5h, 00FD5h, 0073Bh, 00B30h, 00731h, 00F5Bh>
 
-; real opcodes: 06DF7h, 0FB66h
-header_VmStackRead EQU <DWORD 02E587B90h, 026981C2Fh, 2h, 06D44h, 0FBD5h>
+; real opcodes: 002D4h, 00F05h, 00EBEh
+header_VmStackRead EQU <DWORD 0C75C252Eh, 0D0D4C208h, 3h, 00264h, 00FB3h, 00E0Eh>
 
-header_end EQU <DWORD 026981C2Fh, 02E587B90h>
+header_end EQU <DWORD 0D0D4C208h, 0C75C252Eh>

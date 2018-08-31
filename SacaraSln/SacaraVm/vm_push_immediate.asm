@@ -6,7 +6,7 @@ vm_push_immediate PROC
 	; read the immediate to push	
 	push 4
 	push [ebp+arg0]
-	call vm_read_opcode
+	call vm_read_code
 
 	push eax
 	push [ebp+arg0]

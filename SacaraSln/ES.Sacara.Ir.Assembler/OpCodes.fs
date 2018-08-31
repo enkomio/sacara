@@ -98,8 +98,12 @@ and VmOpCode = {
             Buffer = buffer
             Offset = offset
         }
+                
+    member this.SyncOpAndOperandsWithBuffer() =
+        // sync op
+        Array.Copy(this.Buffer, 0, this.VmOp, 0, this.VmOp.Length)
 
-    member this.FixOperands() =
+        // sync operands
         let opCodeSize = this.VmOp.Length
         this.Operands
         |> Seq.toList
@@ -253,7 +257,7 @@ and SymbolTable() =
 
                     // fix the buffer
                     Array.Copy(bytes, 0, vmOpCode.Buffer, relativeOffsetToFix, bytes.Length)
-                    vmOpCode.FixOperands()
+                    vmOpCode.SyncOpAndOperandsWithBuffer()
             )
         )
         

@@ -15,7 +15,9 @@ vm_cmp PROC
 	mov ebx, [ebp+arg0]
 	mov ecx, [ebx+vm_flags]
 
+	; do comparison and save result
 	cmp edx, eax
+	pushfd
 
 	; check zero flag
 	jz set_zero_flag
@@ -26,7 +28,9 @@ set_zero_flag:
 	or ecx, 020000000h
 
 check_sign_flag:
-	cmp edx, eax
+	; restore flags
+	popfd
+
 	js set_sign_flag
 	and ecx, 0EFFFFFFFh
 	jmp finish

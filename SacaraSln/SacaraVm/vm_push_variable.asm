@@ -6,7 +6,7 @@ vm_push_variable PROC
 	; read the variable index
 	push 2
 	push [ebp+arg0]
-	call vm_read_opcode
+	call vm_read_code
 
 	; read the variable value
 	push eax

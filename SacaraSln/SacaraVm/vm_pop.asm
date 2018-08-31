@@ -13,7 +13,7 @@ vm_pop PROC
 	; read the local variable index
 	push 2
 	push [ebp+arg0]
-	call vm_read_opcode
+	call vm_read_code
 
 	; set the local var
 	push [ebp+local0]

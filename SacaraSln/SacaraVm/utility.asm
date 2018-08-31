@@ -108,23 +108,22 @@ first_marker_found:
 	; function header found, read the number of supported opcode
 	mov eax, edi
 	add eax, 4
-	push ecx
+	push ecx ; save outer loop counter
 	mov edx, [eax] ; read the number of possible opcodes
-	mov ecx, edx
+	mov ecx, edx ; set the loop counter
 	
 	; search for the given opcode
-	mov esi, [ebp+arg2] ; opcode to search for
-
-	; decode the opcode
-	xor esi, 0B5h
-	add si, cx
+	mov esi, [ebp+arg2] ; opcode to search for	
+	xor esi, INIT_OPCODE_HEADER_XOR_KEY
+	add si, dx
+	
 search_opcode_loop:	
 	add eax, 4
-	cmp dword ptr [eax], esi
+	cmp [eax], esi
 	loopne search_opcode_loop
 
 	; jump if this is not the header that we are searching for	
-	pop ecx
+	pop ecx ; restore outer loop counter
 	jne search_header_loop
 
 	; function found, save the read address in EAX

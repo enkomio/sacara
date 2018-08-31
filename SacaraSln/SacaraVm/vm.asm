@@ -59,14 +59,12 @@ vm_stack_push PROC
 	mov ebx, [ebp+arg0]
 	mov ebx, [ebx+vm_sp] 
 	
-	; set value on top of the stack
-	mov ecx, [ebx+vm_stack_top]
-	mov eax, [ebp+arg1]
-	mov [ecx], eax
-
 	; increment stack by 1
-	lea ecx, [ecx+TYPE DWORD]
-	mov [ebx+vm_stack_top], ecx
+	inc dword ptr [ebx+vm_stack_top]
+	
+	; set value on top of the stack	
+	mov eax, [ebp+arg1]
+	mov [ebx+vm_stack_top], eax
 
 	mov ebp, esp
 	pop ebp
@@ -84,14 +82,12 @@ vm_stack_pop PROC
 	mov ebx, [ebp+arg0]
 	mov ebx, [ebx+vm_sp] 
 
-	; decrement stack by 1
-	mov ecx, [ebx+vm_stack_top]	
-	lea ecx, [ecx-TYPE DWORD]
-	mov [ebx+vm_stack_top], ecx
-
 	; read value
-	mov eax, [ecx]
-	mov dword ptr [ecx], 0h ; zero the value
+	mov eax, [ebx+vm_stack_top]	
+	mov dword ptr [ebx+vm_stack_top], 0h ; zero the value
+
+	; decrement stack by 1
+	dec dword ptr [ebx+vm_stack_top]
 
 	mov ebp, esp
 	pop ebp
@@ -231,7 +227,7 @@ vm_increment_ip ENDP
 ; *****************************
 ; arguments: vm_context, size
 ; *****************************
-vm_read_opcode PROC
+vm_read_code PROC
 	push ebp
 	mov ebp, esp
 
@@ -264,7 +260,7 @@ finish:
 	mov ebp, esp
 	pop ebp
 	ret 8
-vm_read_opcode ENDP
+vm_read_code ENDP
 
 ; *****************************
 ; arguments: vm_context, extracted opcode
@@ -308,19 +304,52 @@ end_execution:
 vm_execute ENDP
 
 ; *****************************
+; arguments: vm_context, opcode
+; *****************************
+vm_decode_opcode PROC
+	push ebp
+	mov ebp, esp
+
+	; check if the encrypt flag is set
+	mov eax, [ebp+arg1]
+	test eax, 08000h
+	jz clear_flags
+
+	; decrypt the opcode
+	mov eax, [ebp+arg1]	
+	xor eax, INIT_OPCODE_XOR_KEY
+
+	mov ebx, [ebp+arg0]
+	xor eax, [ebx+vm_ip]
+
+clear_flags:
+	; clear first 4 bits since they are flags and save the result
+	and eax, 0FFFh
+
+	mov ebp, esp
+	pop ebp
+	ret 8h
+vm_decode_opcode ENDP
+
+; *****************************
 ; arguments: vm_context
 ; return: 0 on success, opcode index on error
 ; *****************************
 vm_main PROC
 	push ebp
 	mov ebp, esp
-		
+	
 vm_loop:		
 	; read the opcode to execute	
 	push 2
 	push [ebp+arg0]
-	call vm_read_opcode
-	
+	call vm_read_code
+
+	; decode opcode
+	push eax
+	push [ebp+arg0]
+	call vm_decode_opcode
+
 	; execute the VM instruction
 	push eax
 	push [ebp+arg0]

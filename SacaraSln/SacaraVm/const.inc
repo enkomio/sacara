@@ -26,3 +26,7 @@ vm_code_size EQU 10h
 
 ; Windows constants
 HEAP_ZERO_MEMORY EQU 00000008h
+
+; Initial XOR opcode key
+INIT_OPCODE_XOR_KEY EQU 05Bh
+INIT_OPCODE_HEADER_XOR_KEY EQU 0B5h

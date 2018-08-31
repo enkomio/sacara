@@ -27,6 +27,7 @@ type SacaraAssembler() =
     let mutable _functions = new List<IrFunction>()
     let mutable _currentLabel: String option = None
     let mutable _currentIp = 0
+    let mutable _random = new Random()
 
     let addOperand(opCode: IrOpCode) =
         if _currentLabel.IsSome then
@@ -111,11 +112,33 @@ type SacaraAssembler() =
         match ast with
         | Program sl -> sl |> List.iter(parseStatement)
 
+    let encryptVmOpCode(vmOpCode: VmOpCode) =
+        let n = _random.Next(0,10)
+        if [3; 8] |> List.contains(n) |> not then
+            let numericOpCode = BitConverter.ToUInt16(vmOpCode.VmOp, 0)
+            let mutable encNumericOpCode = numericOpCode ^^^ uint16 0x5B ^^^ uint16(vmOpCode.Offset + vmOpCode.VmOp.Length)
+            
+            // clear flags
+            encNumericOpCode <- encNumericOpCode &&& uint16 0xFFF
+
+            // set encrypted flag
+            encNumericOpCode <- encNumericOpCode ||| uint16 0x8000
+            
+            let encOpCode = BitConverter.GetBytes(encNumericOpCode)
+
+            Array.Copy(encOpCode, vmOpCode.Buffer, encOpCode.Length)
+            vmOpCode.SyncOpAndOperandsWithBuffer()
+
     let assemblyIrOpCode(symbolTable: SymbolTable, settings: AssemblerSettings) (opCode: IrOpCode) =
         if opCode.Label.IsSome then
             symbolTable.AddLabel(opCode.Label.Value, _currentIp)
 
         let vmOpCode = opCode.Assemble(_currentIp, symbolTable, settings)
+
+        // encrypt the opcode if necessary
+        if settings.RandomlyEncryptOpCode then  
+            encryptVmOpCode(vmOpCode)            
+
         _currentIp <- _currentIp + vmOpCode.Buffer.Length
         vmOpCode
 
