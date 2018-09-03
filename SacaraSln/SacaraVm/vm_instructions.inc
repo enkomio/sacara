@@ -11,4 +11,6 @@ include vm_ret.asm
 include vm_cmp.asm
 include vm_jmp.asm
 include vm_jump_if_less.asm
-include jump_if_less_equals.asm
+include vm_jump_if_less_equals.asm
+include vm_jump_if_great.asm
+include vm_jump_if_great_equals.asm

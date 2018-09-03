@@ -9,20 +9,20 @@ module Program =
         let irCode = """
         proc main            
             push 60
-            push 50
+            push 70
             cmp
             push label1
-            jumpifle
+            jumpifge
             halt
         label1:  
             push 30
-            push 30
+            push 20
             cmp
             push label2
-            jumpifle
-            halt
-        label2:
+            jumpifge
             nop
+            halt
+        label2:            
             halt
         endp
         """

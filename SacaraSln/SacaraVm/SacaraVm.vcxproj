@@ -123,7 +123,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="const.inc" />
-    <None Include="jump_if_less_equals.asm" />
+    <None Include="vm_jump_if_great_equals.asm" />
+    <None Include="vm_jump_if_less_equals.asm" />
     <None Include="strings.inc" />
     <None Include="utility.asm" />
     <None Include="vm.asm" />
@@ -134,6 +135,7 @@
     <None Include="vm_instructions.inc" />
     <None Include="vm_instructions_headers.inc" />
     <None Include="vm_jmp.asm" />
+    <None Include="vm_jump_if_great.asm" />
     <None Include="vm_jump_if_less.asm" />
     <None Include="vm_nop.asm" />
     <None Include="vm_ret.asm" />

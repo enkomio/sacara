@@ -137,6 +137,9 @@ type VmOpCodes =
     | VmStackWrite
     | VmStackRead
     | VmJumpIfLess
+    | VmJumpIfLessEquals
+    | VmJumpIfGreat
+    | VmJumpIfGreatEquals   
 
     | VmNativeCall
     | VmRead
@@ -144,11 +147,7 @@ type VmOpCodes =
     | VmWrite
     | VmNativeWrite
     | VmGetIp
-    | VmJumpIfLessEquals
-    | VmJumpIfGreat
-    | VmJumpIfGreatEquals   
-    | VmGetSp
-    
+    | VmGetSp    
 
 module Instructions =
     type VmOpCodeItem() =
