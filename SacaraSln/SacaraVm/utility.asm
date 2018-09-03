@@ -163,7 +163,7 @@ hash_loop:
 	jb hash_iteration
 	cmp ebx, 'z'
 	ja hash_iteration
-	lea ebx, [ebx-20h]
+	and bl, 11011111b ; clar bit 5
 
 hash_iteration:
 	add edx, ebx

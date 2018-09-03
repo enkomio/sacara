@@ -138,6 +138,7 @@
     <None Include="vm_jump_if_great.asm" />
     <None Include="vm_jump_if_less.asm" />
     <None Include="vm_nop.asm" />
+    <None Include="vm_read.asm" />
     <None Include="vm_ret.asm" />
     <None Include="vm_pop.asm" />
     <None Include="vm_push_immediate.asm" />

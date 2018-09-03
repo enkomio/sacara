@@ -13,7 +13,7 @@ open System.Reflection
 open ES.Sacara.Ir.Assembler.Instructions
 
 module Program =
-    let generateOpCodes() =
+    let generateClearOpCodes() =
         let opCodesBytes = new HashSet<Int32>()
         let opCodes = new Dictionary<String, VmOpCodeItem>()
         let rnd = new Random()
@@ -28,11 +28,23 @@ module Program =
                 // clear initial 4 bits since they are flags
                 opCode <- opCode &&& 0x0FFF
 
-                if opCodesBytes.Add(opCode) then                    
-                    let bytes = BitConverter.GetBytes(uint16((opCode ^^^ 0xB5) + numberOfCases))
-                    opCodes.[case.Name].Bytes.Add(bytes)
+                if opCodesBytes.Add(opCode) then                                        
                     opCodes.[case.Name].OpCodes.Add(opCode)
         )
+        opCodes
+
+    let encryptOpCodes(opCodes: Dictionary<String, VmOpCodeItem>) =
+        opCodes.Values
+        |> Seq.iter(fun opCode ->
+            opCode.OpCodes
+            |> Seq.iteri(fun i opCodeValue ->
+                opCode.Bytes.Add(BitConverter.GetBytes(uint16((opCodeValue ^^^ 0xB5) + opCode.OpCodes.Count)))
+            )
+        )
+
+    let generateOpCodes() =
+        let opCodes = generateClearOpCodes()
+        encryptOpCodes(opCodes)
         opCodes
 
     let saveOpCodeInAssemblerDir(opCodes: Dictionary<String, VmOpCodeItem>) =

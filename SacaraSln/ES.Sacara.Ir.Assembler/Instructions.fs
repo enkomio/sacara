@@ -38,7 +38,7 @@ type IrOpCodes =
     // eg. ncall
     | NativeCall
 
-    // pop a value from the stack, which is the vm address to read. Push the result value in the stack
+    // pop a value from the stack, which is the vm IP address to read. Push the result value in the stack. It read a byte.
     // eg. read
     | Read
 
@@ -46,7 +46,7 @@ type IrOpCodes =
     // rg. nread
     | NativeRead
 
-    // pop two values from the stack, which are the managed address and the value to write. 
+    // pop two values from the stack, which are the managed IP address and the value to write. 
     // Push the result back into the stack.
     // eg. write
     | Write
@@ -140,14 +140,14 @@ type VmOpCodes =
     | VmJumpIfLessEquals
     | VmJumpIfGreat
     | VmJumpIfGreatEquals   
-
-    | VmNativeCall
-    | VmRead
-    | VmNativeRead
+        
+    | VmRead    
     | VmWrite
-    | VmNativeWrite
     | VmGetIp
     | VmGetSp    
+    | VmNativeRead    
+    | VmNativeWrite
+    | VmNativeCall
 
 module Instructions =
     type VmOpCodeItem() =
