@@ -13,8 +13,9 @@ module Program =
         header:
             nop
         start:
-            push header
-            read
+            push 0x90
+            push header            
+            write
             halt
         endp
         """

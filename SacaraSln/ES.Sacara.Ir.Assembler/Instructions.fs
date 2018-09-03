@@ -46,8 +46,7 @@ type IrOpCodes =
     // rg. nread
     | NativeRead
 
-    // pop two values from the stack, which are the managed IP address and the value to write. 
-    // Push the result back into the stack.
+    // pop two values from the stack, which are the managed IP offset and the value (a byte) to write.
     // eg. write
     | Write
 
@@ -139,10 +138,10 @@ type VmOpCodes =
     | VmJumpIfLess
     | VmJumpIfLessEquals
     | VmJumpIfGreat
-    | VmJumpIfGreatEquals   
-        
-    | VmRead    
+    | VmJumpIfGreatEquals
+    | VmRead
     | VmWrite
+
     | VmGetIp
     | VmGetSp    
     | VmNativeRead    

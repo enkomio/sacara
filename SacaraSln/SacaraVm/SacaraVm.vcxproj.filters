@@ -27,5 +27,6 @@
     <None Include="vm_jump_if_less_equals.asm" />
     <None Include="vm_jump_if_great_equals.asm" />
     <None Include="vm_read.asm" />
+    <None Include="vm_write.asm" />
   </ItemGroup>
 </Project>
