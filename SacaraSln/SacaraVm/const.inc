@@ -20,12 +20,13 @@ vm_stack_top EQU 8h
 vm_local_vars EQU 0Ch
 
 ; flags
-VM_SIGN_FLAG EQU 010000000h
+VM_CARRY_FLAG EQU 010000000h
+VM_ZERO_FLAG EQU 020000000h
 
 ; VM context
 vm_ip EQU 0h
 vm_sp EQU 4h ; it is a list of stack pointer frames
-vm_flags EQU 8h ; |halt flag|error flag|zero flag|sign flag|
+vm_flags EQU 8h ; |halt flag|error flag|zero flag|carry flag|
 vm_code EQU 0Ch
 vm_code_size EQU 10h
 

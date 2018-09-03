@@ -7,17 +7,22 @@ module Program =
     [<EntryPoint>]
     let main argv = 
         let irCode = """
-        proc main
-            push 22
-            pop local_0
+        proc main            
             push 60
             push 50
             cmp
             push label1
-            jumpifl
+            jumpifle
             halt
-        label1:            
-            push 44
+        label1:  
+            push 30
+            push 30
+            cmp
+            push label2
+            jumpifle
+            halt
+        label2:
+            nop
             halt
         endp
         """

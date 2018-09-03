@@ -23,5 +23,6 @@
     <None Include="vm_cmp.asm" />
     <None Include="vm_jmp.asm" />
     <None Include="vm_jump_if_less.asm" />
+    <None Include="jump_if_less_equals.asm" />
   </ItemGroup>
 </Project>

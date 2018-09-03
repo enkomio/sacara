@@ -123,6 +123,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="const.inc" />
+    <None Include="jump_if_less_equals.asm" />
     <None Include="strings.inc" />
     <None Include="utility.asm" />
     <None Include="vm.asm" />

@@ -102,8 +102,8 @@ type IrOpCodes =
     // eg. halt
     | Halt
 
-    // pop two values from the stack, compare them, and push the result  into the stack.
-    // The result will be 0 if they are equals, 1 if the first value if grathen then the second, -1 otherwise.
+    // pop two values from the stack and compare them by considering an unsigned comparison.
+    // The result will modify the VM status flags Zero and Carry.
     // eg. cmp
     | Cmp
 
@@ -136,14 +136,14 @@ type VmOpCodes =
     | VmCmp
     | VmStackWrite
     | VmStackRead
+    | VmJumpIfLess
 
     | VmNativeCall
     | VmRead
     | VmNativeRead
     | VmWrite
     | VmNativeWrite
-    | VmGetIp    
-    | VmJumpIfLess
+    | VmGetIp
     | VmJumpIfLessEquals
     | VmJumpIfGreat
     | VmJumpIfGreatEquals   
