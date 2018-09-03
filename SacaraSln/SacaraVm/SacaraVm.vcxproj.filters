@@ -5,8 +5,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="const.inc" />
-    <None Include="vm_instructions.inc" />
-    <None Include="vm_instructions_headers.inc" />
     <None Include="utility.asm" />
     <None Include="vm.asm" />
     <None Include="vm_halt.asm" />
@@ -28,5 +26,9 @@
     <None Include="vm_jump_if_great_equals.asm" />
     <None Include="vm_read.asm" />
     <None Include="vm_write.asm" />
+    <None Include="instructions.inc" />
+    <None Include="instructions_headers.inc" />
+    <None Include="vm_get_ip.asm" />
+    <None Include="vm_get_sp.asm" />
   </ItemGroup>
 </Project>

@@ -9,29 +9,19 @@ This is the implementation of the Sacara VM.
 ExitProcess proto,dwExitCode:dword
 
 .DATA
-code_0 BYTE 0E3h,0Fh,2h,0h,0h,0h           ; /* E30F02000000 */ loc_00000000: VmPushImmediate 0x2
+code_0 BYTE 0BAh,8Fh,2h,0h,0h,0h           ; /* BA8F02000000 */ loc_00000000: VmPushImmediate 0x2
 code_1 BYTE 69h,80h                        ; /*         6980 */ loc_00000006: VmAlloca
-code_2 BYTE 0E3h,0Fh,12h,0h,0h,0h          ; /* E30F12000000 */ loc_00000008: VmPushImmediate 0x12
-code_3 BYTE 7Bh,8Ah                        ; /*         7B8A */ loc_0000000E: VmJump
-code_4 BYTE 1Dh,1h                         ; /*         1D01 */ loc_00000010: VmNop
-code_5 BYTE 0ACh,8Fh,90h,0h,0h,0h          ; /* AC8F90000000 */ loc_00000012: VmPushImmediate 0x90
-code_6 BYTE 0A2h,8Fh,10h,0h,0h,0h          ; /* A28F10000000 */ loc_00000018: VmPushImmediate 0x10
-code_7 BYTE 53h,8Dh                        ; /*         538D */ loc_0000001E: VmWrite
-code_8 BYTE 0D2h,1h                        ; /*         D201 */ loc_00000020: VmHalt
+code_2 BYTE 0B2h,8Fh,2Ch,0h,0h,0h          ; /* B28F2C000000 */ loc_00000008: VmPushImmediate 0x2C
+code_3 BYTE 0A8h,8Fh,16h,0h,0h,0h          ; /* A88F16000000 */ loc_0000000E: VmPushImmediate 0x16
+code_4 BYTE 7Dh,8Ah                        ; /*         7D8A */ loc_00000014: VmJump
+code_5 BYTE 92h,8Bh                        ; /*         928B */ loc_00000016: VmGetIp
+code_6 BYTE 4Bh,8Ah,0h,0h                  ; /*     4B8A0000 */ loc_00000018: VmPop 0x0
+code_7 BYTE 8Eh,85h                        ; /*         8E85 */ loc_0000001C: VmGetSp
+code_8 BYTE 71h,8Ah,1h,0h                  ; /*     718A0100 */ loc_0000001E: VmPop 0x1
+code_9 BYTE 0ADh,81h                       ; /*         AD81 */ loc_00000022: VmHalt
 vm_code_bytes_size EQU $-code_0
 
 .CODE
-
-include const.inc
-include strings.inc
-include utility.asm
-include vm_instructions_headers.inc
-
-; compute size of the code related to the VM. 
-; These offset are used by the find_vm_handler routine
-start_vm_instructions:
-include vm_instructions.inc
-vm_instructions_size DWORD $ - start_vm_instructions
 
 include vm.asm
 

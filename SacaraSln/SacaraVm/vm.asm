@@ -1,3 +1,14 @@
+include const.inc
+include strings.inc
+include utility.asm
+include instructions_headers.inc
+
+; compute size of the code related to the VM. 
+; These offset are used by the find_vm_handler routine
+start_vm_instructions:
+include instructions.inc
+vm_instructions_size DWORD $ - start_vm_instructions
+
 ; *****************************
 ; arguments: vm context, var index, imm
 ; *****************************

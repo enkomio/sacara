@@ -141,9 +141,9 @@ type VmOpCodes =
     | VmJumpIfGreatEquals
     | VmRead
     | VmWrite
-
     | VmGetIp
-    | VmGetSp    
+    | VmGetSp
+    
     | VmNativeRead    
     | VmNativeWrite
     | VmNativeCall

@@ -16,3 +16,5 @@ include vm_jump_if_great.asm
 include vm_jump_if_great_equals.asm
 include vm_read.asm
 include vm_write.asm
+include vm_get_ip.asm
+include vm_get_sp.asm

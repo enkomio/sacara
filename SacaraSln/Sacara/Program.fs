@@ -8,14 +8,14 @@ module Program =
     let main argv = 
         let irCode = """
         proc main  
-            push start
-            jump
-        header:
-            nop
+            push 44
+            push start            
+            jump        
         start:
-            push 0x90
-            push header            
-            write
+            getip
+            pop local0
+            getsp
+            pop local1
             halt
         endp
         """

@@ -152,9 +152,8 @@ type SacaraAssembler() =
 
         // extract all local variables
         let opCodeAcceptingVariables = [
-            IrOpCodes.Push; IrOpCodes.Pop; IrOpCodes.Jump
-            IrOpCodes.JumpIfLess; IrOpCodes.JumpIfLessEquals
-            IrOpCodes.JumpIfGreat; IrOpCodes.JumpIfGreatEquals
+            IrOpCodes.Push
+            IrOpCodes.Pop
         ]
         opCodes
         |> Seq.filter(fun opCode -> opCodeAcceptingVariables |> List.contains opCode.Type)
@@ -162,7 +161,9 @@ type SacaraAssembler() =
             opCode.Operands
             |> Seq.iter(fun operand ->
                 match operand.Value with
-                | :? String when symbolTable.IsLabel(operand.Value.ToString()) -> allVariables.Add(operand.Value.ToString()) |> ignore
+                | :? String ->
+                    if not(symbolTable.IsLabel(operand.Value.ToString())) then
+                        allVariables.Add(operand.Value.ToString()) |> ignore
                 | _ -> ()
             )
         )
