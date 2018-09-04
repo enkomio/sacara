@@ -34,7 +34,10 @@ type IrOpCodes =
     // eg. call
     | Call
 
-    // call a native method which offset is popped off the stack
+    // call a native method, it accepts three arguments which are popped from the stack, the first one is the absolute native address
+    // that we jump to, the second parameter is the number of arguments that must be popped out from the managed stack and pushed into
+    // the native stack, and the final one is a flag stating if the stack must be cleared or not. 
+    // After the code return, the value of the EAX register is pushed into the managed stack.
     // eg. ncall
     | NativeCall
 
@@ -118,9 +121,7 @@ type IrOpCodes =
     // eg. sread
     | StackRead
 
-// these are the op codes of the VM. 
-// The operand size is 2 bytes if it is a varaible (the meaning if the offset of the variable in the stack).
-// If the operand is an immediate the size is 4 bytes.
+// these are the op codes of the VM
 type VmOpCodes =    
     | VmRet
     | VmNop
@@ -142,8 +143,7 @@ type VmOpCodes =
     | VmRead
     | VmWrite
     | VmGetIp
-    | VmGetSp
-    
+    | VmGetSp    
     | VmNativeRead    
     | VmNativeWrite
     | VmNativeCall

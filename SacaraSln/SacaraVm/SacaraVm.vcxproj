@@ -139,6 +139,9 @@
     <None Include="vm_jmp.asm" />
     <None Include="vm_jump_if_great.asm" />
     <None Include="vm_jump_if_less.asm" />
+    <None Include="vm_native_call.asm" />
+    <None Include="vm_native_read.asm" />
+    <None Include="vm_native_write.asm" />
     <None Include="vm_nop.asm" />
     <None Include="vm_read.asm" />
     <None Include="vm_ret.asm" />

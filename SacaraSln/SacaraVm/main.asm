@@ -28,7 +28,7 @@ include vm.asm
 main PROC
 	push ebp
 	mov ebp, esp
-	
+		
 	; allocate space on the stack for the VM context and initialize it	
 	sub esp, 10h
 	mov eax, vm_code_bytes_size

@@ -30,5 +30,8 @@
     <None Include="instructions_headers.inc" />
     <None Include="vm_get_ip.asm" />
     <None Include="vm_get_sp.asm" />
+    <None Include="vm_native_read.asm" />
+    <None Include="vm_native_write.asm" />
+    <None Include="vm_native_call.asm" />
   </ItemGroup>
 </Project>

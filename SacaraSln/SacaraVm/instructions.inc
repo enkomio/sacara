@@ -18,3 +18,6 @@ include vm_read.asm
 include vm_write.asm
 include vm_get_ip.asm
 include vm_get_sp.asm
+include vm_native_read.asm
+include vm_native_write.asm
+include vm_native_call.asm
