@@ -6,6 +6,9 @@ type token =
   | IDENTIFIER of (string)
   | STRING of (string)
   | BOOLEAN of (bool)
+  | DIV
+  | NAND
+  | EOF
   | CMP
   | GETSP
   | SWRITE
@@ -15,7 +18,8 @@ type token =
   | DWORD
   | NEWLINE
   | COMMA
-  | EOF
+  | SUB
+  | MUL
   | GETIP
   | RET
   | JUMP
@@ -43,6 +47,9 @@ type tokenId =
     | TOKEN_IDENTIFIER
     | TOKEN_STRING
     | TOKEN_BOOLEAN
+    | TOKEN_DIV
+    | TOKEN_NAND
+    | TOKEN_EOF
     | TOKEN_CMP
     | TOKEN_GETSP
     | TOKEN_SWRITE
@@ -52,7 +59,8 @@ type tokenId =
     | TOKEN_DWORD
     | TOKEN_NEWLINE
     | TOKEN_COMMA
-    | TOKEN_EOF
+    | TOKEN_SUB
+    | TOKEN_MUL
     | TOKEN_GETIP
     | TOKEN_RET
     | TOKEN_JUMP

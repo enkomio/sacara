@@ -42,6 +42,10 @@ module internal IrLexerUtility =
             ("getsp", GETSP)
             ("swrite", SWRITE)
             ("sread", SREAD)
+            ("sub", SUB)
+            ("mul", MUL)
+            ("div", DIV)
+            ("nand", NAND)
         ] |> Map.ofList
 
     let getString (lexbuf : LexBuffer<_>) = 

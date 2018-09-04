@@ -121,6 +121,22 @@ type IrOpCodes =
     // eg. sread
     | StackRead
 
+    // pop two values from the stack, sub them and push the result on the stack
+    // eg. sub
+    | Sub
+
+    // pop two values from the stack, multiply them and push the result on the stack
+    // eg. mul
+    | Mul
+
+    // pop two values from the stack, divide them and push the result on the stack
+    // eg. div
+    | Div
+
+    // pop two values from the stack, nand them and push the result on the stack
+    // eg. nand
+    | Nand
+
 // these are the op codes of the VM
 type VmOpCodes =    
     | VmRet
@@ -147,6 +163,10 @@ type VmOpCodes =
     | VmNativeRead    
     | VmNativeWrite
     | VmNativeCall
+    | VmSub
+    | VmMul
+    | VmDiv
+    | VmNand
 
 module Instructions =
     type VmOpCodeItem() =

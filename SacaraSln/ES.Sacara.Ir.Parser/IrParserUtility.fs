@@ -92,3 +92,15 @@ module internal IrParserUtility =
     let stackRead() =
         StackRead
 
+    let sub() =
+        Sub
+
+    let mul() =
+        Mul
+
+    let div() =
+        Div
+
+    let nand() =
+        Nand
+

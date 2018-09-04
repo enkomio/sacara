@@ -101,7 +101,7 @@ module Program =
         // copy file
         let fileContent = sb.ToString()
         let curDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
-        let vmSrcFile = Path.Combine(curDir, "..", "..", "..", "SacaraVm", "vm_instructions_headers.inc")
+        let vmSrcFile = Path.Combine(curDir, "..", "..", "..", "SacaraVm", "instructions_headers.inc")
         File.WriteAllText(vmSrcFile, fileContent)
         Console.WriteLine("Files copied to: " + vmSrcFile)
 

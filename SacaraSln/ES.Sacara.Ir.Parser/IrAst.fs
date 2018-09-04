@@ -32,6 +32,10 @@ module IrAst =
         | GetSp
         | StackWrite
         | StackRead
+        | Sub
+        | Mul
+        | Div
+        | Nand
 
     and Program = 
         | Program of Statement list  
