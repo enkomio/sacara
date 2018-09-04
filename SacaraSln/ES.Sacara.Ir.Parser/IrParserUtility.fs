@@ -104,3 +104,8 @@ module internal IrParserUtility =
     let nand() =
         Nand
 
+    let shiftRight() =
+        ShiftRight
+
+    let shiftLeft() =
+        ShiftLeft

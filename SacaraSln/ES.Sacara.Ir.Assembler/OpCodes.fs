@@ -185,6 +185,8 @@ and IrOpCode(opType: IrOpCodes) =
             | Mul -> getVmOpCode(VmMul, settings)
             | Div -> getVmOpCode(VmDiv, settings)
             | Nand -> getVmOpCode(VmNand, settings)
+            | ShiftLeft -> getVmOpCode(VmShiftLeft, settings)
+            | ShiftRight -> getVmOpCode(VmShiftRight, settings)
             | Byte -> getMacroOpCodeBytes()
             | Word -> getMacroOpCodeBytes()
             | DoubleWord -> getMacroOpCodeBytes()            

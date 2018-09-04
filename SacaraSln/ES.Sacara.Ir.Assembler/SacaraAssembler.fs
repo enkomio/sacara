@@ -115,6 +115,10 @@ type SacaraAssembler() =
             addOperand(new IrOpCode(IrOpCodes.Div))
         | Nand ->
             addOperand(new IrOpCode(IrOpCodes.Nand))
+        | ShiftLeft ->
+            addOperand(new IrOpCode(IrOpCodes.ShiftLeft))
+        | ShiftRight ->
+            addOperand(new IrOpCode(IrOpCodes.ShiftRight))
 
     let parseAst(ast: Program) =
         match ast with

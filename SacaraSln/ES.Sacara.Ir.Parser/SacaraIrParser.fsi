@@ -8,6 +8,8 @@ type token =
   | BOOLEAN of (bool)
   | DIV
   | NAND
+  | SHIFTR
+  | SHIFTL
   | EOF
   | CMP
   | GETSP
@@ -49,6 +51,8 @@ type tokenId =
     | TOKEN_BOOLEAN
     | TOKEN_DIV
     | TOKEN_NAND
+    | TOKEN_SHIFTR
+    | TOKEN_SHIFTL
     | TOKEN_EOF
     | TOKEN_CMP
     | TOKEN_GETSP

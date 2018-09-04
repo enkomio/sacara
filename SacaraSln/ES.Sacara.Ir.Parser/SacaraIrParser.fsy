@@ -10,7 +10,7 @@ open ES.Sacara.Ir.Parser.IrParserUtility
 %token PROC ENDP PUSH POP ADD NOP CALL NCALL WRITE NWRITE READ NREAD 
 %token GETIP RET JUMP JUMPIFL JUMPIFLE JUMPIFG JUMPIFGE ALLOCA HALT 
 %token CMP GETSP SWRITE SREAD BYTE WORD DWORD NEWLINE COMMA SUB MUL 
-%token DIV NAND EOF
+%token DIV NAND SHIFTR SHIFTL EOF
 
 %token <bool> BOOLEAN
 %token <string> STRING
@@ -71,6 +71,8 @@ statementNoLabel:
 	| MUL																					{ mul() }
 	| DIV																					{ div() }
 	| NAND																					{ nand() }
+	| SHIFTR																				{ shiftRight() }
+	| SHIFTL																				{ shiftLeft() }
 	
 expression:
 	| INTEGER																				{ number($1) }

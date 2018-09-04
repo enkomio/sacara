@@ -36,6 +36,8 @@ module IrAst =
         | Mul
         | Div
         | Nand
+        | ShiftRight
+        | ShiftLeft
 
     and Program = 
         | Program of Statement list  

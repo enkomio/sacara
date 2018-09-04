@@ -137,6 +137,14 @@ type IrOpCodes =
     // eg. nand
     | Nand
 
+    // pop a value from the stack, shift it on the right direction and push the result back into the stack
+    // eg. shiftr
+    | ShiftRight
+
+    // pop a value from the stack, shift it on the left direction and push the result back into the stack
+    // eg. shiftl
+    | ShiftLeft
+
 // these are the op codes of the VM
 type VmOpCodes =    
     | VmRet
@@ -167,6 +175,8 @@ type VmOpCodes =
     | VmMul
     | VmDiv
     | VmNand
+    | VmShiftRight
+    | VmShiftLeft
 
 module Instructions =
     type VmOpCodeItem() =
