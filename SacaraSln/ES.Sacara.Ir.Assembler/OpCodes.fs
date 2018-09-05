@@ -279,9 +279,13 @@ and SymbolTable() =
         _variables.[name] <- {Name=name; Offset=_variables.Count; Type=LocalVar}
 
     member this.AddLabel(name: String, offset: Int32) =
-        _labels.[name] <- {Name=name; Offset=offset; Type=Label}
+        if _labels.ContainsKey(name)
+        then failwith (String.Format("Each label and function name must be unique. The label '{0}' was already defined, please choose another name", name))
+        _labels.Add(name, {Name=name; Offset=offset; Type=Label})
 
     member this.AddLabelName(funcName: String) =
+        if _labelNames.Contains(funcName)
+        then failwith (String.Format("Each label and function name must be unique. The function '{0}' was already defined, please choose another name", funcName))        
         _labelNames.Add(funcName)
 
     member this.IsLabel(funcName: String) =

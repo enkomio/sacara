@@ -9,21 +9,23 @@ module Program =
         let irCode = """
         proc main  
             push start_code
-            jump
+            call
+            halt
+        data:
             BYTE "Ciao a tutti!!",0
             WORD 0x1234,0x5678
             DWORD 0x12345678
+        endp
 
-        start_code:
-            push 44
-            push start            
-            jump        
-        start:
+        proc start_code
+            push data
+            pop data_var
+        data2:
             getip
             pop local0
             getsp
             pop local1
-            halt
+            ret
         endp
         """
         let assembler = new SacaraAssembler()
@@ -51,7 +53,7 @@ module Program =
                         then "0" + b
                         else b
                     )
-                Console.WriteLine("code_{0} BYTE {1} ; {2}", index, String.Join(",", bytesTring).PadRight(30), opCode.ToString())
+                Console.WriteLine("code_{0} BYTE {1} ; {2}", index.ToString("0000"), String.Join(",", bytesTring).PadRight(40), opCode.ToString())
                 index <- index + 1
             )
         )
