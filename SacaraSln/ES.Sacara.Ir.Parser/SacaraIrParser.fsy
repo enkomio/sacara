@@ -12,7 +12,6 @@ open ES.Sacara.Ir.Parser.IrParserUtility
 %token CMP GETSP SWRITE SREAD BYTE WORD DWORD NEWLINE COMMA SUB MUL 
 %token DIV NAND SHIFTR SHIFTL EOF
 
-%token <bool> BOOLEAN
 %token <string> STRING
 %token <string> IDENTIFIER
 %token <string> LABEL
@@ -55,10 +54,7 @@ statementNoLabel:
 	| NREAD																					{ readNative() }
 	| WRITE																					{ write() }
 	| NWRITE																				{ writeNative() }
-	| ALLOCA																				{ alloca() }
-	| BYTE INTEGER																			{ memoryByte($2) }
-	| WORD INTEGER																			{ memoryWord($2) }
-	| DWORD INTEGER																			{ memoryDword($2) }
+	| ALLOCA																				{ alloca() }	
 	| CMP																					{ compare() }
 	| GETIP																					{ getIp() }
 	| HALT																					{ halt() }
@@ -73,7 +69,22 @@ statementNoLabel:
 	| NAND																					{ nand() }
 	| SHIFTR																				{ shiftRight() }
 	| SHIFTL																				{ shiftLeft() }
+	| BYTE dataList																			{ memoryByte(List.rev $2) }
+	| WORD integerList																		{ memoryWord(List.rev $2) }
+	| DWORD integerList																		{ memoryDword(List.rev $2) }
 	
 expression:
 	| INTEGER																				{ number($1) }
 	| IDENTIFIER																			{ identifier($1) }
+
+integerList:
+	| integerList COMMA INTEGER																{ $3::$1 }
+	| INTEGER																				{ [$1] }
+
+dataList:
+	| dataList COMMA data																	{ $3::$1 }
+	| data																					{ [$1] }
+
+data:
+	| INTEGER																				{ [$1] }																				
+	| STRING																				{ getStringBytes($1) }

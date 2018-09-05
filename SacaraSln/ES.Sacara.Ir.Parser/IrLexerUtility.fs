@@ -6,7 +6,7 @@ open System.Text.RegularExpressions
 open ES.Sacara.Ir.Parser.SacaraIrParser
 
 [<AutoOpen>]
-module internal IrLexerUtility =    
+module internal IrLexerUtility =
 
     let private incrementLine(lexbuf:LexBuffer<_>) =
         lexbuf.StartPos <- lexbuf.StartPos.NextLine
@@ -53,6 +53,11 @@ module internal IrLexerUtility =
     let getString (lexbuf : LexBuffer<_>) = 
         LexBuffer<_>.LexemeString lexbuf
 
+    let getHexString (lexbuf : LexBuffer<_>) = 
+        let str = getString lexbuf
+        let num = Convert.ToInt32(str.Substring(2), 16)
+        Char.ConvertFromUtf32(num)
+
     let noToken(lexbuf: LexBuffer<_>) =
         lexbuf
 
@@ -68,7 +73,7 @@ module internal IrLexerUtility =
         newToken (LABEL identifier) lexbuf
 
     let identifier(lexbuf: LexBuffer<_>) =
-        let identifier = Regex.Unescape(getString lexbuf)
+        let identifier = Regex.Unescape(getString lexbuf).ToLower()
         match keywords |> Map.tryFind identifier with
         | Some identifierToken -> newToken identifierToken lexbuf
         | None -> newToken (IDENTIFIER identifier) lexbuf

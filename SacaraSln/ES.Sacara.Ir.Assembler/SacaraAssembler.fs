@@ -124,9 +124,13 @@ type SacaraAssembler() =
         match ast with
         | Program sl -> sl |> List.iter(parseStatement)
 
-    let encryptVmOpCode(vmOpCode: VmOpCode) =
+    let shouldEncrypt(vmOpCode: VmOpCode) =
         let n = _random.Next(0,10)
-        if [3; 8] |> List.contains(n) |> not then
+        let opCodeToNotEncrypt = [VmByte; VmWord; VmDoubleWord]
+        (opCodeToNotEncrypt |> List.contains vmOpCode.Type |> not) && ([3; 8] |> List.contains(n) |> not)
+
+    let encryptVmOpCode(vmOpCode: VmOpCode) =
+        if shouldEncrypt(vmOpCode) then
             let numericOpCode = BitConverter.ToUInt16(vmOpCode.VmOp, 0)
             let mutable encNumericOpCode = numericOpCode ^^^ uint16 0x5B ^^^ uint16(vmOpCode.Offset + vmOpCode.VmOp.Length)
             

@@ -16,10 +16,7 @@ module IrAst =
         | Call of CallType
         | JumpIf of JumpIfType        
         | Read of ReadType
-        | Write of WriteType        
-        | Byte of Int32
-        | Word of Int32
-        | DoubleWord of Int32
+        | Write of WriteType
         | Alloca
         | Jump
         | Ret
@@ -38,6 +35,9 @@ module IrAst =
         | Nand
         | ShiftRight
         | ShiftLeft
+        | Byte of Int32 list
+        | Word of Int32 list
+        | DoubleWord of Int32 list
 
     and Program = 
         | Program of Statement list  

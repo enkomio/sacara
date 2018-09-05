@@ -1,7 +1,7 @@
 ﻿{
-
 module ES.Sacara.Ir.Parser.SacaraIrLexer
 
+open System
 open ES.Sacara.Ir.Parser.IrLexerUtility
 open Microsoft.FSharp.Text.Lexing
 open ES.Sacara.Ir.Parser.SacaraIrParser
@@ -17,6 +17,9 @@ let character = ['a'-'z' 'A'-'Z']
 let identifier = character (character | digit | '_')*
 let label = identifier ':'
 
+// strings items
+let hexChar = "\\x" hexDigit hexDigit
+
 // number types
 let integer = ("+"|"-") digit+ | digit+ | "0x" hexDigit+
 
@@ -31,6 +34,7 @@ rule irCode = parse
 	| label																{ label lexbuf }
 	| identifier														{ identifier lexbuf }	
 	| ','																{ newToken COMMA lexbuf }
+	| '"'																{ doubleQuoteString String.Empty false lexbuf }
 	| lineTerminator													{ newToken NEWLINE (nextLine lexbuf) }
 	| whitespace														{ irCode(noToken lexbuf) }
 	| "/*" 																{ multilineComment lexbuf; irCode lexbuf }
@@ -41,3 +45,9 @@ and multilineComment = parse
 	| [^'*' '\r' '\n']+													{ multilineComment lexbuf }
 	| lineTerminator													{ multilineComment(nextLine lexbuf) }
 	| _																	{ multilineComment lexbuf }
+
+and doubleQuoteString currentString ignoreQuote = parse
+	| hexChar															{ doubleQuoteString (currentString + (getHexString lexbuf)) false lexbuf }
+	| '\\' _															{ doubleQuoteString currentString true lexbuf }
+	| [^'"' '\\']+														{ doubleQuoteString (currentString + (getString lexbuf)) false lexbuf }
+	| '"'																{ if ignoreQuote then ((doubleQuoteString (currentString + (getString lexbuf)) false lexbuf)) else (STRING currentString) }

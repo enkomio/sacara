@@ -2,6 +2,7 @@
 
 open System
 open System.Collections.Generic
+open System.Text
 
 type SymbolType =
     | LocalVar
@@ -14,10 +15,32 @@ type Symbol = {
 }
 
 type Operand(value: Object) =
+    let encodeRawData(bytes: Int32 list, vmOpCodeType: VmOpCodes) =
+        match vmOpCodeType with
+        | VmOpCodes.VmByte ->
+            bytes          
+            |> Seq.map(fun b -> byte b)
+            |> Seq.toArray
+
+        | VmOpCodes.VmWord ->
+            bytes            
+            |> Seq.map(fun b -> BitConverter.GetBytes(uint16 b))
+            |> Seq.concat
+            |> Seq.toArray
+
+        | VmOpCodes.VmDoubleWord ->
+            bytes            
+            |> Seq.map(BitConverter.GetBytes)
+            |> Seq.concat
+            |> Seq.toArray
+
+        | _ -> failwith "Wrong Raw data opcode"
+
     member val Value = value with get, set
 
     member this.Encode(symbolTable: SymbolTable, offset: Int32, vmOpCodeType: VmOpCodes) =
         match this.Value with
+        | :? list<Int32> -> encodeRawData(this.Value :?> list<Int32>, vmOpCodeType)
         | :? Int32 -> BitConverter.GetBytes(this.Value :?> Int32)
         | :? String ->
             let identifier = this.Value.ToString()
@@ -63,14 +86,46 @@ and VmOpCode = {
         let offset = this.Offset.ToString("X").PadLeft(8, '0')
 
         let operands =
-            this.Operands
-            |> Seq.map(fun bytes -> 
-                if bytes.Length = 2
-                then BitConverter.ToInt16(bytes, 0).ToString("X")
-                else BitConverter.ToInt32(bytes, 0).ToString("X")
-            )
-            |> Seq.map(fun num -> String.Format("0x{0}", num))
-            |> fun nums -> String.Join(", ", nums)
+            match this.Type with
+            | VmOpCodes.VmByte ->
+                let sb = new StringBuilder()
+                let mutable inString = false
+                this.Operands.[0]
+                |> Seq.iter(fun b ->
+                    if Char.IsControl(char b) then 
+                        if inString then
+                            sb.Append("\"") |> ignore
+                            inString <- false
+                        sb.AppendFormat(",{0}", b.ToString("X")) |> ignore
+                    else 
+                        if not inString then 
+                            sb.Append("\"") |> ignore
+                            inString <- true
+                        sb.Append(char b) |> ignore
+                )
+                let resultString = sb.ToString()
+                if resultString.StartsWith(",")
+                then resultString.Substring(1)
+                else resultString
+            | VmOpCodes.VmWord ->
+                this.Operands.[0]
+                |> Seq.chunkBySize 2
+                |> Seq.map(fun b -> "0x" + BitConverter.ToUInt16(b, 0).ToString("X"))
+                |> fun s -> String.Join(", ", s)
+            | VmOpCodes.VmDoubleWord ->
+                this.Operands.[0]
+                |> Seq.chunkBySize 4
+                |> Seq.map(fun b -> "0x" + BitConverter.ToUInt32(b, 0).ToString("X"))
+                |> fun s -> String.Join(", ", s)
+            | _ ->
+                this.Operands
+                |> Seq.map(fun bytes ->
+                    if bytes.Length = 2 
+                    then BitConverter.ToInt16(bytes, 0).ToString("X")
+                    else BitConverter.ToInt32(bytes, 0).ToString("X")
+                )
+                |> Seq.map(fun num -> String.Format("0x{0}", num))
+                |> fun nums -> String.Join(", ", nums)
 
         String.Format("/* {0} */ loc_{1}: {2} {3}", bytes, offset, this.Type, operands)
     
@@ -144,10 +199,10 @@ and IrOpCode(opType: IrOpCodes) =
         let opCodes = Instructions.bytes.[vmOpCode]
         (chooseRepresentation(opCodes, settings), vmOpCode)
 
-    let getMacroOpCodeBytes() =
-        // macro doesn't have any opCode
-        (Array.empty<Byte>, VmNop)
-
+    let getMacroOpCodeBytes(vmOpCode: VmOpCodes) =
+        // macro doesn't have any bytes as opCode, I have just to encode the operands
+        (Array.empty<Byte>, vmOpCode)
+        
     member val Type = opType with get
     member val Operands = new List<Operand>() with get
     member val Label: String option = None with get, set
@@ -187,9 +242,9 @@ and IrOpCode(opType: IrOpCodes) =
             | Nand -> getVmOpCode(VmNand, settings)
             | ShiftLeft -> getVmOpCode(VmShiftLeft, settings)
             | ShiftRight -> getVmOpCode(VmShiftRight, settings)
-            | Byte -> getMacroOpCodeBytes()
-            | Word -> getMacroOpCodeBytes()
-            | DoubleWord -> getMacroOpCodeBytes()            
+            | Byte -> getMacroOpCodeBytes(VmByte)
+            | Word -> getMacroOpCodeBytes(VmWord)
+            | DoubleWord -> getMacroOpCodeBytes(VmDoubleWord)           
             
         // encode the operands
         this.Operands

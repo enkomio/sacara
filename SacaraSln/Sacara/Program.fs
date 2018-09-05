@@ -8,6 +8,13 @@ module Program =
     let main argv = 
         let irCode = """
         proc main  
+            push start_code
+            jump
+            BYTE "Ciao a tutti!!",0
+            WORD 0x1234,0x5678
+            DWORD 0x12345678
+
+        start_code:
             push 44
             push start            
             jump        

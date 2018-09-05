@@ -171,6 +171,10 @@ type VmOpCodes =
     | VmNativeRead    
     | VmNativeWrite
     | VmNativeCall
+    | VmByte
+    | VmWord
+    | VmDoubleWord
+
     | VmSub
     | VmMul
     | VmDiv

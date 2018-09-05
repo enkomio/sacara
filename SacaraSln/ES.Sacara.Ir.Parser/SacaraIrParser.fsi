@@ -5,7 +5,6 @@ type token =
   | LABEL of (string)
   | IDENTIFIER of (string)
   | STRING of (string)
-  | BOOLEAN of (bool)
   | DIV
   | NAND
   | SHIFTR
@@ -48,7 +47,6 @@ type tokenId =
     | TOKEN_LABEL
     | TOKEN_IDENTIFIER
     | TOKEN_STRING
-    | TOKEN_BOOLEAN
     | TOKEN_DIV
     | TOKEN_NAND
     | TOKEN_SHIFTR
@@ -97,6 +95,9 @@ type nonTerminalId =
     | NONTERM_statement
     | NONTERM_statementNoLabel
     | NONTERM_expression
+    | NONTERM_integerList
+    | NONTERM_dataList
+    | NONTERM_data
 /// This function maps tokens to integer indexes
 val tagOfToken: token -> int
 

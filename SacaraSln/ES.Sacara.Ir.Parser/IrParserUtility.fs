@@ -2,8 +2,10 @@
 
 open System
 open ES.Sacara.Ir.Parser.IrAst
+open System.Text
 
-module internal IrParserUtility =
+module internal IrParserUtility =    
+
     let emptyStatement() = 
         Empty
 
@@ -52,18 +54,23 @@ module internal IrParserUtility =
     let alloca() =
         Alloca
 
-    let memoryByte(value: Int32) =
-        if value > 255 
-        then Byte 0xFF
-        else Byte value
+    let memoryByte(values: Int32 list list) =
+        Byte (values |> List.concat)
 
-    let memoryWord(value: Int32) =
-        if value > 0XFFFF
-        then Word 0xFFFF
-        else Word value
+    let memoryWord(values: Int32 list) =
+        let canonicalizedValues = 
+            values 
+            |> List.map(fun value -> if value > 0XFFFF then 0xFFFF else value)
 
-    let memoryDword(value: Int32) =
-        DoubleWord value
+        Word canonicalizedValues
+
+    let memoryDword(values: Int32 list) =
+        DoubleWord values
+
+    let getStringBytes(str: String) =
+        Encoding.UTF8.GetBytes(str)
+        |> Seq.map(fun b -> int32 b)
+        |> Seq.toList
 
     let nop() =
         Nop
