@@ -27,33 +27,41 @@ code_0014 BYTE 49h,5h                                   ; /*         4905 */ loc
 vm_code_bytes_size EQU $-code_0000
 .CODE
 
+
+; see https://stackoverflow.com/questions/14317477/creating-dll-using-masm32
 include vm.asm
 
 main PROC
 	push ebp
 	mov ebp, esp
+	
+	cmp dword ptr [ebp+arg1], DLL_PROCESS_ATTACH	
+	jne finish
+	mov eax, 1
 		
+finish:
+
 	; allocate space on the stack for the VM context and initialize it	
-	sub esp, 10h
-	mov eax, vm_code_bytes_size
-	push eax
-	push offset code_0000
-	push ebp
-	call vm_init
+	;sub esp, 10h
+	;mov eax, vm_code_bytes_size
+	;push eax
+	;push offset code_0000
+	;push ebp
+	;call vm_init
 	
 	; run VM
-	push ebp
-	call vm_main
+	;push ebp
+	;call vm_run
 
 	; free vm
-	push ebp
-	call vm_free
+	;push ebp
+	;call vm_free
 
 	; cleanup stack from vm_context structure
-	add esp, 10h
+	;add esp, 10h
 
 	; exit
-	invoke ExitProcess,0
+	;invoke ExitProcess,0
 
 	mov ebp, esp
 	pop ebp

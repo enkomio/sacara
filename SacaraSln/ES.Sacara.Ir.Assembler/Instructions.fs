@@ -34,9 +34,10 @@ type IrOpCodes =
     // eg. call
     | Call
 
-    // call a native method, it accepts three arguments which are popped from the stack, the first one is the absolute native address
-    // that we jump to, the second parameter is the number of arguments that must be popped out from the managed stack and pushed into
-    // the native stack, and the final one is a flag stating if the stack must be cleared or not. 
+    // call a native method, it accepts three arguments which are popped from the stack
+    //    - the first one is the absolute native address that we jump to
+    //    - the second parameter is the number of arguments that must be popped out from the managed stack and pushed into the native stack
+    //    - the third and final one is a flag stating if the stack must be cleared (1) or not (0) after the invokation 
     // After the code return, the value of the EAX register is pushed into the managed stack.
     // eg. ncall
     | NativeCall

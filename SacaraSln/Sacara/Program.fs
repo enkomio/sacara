@@ -60,16 +60,11 @@ module Program =
     let main argv = 
         let irCode = """
         proc main  
-            push 12
-            push 44
-            cmp
-            push first_operand_is_less
-            jumpifl                     /* jump if 44 < 12 */
-            push 1
-            pop result_var
-        first_operand_is_less:
+            /* invoke the native function pointer stored in local var0 */            
             push 0
-            pop result_var
+            push 0
+            push local0
+            ncall
             halt
         endp
         """

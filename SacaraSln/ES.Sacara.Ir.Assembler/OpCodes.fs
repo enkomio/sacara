@@ -332,6 +332,7 @@ and SymbolTable() =
 and IrFunction (name: String) =
     member val Name = name with get
     member val Body = new List<IrOpCode>() with get
+    member val IsEntryPoint = false with get, set
 
 and VmFunction = {
     Body: VmOpCode list

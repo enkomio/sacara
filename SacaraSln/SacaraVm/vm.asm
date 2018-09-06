@@ -347,7 +347,7 @@ vm_decode_opcode ENDP
 ; arguments: vm_context
 ; return: 0 on success, opcode index on error
 ; *****************************
-vm_main PROC
+vm_run PROC
 	push ebp
 	mov ebp, esp
 	
@@ -376,4 +376,4 @@ vm_loop:
 	mov ebp, esp
 	pop ebp
 	ret 8
-vm_main ENDP
+vm_run ENDP

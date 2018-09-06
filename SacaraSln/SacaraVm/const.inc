@@ -32,6 +32,7 @@ vm_code_size EQU 10h
 
 ; Windows constants
 HEAP_ZERO_MEMORY EQU 00000008h
+DLL_PROCESS_ATTACH EQU 1h
 
 ; Initial XOR opcode key
 INIT_OPCODE_XOR_KEY EQU 05Bh

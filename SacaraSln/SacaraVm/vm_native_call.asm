@@ -40,6 +40,7 @@ invoke_native_code:
 	cmp dword ptr [ebp+local2], 0h
 	jz save_return_value
 	mov ecx, [ebp+local1]
+	lea ecx, [ecx*TYPE DWORD]
 	add esp, ecx
 
 save_return_value:
