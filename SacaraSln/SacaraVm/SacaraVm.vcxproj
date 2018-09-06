@@ -123,6 +123,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="const.inc" />
+    <None Include="vm_div.asm" />
     <None Include="vm_get_ip.asm" />
     <None Include="vm_get_sp.asm" />
     <None Include="vm_jump_if_great_equals.asm" />
@@ -139,18 +140,26 @@
     <None Include="vm_jmp.asm" />
     <None Include="vm_jump_if_great.asm" />
     <None Include="vm_jump_if_less.asm" />
+    <None Include="vm_mul.asm" />
+    <None Include="vm_and.asm" />
     <None Include="vm_native_call.asm" />
     <None Include="vm_native_read.asm" />
     <None Include="vm_native_write.asm" />
     <None Include="vm_nop.asm" />
+    <None Include="vm_not.asm" />
+    <None Include="vm_or.asm" />
     <None Include="vm_read.asm" />
     <None Include="vm_ret.asm" />
     <None Include="vm_pop.asm" />
     <None Include="vm_push_immediate.asm" />
     <None Include="vm_push_variable.asm" />
+    <None Include="vm_shift_left.asm" />
+    <None Include="vm_shift_right.asm" />
     <None Include="vm_stack_read.asm" />
     <None Include="vm_stack_write.asm" />
+    <None Include="vm_sub.asm" />
     <None Include="vm_write.asm" />
+    <None Include="vm_xor.asm" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

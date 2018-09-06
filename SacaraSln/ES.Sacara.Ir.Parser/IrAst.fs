@@ -32,7 +32,10 @@ module IrAst =
         | Sub
         | Mul
         | Div
-        | Nand
+        | And
+        | Or
+        | Not
+        | Xor
         | ShiftRight
         | ShiftLeft
         | Byte of Int32 list

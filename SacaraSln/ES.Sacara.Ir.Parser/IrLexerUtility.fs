@@ -45,9 +45,12 @@ module internal IrLexerUtility =
             ("sub", SUB)
             ("mul", MUL)
             ("div", DIV)
-            ("nand", NAND)
+            ("and", AND)
             ("shiftl", SHIFTL)
             ("shiftr", SHIFTR)
+            ("or", OR)
+            ("not", NOT)
+            ("xor", XOR)
         ] |> Map.ofList
 
     let getString (lexbuf : LexBuffer<_>) = 

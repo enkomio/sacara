@@ -10,7 +10,7 @@ open ES.Sacara.Ir.Parser.IrParserUtility
 %token PROC ENDP PUSH POP ADD NOP CALL NCALL WRITE NWRITE READ NREAD 
 %token GETIP RET JUMP JUMPIFL JUMPIFLE JUMPIFG JUMPIFGE ALLOCA HALT 
 %token CMP GETSP SWRITE SREAD BYTE WORD DWORD NEWLINE COMMA SUB MUL 
-%token DIV NAND SHIFTR SHIFTL EOF
+%token DIV AND SHIFTR SHIFTL OR NOT XOR EOF
 
 %token <string> STRING
 %token <string> IDENTIFIER
@@ -66,7 +66,10 @@ statementNoLabel:
 	| SUB																					{ sub() }
 	| MUL																					{ mul() }
 	| DIV																					{ div() }
-	| NAND																					{ nand() }
+	| AND																					{ bitAnd() }
+	| OR																					{ bitOr() }
+	| NOT																					{ bitNot() }
+	| XOR																					{ xor() }
 	| SHIFTR																				{ shiftRight() }
 	| SHIFTL																				{ shiftLeft() }
 	| BYTE dataList																			{ memoryByte(List.rev $2) }

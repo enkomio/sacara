@@ -1,5 +1,5 @@
 header_VmJump
-vm_jmp_immediate PROC
+vm_jump PROC
 	push ebp
 	mov ebp, esp	
 	
@@ -14,5 +14,5 @@ vm_jmp_immediate PROC
 	mov ebp, esp
 	pop ebp
 	ret
-vm_jmp_immediate ENDP
+vm_jump ENDP
 header_end

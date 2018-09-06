@@ -129,21 +129,33 @@ type IrOpCodes =
     // eg. mul
     | Mul
 
-    // pop two values from the stack, divide them and push the result on the stack
+    // pop two values from the stack, divide the first argument with the second and push the result on the stack
     // eg. div
     | Div
 
-    // pop two values from the stack, nand them and push the result on the stack
-    // eg. nand
-    | Nand
+    // pop two values from the stack, AND the first value with the second one and push the result on the stack
+    // eg. and
+    | And
 
-    // pop a value from the stack, shift it on the right direction and push the result back into the stack
+    // pop two values from the stack, shift to right the first argument for a number of time equals to the second argument and push the result back into the stack
     // eg. shiftr
     | ShiftRight
 
-    // pop a value from the stack, shift it on the left direction and push the result back into the stack
+    // pop two values from the stack, shift to left the first argument for a number of time equals to the second argument and push the result back into the stack
     // eg. shiftl
     | ShiftLeft
+
+    // pop two values from the stack, OR the first value with the second one and push the result on the stack
+    // eg. or
+    | Or
+
+    // pop a value from the stack, NOT it and push the result on the stack
+    // eg. not
+    | Not
+
+    // pop two values from the stack, XOR the first value with the second one and push the result on the stack
+    // eg. xor
+    | Xor
 
 // these are the op codes of the VM
 type VmOpCodes =    
@@ -174,13 +186,15 @@ type VmOpCodes =
     | VmByte
     | VmWord
     | VmDoubleWord
-
     | VmSub
     | VmMul
     | VmDiv
-    | VmNand
+    | VmAnd
     | VmShiftRight
     | VmShiftLeft
+    | VmOr
+    | VmNot
+    | VmXor
 
 module Instructions =
     type VmOpCodeItem() =

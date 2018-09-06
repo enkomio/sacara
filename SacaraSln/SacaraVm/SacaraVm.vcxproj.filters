@@ -7,31 +7,109 @@
     <None Include="const.inc" />
     <None Include="utility.asm" />
     <None Include="vm.asm" />
-    <None Include="vm_halt.asm" />
-    <None Include="vm_nop.asm" />
     <None Include="strings.inc" />
-    <None Include="vm_push_immediate.asm" />
-    <None Include="vm_alloca.asm" />
-    <None Include="vm_pop.asm" />
-    <None Include="vm_push_variable.asm" />
-    <None Include="vm_stack_read.asm" />
-    <None Include="vm_stack_write.asm" />
-    <None Include="vm_call.asm" />
-    <None Include="vm_ret.asm" />
-    <None Include="vm_cmp.asm" />
-    <None Include="vm_jmp.asm" />
-    <None Include="vm_jump_if_less.asm" />
-    <None Include="vm_jump_if_great.asm" />
-    <None Include="vm_jump_if_less_equals.asm" />
-    <None Include="vm_jump_if_great_equals.asm" />
-    <None Include="vm_read.asm" />
-    <None Include="vm_write.asm" />
     <None Include="instructions.inc" />
     <None Include="instructions_headers.inc" />
-    <None Include="vm_get_ip.asm" />
-    <None Include="vm_get_sp.asm" />
-    <None Include="vm_native_read.asm" />
-    <None Include="vm_native_write.asm" />
-    <None Include="vm_native_call.asm" />
+    <None Include="vm_alloca.asm">
+      <Filter>vm_instructions</Filter>
+    </None>
+    <None Include="vm_call.asm">
+      <Filter>vm_instructions</Filter>
+    </None>
+    <None Include="vm_cmp.asm">
+      <Filter>vm_instructions</Filter>
+    </None>
+    <None Include="vm_get_ip.asm">
+      <Filter>vm_instructions</Filter>
+    </None>
+    <None Include="vm_get_sp.asm">
+      <Filter>vm_instructions</Filter>
+    </None>
+    <None Include="vm_halt.asm">
+      <Filter>vm_instructions</Filter>
+    </None>
+    <None Include="vm_jmp.asm">
+      <Filter>vm_instructions</Filter>
+    </None>
+    <None Include="vm_jump_if_great.asm">
+      <Filter>vm_instructions</Filter>
+    </None>
+    <None Include="vm_jump_if_great_equals.asm">
+      <Filter>vm_instructions</Filter>
+    </None>
+    <None Include="vm_jump_if_less.asm">
+      <Filter>vm_instructions</Filter>
+    </None>
+    <None Include="vm_jump_if_less_equals.asm">
+      <Filter>vm_instructions</Filter>
+    </None>
+    <None Include="vm_mul.asm">
+      <Filter>vm_instructions</Filter>
+    </None>
+    <None Include="vm_native_call.asm">
+      <Filter>vm_instructions</Filter>
+    </None>
+    <None Include="vm_native_read.asm">
+      <Filter>vm_instructions</Filter>
+    </None>
+    <None Include="vm_native_write.asm">
+      <Filter>vm_instructions</Filter>
+    </None>
+    <None Include="vm_nop.asm">
+      <Filter>vm_instructions</Filter>
+    </None>
+    <None Include="vm_pop.asm">
+      <Filter>vm_instructions</Filter>
+    </None>
+    <None Include="vm_push_immediate.asm">
+      <Filter>vm_instructions</Filter>
+    </None>
+    <None Include="vm_push_variable.asm">
+      <Filter>vm_instructions</Filter>
+    </None>
+    <None Include="vm_read.asm">
+      <Filter>vm_instructions</Filter>
+    </None>
+    <None Include="vm_ret.asm">
+      <Filter>vm_instructions</Filter>
+    </None>
+    <None Include="vm_stack_read.asm">
+      <Filter>vm_instructions</Filter>
+    </None>
+    <None Include="vm_stack_write.asm">
+      <Filter>vm_instructions</Filter>
+    </None>
+    <None Include="vm_sub.asm">
+      <Filter>vm_instructions</Filter>
+    </None>
+    <None Include="vm_write.asm">
+      <Filter>vm_instructions</Filter>
+    </None>
+    <None Include="vm_div.asm">
+      <Filter>vm_instructions</Filter>
+    </None>
+    <None Include="vm_shift_right.asm">
+      <Filter>vm_instructions</Filter>
+    </None>
+    <None Include="vm_shift_left.asm">
+      <Filter>vm_instructions</Filter>
+    </None>
+    <None Include="vm_and.asm">
+      <Filter>vm_instructions</Filter>
+    </None>
+    <None Include="vm_or.asm">
+      <Filter>vm_instructions</Filter>
+    </None>
+    <None Include="vm_xor.asm">
+      <Filter>vm_instructions</Filter>
+    </None>
+    <None Include="vm_not.asm">
+      <Filter>vm_instructions</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="vm_instructions">
+      <UniqueIdentifier>{6fd9b842-2193-46f0-aef1-96f205772b5c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

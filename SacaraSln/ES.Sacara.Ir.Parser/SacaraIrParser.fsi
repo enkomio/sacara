@@ -6,9 +6,12 @@ type token =
   | IDENTIFIER of (string)
   | STRING of (string)
   | DIV
-  | NAND
+  | AND
   | SHIFTR
   | SHIFTL
+  | OR
+  | NOT
+  | XOR
   | EOF
   | CMP
   | GETSP
@@ -48,9 +51,12 @@ type tokenId =
     | TOKEN_IDENTIFIER
     | TOKEN_STRING
     | TOKEN_DIV
-    | TOKEN_NAND
+    | TOKEN_AND
     | TOKEN_SHIFTR
     | TOKEN_SHIFTL
+    | TOKEN_OR
+    | TOKEN_NOT
+    | TOKEN_XOR
     | TOKEN_EOF
     | TOKEN_CMP
     | TOKEN_GETSP

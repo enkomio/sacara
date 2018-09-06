@@ -113,8 +113,14 @@ type SacaraAssembler() =
             addOperand(new IrOpCode(IrOpCodes.Mul))
         | Div ->
             addOperand(new IrOpCode(IrOpCodes.Div))
-        | Nand ->
-            addOperand(new IrOpCode(IrOpCodes.Nand))
+        | And ->
+            addOperand(new IrOpCode(IrOpCodes.And))
+        | Or ->
+            addOperand(new IrOpCode(IrOpCodes.Or))
+        | Not ->
+            addOperand(new IrOpCode(IrOpCodes.Not))
+        | Xor ->
+            addOperand(new IrOpCode(IrOpCodes.Xor))
         | ShiftLeft ->
             addOperand(new IrOpCode(IrOpCodes.ShiftLeft))
         | ShiftRight ->

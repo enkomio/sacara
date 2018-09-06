@@ -108,11 +108,20 @@ module internal IrParserUtility =
     let div() =
         Div
 
-    let nand() =
-        Nand
+    let bitAnd() =
+        And
 
     let shiftRight() =
         ShiftRight
 
     let shiftLeft() =
         ShiftLeft
+
+    let bitOr() =
+        Or
+
+    let bitNot() =
+        Not
+
+    let xor() =
+        Xor
