@@ -137,7 +137,7 @@
     <None Include="vm_halt.asm" />
     <None Include="instructions.inc" />
     <None Include="instructions_headers.inc" />
-    <None Include="vm_jmp.asm" />
+    <None Include="vm_jump.asm" />
     <None Include="vm_jump_if_great.asm" />
     <None Include="vm_jump_if_less.asm" />
     <None Include="vm_mul.asm" />

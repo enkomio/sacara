@@ -28,9 +28,6 @@
     <None Include="vm_halt.asm">
       <Filter>vm_instructions</Filter>
     </None>
-    <None Include="vm_jmp.asm">
-      <Filter>vm_instructions</Filter>
-    </None>
     <None Include="vm_jump_if_great.asm">
       <Filter>vm_instructions</Filter>
     </None>
@@ -104,6 +101,9 @@
       <Filter>vm_instructions</Filter>
     </None>
     <None Include="vm_not.asm">
+      <Filter>vm_instructions</Filter>
+    </None>
+    <None Include="vm_jump.asm">
       <Filter>vm_instructions</Filter>
     </None>
   </ItemGroup>
