@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc>
+<assembly><name>fake-cli</name></assembly>
+<members>
+<member name="T:Cli">
+<summary>
+ New Command line interface for FAKE that utilises Argu.
+</summary>
+</member>
+</members>
+</doc>

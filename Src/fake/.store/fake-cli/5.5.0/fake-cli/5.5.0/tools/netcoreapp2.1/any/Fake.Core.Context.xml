@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc>
+<assembly><name>Fake.Core.Context</name></assembly>
+<members>
+<member name="T:Fake.Core.Context">
+<summary>
+ This module tracks the context of the build.
+ This allows us to run some modules without any context and change behavior depending on the context
+ (For example `Fake.Process` kills all processes when the Fake Context exists, but it should not when used as library)
+</summary>
+</member>
+</members>
+</doc>

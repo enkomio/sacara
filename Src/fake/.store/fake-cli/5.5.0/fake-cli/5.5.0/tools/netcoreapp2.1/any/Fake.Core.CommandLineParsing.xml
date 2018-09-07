@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc>
+<assembly><name>Fake.Core.CommandLineParsing</name></assembly>
+<members>
+<member name="T:Fake.Core.CommandLineParsing.UsageAst.Sdh">
+<summary>
+ matches the stdin [-]
+</summary>
+</member>
+<member name="T:Fake.Core.CommandLineParsing.UsageAst.Ell">
+<summary>
+ Marks that the given item can be given multiple times 
+</summary>
+</member>
+<member name="T:Fake.Core.CommandLineParsing.UsageAst.Cmd">
+<summary>
+ Fixed command, like &quot;push&quot; in &quot;git push&quot;
+</summary>
+</member>
+<member name="T:Fake.Core.CommandLineParsing.UsageAst.Seq">
+<summary>
+ Sequence of items, if the items are only options then order is ignored.
+</summary>
+</member>
+<member name="T:Fake.Core.CommandLineParsing.UsageAst.Xor">
+<summary>
+ Either the one or the other
+</summary>
+</member>
+<member name="T:Fake.Core.CommandLineParsing.UsageAst.Arg">
+<summary>
+ Named/Positional argument
+</summary>
+</member>
+<member name="T:Fake.Core.CommandLineParsing.UsageAst.Req">
+<summary>
+ Requires the given item
+</summary>
+</member>
+<member name="T:Fake.Core.CommandLineParsing.UsageAst.Sqb">
+<summary>
+ Marks the given item as optional
+</summary>
+</member>
+<member name="T:Fake.Core.CommandLineParsing.UsageAst.Lop">
+<summary>
+ long option
+</summary>
+</member>
+<member name="T:Fake.Core.CommandLineParsing.UsageAst.Sop">
+<summary>
+ Short options
+</summary>
+</member>
+<member name="T:Fake.Core.CommandLineParsing.UsageAst.Ano">
+<summary>
+ Matches an option annotation [options]
+</summary>
+</member>
+<member name="T:Fake.Core.CommandLineParsing.UsageAst.Eps">
+<summary>
+ matches nothing?
+</summary>
+</member>
+<member name="P:Fake.Core.DocHelper.OptionBuilder.Lines">
+<summary>
+ The lines in reversed order
+</summary>
+</member>
+</members>
+</doc>

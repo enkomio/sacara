@@ -1,0 +1,16 @@
+source https://api.nuget.org/v3/index.json
+
+nuget FSharpLog
+nuget FsLexYacc
+nuget Newtonsoft.Json
+nuget Argu
+
+group FakeBuild
+	source https://api.nuget.org/v3/index.json
+	nuget Fake.Core.Target
+	nuget Fake.IO.FileSystem
+	nuget Fake.DotNet.MSBuild
+	nuget Fake.Core.ReleaseNotes
+	nuget Fake.DotNet.AssemblyInfoFile
+	nuget Fake.Core.Trace
+	nuget Fake.IO.Zip

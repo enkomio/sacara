@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc>
+<assembly><name>Fake.Runtime</name></assembly>
+<members>
+<member name="M:Yaaf.FSharp.Scripting.ScriptHost.CreateNew(Microsoft.FSharp.Core.FSharpOption{Microsoft.FSharp.Collections.FSharpList{System.String}},Microsoft.FSharp.Core.FSharpOption{System.Object},Microsoft.FSharp.Core.FSharpOption{System.Boolean},Microsoft.FSharp.Core.FSharpOption{System.IO.TextWriter},Microsoft.FSharp.Core.FSharpOption{System.IO.TextWriter},Microsoft.FSharp.Core.FSharpOption{System.IO.TextWriter},Microsoft.FSharp.Core.FSharpOption{System.IO.TextWriter},Microsoft.FSharp.Core.FSharpOption{System.Boolean})">
+<summary>
+ Quickly create a new IFsiSession with some sane defaults
+</summary>
+</member>
+<member name="M:Yaaf.FSharp.Scripting.ScriptHost.CreateForwardWriter(Microsoft.FSharp.Core.FSharpFunc{System.String,Microsoft.FSharp.Core.Unit},Microsoft.FSharp.Core.FSharpOption{System.Boolean},Microsoft.FSharp.Core.FSharpOption{System.Boolean})">
+<summary>
+ Creates a forwarder Textwriter, which forwards all output to the given function.
+ Set revertRedirect only to &quot;false&quot; if you know that f doesn&apos;t print anything to the stdout.
+ When revertRedirect is true we capture the Console.Out property and set it before calling f.
+ removeNewLines handles the newline characters properly and calls f for every new line instead of every call to
+ to the underlaying writers.
+ The difference is that with removeNewLines you should use printfn and get lines without newline characters.
+ On the other hand without removeNewLines you are called on every TextWriter.Write call,
+ so you might be called multiple times for a single lines or a single time for multiple lines.
+</summary>
+</member>
+<member name="M:Yaaf.FSharp.Scripting.ScriptHost.Create(Yaaf.FSharp.Scripting.FsiOptions,Microsoft.FSharp.Core.FSharpOption{System.Object},Microsoft.FSharp.Core.FSharpOption{System.Boolean},Microsoft.FSharp.Core.FSharpOption{System.IO.TextWriter},Microsoft.FSharp.Core.FSharpOption{System.IO.TextWriter},Microsoft.FSharp.Core.FSharpOption{System.IO.TextWriter},Microsoft.FSharp.Core.FSharpOption{System.IO.TextWriter},Microsoft.FSharp.Core.FSharpOption{System.Boolean})">
+<summary>
+ Create a new IFsiSession by specifying all fsi arguments manually.
+</summary>
+</member>
+<member name="P:Yaaf.FSharp.Scripting.FsiOptions.WarnLevel">
+<summary>
+ Sets a warning level (0 to 5). The default level is 3. Each warning is given a level based on its severity. Level 5 gives more, but less severe, warnings than level 1.
+ Level 5 warnings are: 21 (recursive use checked at runtime), 22 (let rec evaluated out of order), 45 (full abstraction), and 52 (defensive copy). All other warnings are level 2.
+</summary>
+</member>
+<member name="P:Yaaf.FSharp.Scripting.FsiOptions.Default">
+<summary>
+ Sets a warning level (0 to 5). The default level is 3. Each warning is given a level based on its severity. Level 5 gives more, but less severe, warnings than level 1.
+ Level 5 warnings are: 21 (recursive use checked at runtime), 22 (let rec evaluated out of order), 45 (full abstraction), and 52 (defensive copy). All other warnings are level 2.
+</summary>
+</member>
+<member name="T:Yaaf.FSharp.Scripting.FsiOptions">
+<summary>
+ See https://msdn.microsoft.com/en-us/library/dd233172.aspx
+</summary>
+</member>
+<member name="P:Yaaf.FSharp.Scripting.IFsiSession.DynamicAssembly">
+<summary>
+ Gets the currently build dynamic assembly.
+</summary>
+</member>
+<member name="M:Yaaf.FSharp.Scripting.IFsiSession.TryEvalExpressionWithOutput(System.String)">
+<summary>
+ Try to evaluate the given expression and return its result.
+</summary>
+</member>
+<member name="M:Yaaf.FSharp.Scripting.IFsiSession.EvalScriptWithOutput(System.String)">
+<summary>
+ Evaluate the given script.
+</summary>
+</member>
+<member name="M:Yaaf.FSharp.Scripting.IFsiSession.EvalInteractionWithOutput(System.String)">
+<summary>
+ Evaluate the given interaction.
+</summary>
+</member>
+<member name="T:Yaaf.FSharp.Scripting.IFsiSession">
+<summary>
+ Represents a simple F# interactive session.
+</summary>
+</member>
+<member name="T:Yaaf.FSharp.Scripting.FsiExpressionTypeException">
+<summary>
+ Exception for invalid expression types
+</summary>
+</member>
+<member name="T:Yaaf.FSharp.Scripting.FsiEvaluationException">
+<summary>
+ This exception indicates that an exception happened while compiling or executing given F# code.
+</summary>
+</member>
+<member name="T:Yaaf.FSharp.Scripting.Shell.InteractiveSettings">
+<summary>
+ Implements a simple &apos;fsi&apos; object to be passed to the FSI evaluator
+</summary>
+</member>
+<member name="T:Yaaf.FSharp.Scripting.Shell.SimpleEventLoop">
+<summary>
+ Represents a simple (fake) event loop for the &apos;fsi&apos; object
+</summary>
+</member>
+<member name="M:Yaaf.FSharp.Scripting.Extensions.IFsiSession.Handle``1(Yaaf.FSharp.Scripting.IFsiSession,Microsoft.FSharp.Core.FSharpFunc{System.String,``0},System.String)">
+<summary>
+ Handle the given evaluation function
+</summary>
+</member>
+<member name="M:Yaaf.FSharp.Scripting.Extensions.IFsiSession.WithCurrentDirectory``1(Yaaf.FSharp.Scripting.IFsiSession,System.String,Microsoft.FSharp.Core.FSharpFunc{Microsoft.FSharp.Core.Unit,``0})">
+<summary>
+ Same as ChangeCurrentDirectory but takes a function for the scope.
+</summary>
+</member>
+<member name="M:Yaaf.FSharp.Scripting.Extensions.IFsiSession.ChangeCurrentDirectory(Yaaf.FSharp.Scripting.IFsiSession,System.String)">
+<summary>
+ Change the current directory (so that relative paths within scripts work properly).
+ Returns a handle to change the current directory back to it&apos;s initial state
+ (Because this will change the current directory of the currently running code as well!).
+</summary>
+</member>
+<member name="M:Yaaf.FSharp.Scripting.Extensions.IFsiSession.WithCd``1(Yaaf.FSharp.Scripting.IFsiSession,System.String,Microsoft.FSharp.Core.FSharpFunc{Microsoft.FSharp.Core.Unit,``0})">
+<summary>
+ Same as Cd but takes a function for the scope.
+</summary>
+</member>
+<member name="M:Yaaf.FSharp.Scripting.Extensions.IFsiSession.Cd(Yaaf.FSharp.Scripting.IFsiSession,System.String)">
+<summary>
+ Change the current directory (so that relative paths within scripts work properly).
+ Returns a handle to change the current directory back to it&apos;s initial state
+ (Because this will change the current directory of the currently running code as well!).
+</summary>
+</member>
+<member name="M:Yaaf.FSharp.Scripting.Extensions.IFsiSession.Let``1(Yaaf.FSharp.Scripting.IFsiSession,System.String,``0)">
+<summary>
+ Assigns the given object to the given name (ie &quot;let varName = obj&quot;)
+</summary>
+</member>
+<member name="M:Yaaf.FSharp.Scripting.Extensions.IFsiSession.EvalExpression``1(Yaaf.FSharp.Scripting.IFsiSession,System.String)">
+<summary>
+ Evaluate the given expression and return its result.
+</summary>
+</member>
+<member name="M:Yaaf.FSharp.Scripting.Extensions.IFsiSession.EvalScriptAsInteraction(Yaaf.FSharp.Scripting.IFsiSession,System.String)">
+<summary>
+ See https://github.com/Microsoft/visualfsharp/issues/1392
+</summary>
+</member>
+<member name="M:Yaaf.FSharp.Scripting.Extensions.IFsiSession.EvalScriptAsInteractionWithOutput(Yaaf.FSharp.Scripting.IFsiSession,System.String)">
+<summary>
+ See https://github.com/Microsoft/visualfsharp/issues/1392
+</summary>
+</member>
+<member name="M:Yaaf.FSharp.Scripting.CompilerServiceExtensions.Type.get_FSharpFullNameWithTypeArgs(System.Type)">
+<summary>
+ Gets a string that can be used in F# source code to reference the current type instance.
+</summary>
+</member>
+<member name="M:Yaaf.FSharp.Scripting.CompilerServiceExtensions.Type.get_FSharpParamList(System.Type)">
+<summary>
+ The parameter list of the current type, sets &quot;_&quot; if the current instance is a generic definition.
+</summary>
+</member>
+<member name="M:Yaaf.FSharp.Scripting.CompilerServiceExtensions.Type.get_FSharpFullName(System.Type)">
+<summary>
+ Gets the FullName of the current type in F# source code.
+</summary>
+</member>
+<member name="M:Yaaf.FSharp.Scripting.CompilerServiceExtensions.Type.get_FSharpName(System.Type)">
+<summary>
+ The name of the current type instance in F# source code.
+</summary>
+</member>
+<member name="M:Yaaf.FSharp.Scripting.CompilerServiceExtensions.Type.get_NamespaceName(System.Type)">
+<summary>
+ The FullName but without any generic parameter types.
+</summary>
+</member>
+<member name="M:Fake.Runtime.Environment.hasEnvironVar(System.String)">
+<summary>
+ Returns if the build parameter with the given name was set
+</summary>
+</member>
+<member name="M:Fake.Runtime.Environment.environVarOrNone(System.String)">
+<summary>
+ Retrieves the environment variable or None
+</summary>
+</member>
+<member name="M:Fake.Runtime.Environment.getEnvironmentVarAsBool(System.String)">
+<summary>
+ Retrieves the environment variable with the given name or returns the false if no value was set
+</summary>
+</member>
+<member name="M:Fake.Runtime.Environment.getEnvironmentVarAsBoolOrDefault(System.String,System.Boolean)">
+<summary>
+ Retrieves the environment variable with the given name or returns the default bool if no value was set
+</summary>
+</member>
+<member name="M:Fake.Runtime.Environment.environVarOrFail(System.String)">
+<summary>
+ Retrieves the environment variable with the given name or fails if not found
+</summary>
+</member>
+<member name="M:Fake.Runtime.Environment.environVarOrDefault(System.String,System.String)">
+<summary>
+ Retrieves the environment variable with the given name or returns the default if no value was set
+</summary>
+</member>
+<member name="M:Fake.Runtime.Environment.setEnvironVar(System.String,System.String)">
+<summary>
+ Sets the environment variable with the given name
+</summary>
+</member>
+<member name="M:Fake.Runtime.Environment.environVars">
+<summary>
+ Retrieves all environment variables from the given target
+</summary>
+</member>
+<member name="M:Fake.Runtime.Environment.environVar(System.String)">
+<summary>
+ Retrieves the environment variable with the given name
+</summary>
+</member>
+<member name="P:Fake.Runtime.Environment.fakeVersionStr">
+<summary>
+ Gets the FAKE Version string
+</summary>
+</member>
+<member name="P:Fake.Runtime.Environment.fakeVersion">
+<summary>
+ Gets the FAKE version no.
+</summary>
+</member>
+<member name="T:Fake.Runtime.Environment">
+<summary>
+ This module contains functions which allow to read and write environment variables and build parameters
+</summary>
+</member>
+<member name="T:Fake.Runtime.Path">
+<summary>
+ Contains basic functions for string manipulation.
+</summary>
+</member>
+<member name="M:Fake.Runtime.String.isNotNullOrEmpty(System.String)">
+<summary>
+ Returns if the string is not null or empty
+</summary>
+</member>
+<member name="M:Fake.Runtime.String.isNullOrEmpty(System.String)">
+<summary>
+ Returns if the string is null or empty
+</summary>
+</member>
+<member name="T:Fake.Runtime.String">
+<summary>
+ Contains basic functions for string manipulation.
+</summary>
+</member>
+<member name="M:Fake.Runtime.Trace.ConsoleTraceListener.Fake-Runtime-Trace-ITraceListener-Write(Fake.Runtime.Trace.TraceData)">
+<summary>
+ Writes the given message to the Console.
+</summary>
+</member>
+<member name="T:Fake.Runtime.Trace.ConsoleTraceListener">
+<summary>
+ Implements a TraceListener for System.Console.
+ ## Parameters
+  - `importantMessagesToStdErr` - Defines whether to trace important messages to StdErr.
+  - `colorMap` - A function which maps TracePriorities to ConsoleColors.
+</summary>
+</member>
+<member name="T:Fake.Runtime.Trace.ITraceListener">
+<summary>
+ Defines a TraceListener interface
+</summary>
+</member>
+<member name="T:Fake.Runtime.Trace.TraceData">
+<summary>
+ Defines Tracing information for TraceListeners
+</summary>
+</member>
+<member name="M:Fake.Runtime.Trace.traceError(System.String)">
+<summary>
+ Traces an error (in red)
+</summary>
+</member>
+<member name="M:Fake.Runtime.Trace.traceFAKE``1(Microsoft.FSharp.Core.PrintfFormat{``0,Microsoft.FSharp.Core.Unit,System.String,Microsoft.FSharp.Core.Unit})">
+<summary>
+ Writes a trace to the command line (in yellow)
+</summary>
+</member>
+<member name="M:Fake.Runtime.Trace.tracef``1(Microsoft.FSharp.Core.PrintfFormat{``0,Microsoft.FSharp.Core.Unit,System.String,Microsoft.FSharp.Core.Unit})">
+<summary>
+ Writes a message to the command line (in green) and without a line break
+</summary>
+</member>
+<member name="M:Fake.Runtime.Trace.tracefn``1(Microsoft.FSharp.Core.PrintfFormat{``0,Microsoft.FSharp.Core.Unit,System.String,Microsoft.FSharp.Core.Unit})">
+<summary>
+ Writes a message to the command line (in green)
+</summary>
+</member>
+<member name="M:Fake.Runtime.Trace.trace(System.String)">
+<summary>
+ Writes a trace to the command line (in green)
+</summary>
+</member>
+<member name="M:Fake.Runtime.Trace.log(System.String)">
+<summary>
+ Logs the specified string        
+</summary>
+</member>
+<member name="P:Fake.Runtime.Trace.fakePath">
+<summary>
+ Gets the path of the current FAKE instance
+</summary>
+</member>
+<member name="M:Fake.Runtime.Trace.postMessage(Fake.Runtime.Trace.TraceData)">
+<summary>
+ Allows to post messages to all trace listeners
+</summary>
+</member>
+<member name="P:Fake.Runtime.Trace.listeners">
+<summary>
+ A List with all registered listeners
+</summary>
+</member>
+<member name="P:Fake.Runtime.Trace.defaultConsoleTraceListener">
+<summary>
+ The default TraceListener for Console.
+</summary>
+</member>
+<member name="M:Fake.Runtime.Trace.colorMap(Fake.Runtime.Trace.TraceData)">
+<summary>
+ A default color map which maps TracePriorities to ConsoleColors
+</summary>
+</member>
+<member name="T:Fake.Runtime.Trace">
+<summary>
+ This module contains function which allow to trace build output
+</summary>
+</member>
+<member name="T:Fake.Runtime.FSharpParser.InterestingItem">
+<summary>
+ Parse #r references for `paket:` lines
+</summary>
+</member>
+<member name="T:Fake.Runtime.Runners">
+<summary>
+ Contains helper functions which allow to interact with the F# Interactive.
+</summary>
+</member>
+<member name="M:Fake.Runtime.CompileRunner.nameParser(System.String,System.String)">
+<summary>
+ public, because it is used by test code
+</summary>
+</member>
+<member name="M:Fake.Runtime.CompileRunner.handleCoreCaching(Fake.Runtime.Runners.FakeContext,System.String,System.String)">
+<summary>
+ Handles a cache store operation, this should not throw as it is executed in a finally block and
+ therefore might eat other exceptions. And a caching error is not critical.
+</summary>
+</member>
+<member name="T:Fake.Runtime.CompileRunner">
+<summary>
+ Contains helper functions which allow to interact with the F# Interactive.
+</summary>
+</member>
+<member name="M:Fake.Runtime.ScriptRunner.nameParser(System.String)">
+<summary>
+ public, because it is used by test code
+</summary>
+</member>
+<member name="M:Fake.Runtime.ScriptRunner.handleCoreCaching(Fake.Runtime.Runners.FakeContext,Yaaf.FSharp.Scripting.IFsiSession,System.String)">
+<summary>
+ Handles a cache store operation, this should not throw as it is executed in a finally block and
+ therefore might eat other exceptions. And a caching error is not critical.
+</summary>
+</member>
+<member name="T:Fake.Runtime.ScriptRunner">
+<summary>
+ Contains helper functions which allow to interact with the F# Interactive.
+</summary>
+</member>
+<member name="T:Fake.Runtime.HashGeneration">
+<summary>
+ Contains helper functions which allow to interact with the F# Interactive.
+</summary>
+</member>
+<member name="T:Fake.Runtime.CoreCache">
+<summary>
+ Contains helper functions which allow to interact with the F# Interactive.
+</summary>
+</member>
+</members>
+</doc>
