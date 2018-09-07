@@ -22,7 +22,7 @@ type IrAssemblyCode = {
         |> List.map(fun vmOpCode -> vmOpCode.ToString())
         |> fun l -> String.Join(Environment.NewLine, l)
 
-type SacaraAssembler() =
+type SacaraAssembler(settings: AssemblerSettings) =
     let mutable _currentFunction = new IrFunction(String.Empty)
     let mutable _functions = new List<IrFunction>()
     let mutable _currentLabel: String option = None
@@ -242,8 +242,8 @@ type SacaraAssembler() =
             |> Seq.filter(fun irOpCode -> irOpCode.Label.IsSome)
             |> Seq.iter(fun irOpCode -> symbolTable.AddLabelName(irOpCode.Label.Value))
         )
-        
-    member val Settings = new AssemblerSettings() with get
+
+    new() = new SacaraAssembler(new AssemblerSettings())
 
     member this.GenerateBinaryCode(functions: List<IrFunction>) =
         let symbolTable = new SymbolTable()
@@ -254,8 +254,8 @@ type SacaraAssembler() =
                 
         // assemble the code
         let vmFunctions =
-            orderFunctions(functions, this.Settings)
-            |> Seq.map(generateFunctionVmOpCodes(symbolTable, this.Settings))
+            orderFunctions(functions, settings)
+            |> Seq.map(generateFunctionVmOpCodes(symbolTable, settings))
             |> Seq.toList
 
         // fix the offset

@@ -7,3 +7,4 @@ type AssemblerSettings() =
     member val ReorderFunctions = false with get, set
     member val UseMultipleOpcodeForSameInstruction = false with get, set
     member val RandomlyEncryptOpCode = false with get, set
+    member val EncryptOperands = false with get, set
