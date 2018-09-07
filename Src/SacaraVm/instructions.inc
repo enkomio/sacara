@@ -30,3 +30,4 @@ include vm_and.asm
 include vm_or.asm
 include vm_xor.asm
 include vm_not.asm
+include vm_add.asm

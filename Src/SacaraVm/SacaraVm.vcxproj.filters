@@ -107,6 +107,9 @@
       <Filter>vm_instructions</Filter>
     </None>
     <None Include="sacara.def" />
+    <None Include="vm_add.asm">
+      <Filter>vm_instructions</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="vm_instructions">

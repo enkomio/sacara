@@ -125,6 +125,7 @@
   <ItemGroup>
     <None Include="const.inc" />
     <None Include="sacara.def" />
+    <None Include="vm_add.asm" />
     <None Include="vm_div.asm" />
     <None Include="vm_get_ip.asm" />
     <None Include="vm_get_sp.asm" />
