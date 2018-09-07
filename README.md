@@ -1,7 +1,7 @@
-# Sacara - An IR stack based language aimed at software protection by using a VM software concept
+# Sacara - A stack based intermediate language aimed at software protection by running in a software VM
  
 _Sacara_ is a programming language very similar to the most common intermediate representation language, like MSIL or the Java bytecode. 
-It is execute inside a VM and its main purpose is to make difficult to understand the original purpose of the program.
+It is executed inside a VM and its main purpose is to make difficult to understand the original purpose of the program.
 This make the project well suited for protecting the code from being reverse enginnering. 
 
 Of course nothing will stop an highly skilled reverse engineer :)
