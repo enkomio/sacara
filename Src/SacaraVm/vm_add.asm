@@ -14,7 +14,7 @@ vm_add PROC
 
 	; do operation
 	pop ecx
-	sub ecx, eax
+	add ecx, eax
 
 	; push result
 	push ecx
