@@ -19,7 +19,7 @@ To run a Sacara compiled script you can use the SacaraRun utility, or embedd the
 Take a look at the Examples folder for examples of usage.
 
 ## Build Sacara
-_Sacara_ is currently developed with using VisualStudio 2017 Community Edition and uses _paket_ as packet manager. To build the source code you have to:
+_Sacara_ is currently developed by using VisualStudio 2017 Community Edition. To build the source code you have to:
 * clone the repository
 * run ``build.bat``
 
