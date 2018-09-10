@@ -206,12 +206,8 @@ type SacaraAssembler(settings: AssemblerSettings) =
         // the analyzed function is a symbol, this will ensure that instruction like call foo, will be correctly assembled
         symbolTable.AddLabel(irFunction.Name, _currentIp)
 
-        // add alloca instruction to compute space for local variables. This is done only for function that are not main
-        // since for the entrypoint function this is deon by a call to the init method
-        let fullBody = 
-            if irFunction.IsEntryPoint
-            then irFunction.Body |> Seq.toList
-            else addAllocaInstruction(symbolTable, irFunction.Body |> Seq.toList)
+        // add alloca instruction to compute space for local variables
+        let fullBody = addAllocaInstruction(symbolTable, irFunction.Body |> Seq.toList)
                             
         // proceed to assemble VM opcodes        
         {Body=assemblyFunctionBody(fullBody, symbolTable, settings)}

@@ -30,7 +30,8 @@ type IrOpCodes =
     // eg. pop var
     | Pop
 
-    // call a managed method which offset is popped off the stack
+    // pop from the stack two values, that are the offset of the method to call and the number of arguments to push in the
+    // ne stack frame. Once done the setup of the new stack frame invoke the code at the specified offset.
     // eg. call
     | Call
 

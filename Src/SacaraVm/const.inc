@@ -2,6 +2,7 @@
 local0 EQU -4h
 local1 EQU -8h
 local2 EQU -0Ch
+local3 EQU -10h
 
 ; arguments
 arg0 EQU 8h

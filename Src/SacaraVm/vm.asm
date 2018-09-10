@@ -122,11 +122,9 @@ vm_init_stack_frame PROC
 	mov [eax+vm_stack_base], ebx
 	mov [eax+vm_stack_top], ebx
 
-	; allocate space for local vars
-	push vm_stack_vars_size
-	call heap_alloc
+	; init space for local vars	
 	mov ebx, [ebp+arg0]
-	mov [ebx+vm_local_vars], eax
+	mov dword ptr [ebx+vm_local_vars], 0h
 
 	mov ebp, esp
 	pop ebp
@@ -156,6 +154,15 @@ vm_init PROC
 	push 0h ; no previous stack frame
 	push eax
 	call vm_init_stack_frame
+
+	; init the local var space since this is the VM init function
+	; by doing so we allow to external program to set local variables
+	; value that can be read by the VM code	
+	push vm_stack_vars_size
+	call heap_alloc
+	mov ebx, [ebp+arg0]
+	mov ebx, [ebx+vm_sp]
+	mov [ebx+vm_local_vars], eax
 		
 	; set the code pointer
 	mov ebx, [ebp+arg1]

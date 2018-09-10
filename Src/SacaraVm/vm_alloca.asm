@@ -1,13 +1,12 @@
 header_VmAlloca
 vm_alloca PROC
 	push ebp
-	mov ebp, esp	
-	
-	; free previous allocated space
+	mov ebp, esp
+		
+	; verify if not already allocated
 	mov eax, [ebp+arg0]
 	mov eax, [eax+vm_sp]
-	push [eax+vm_local_vars]
-	call heap_free
+	cmp dword ptr [eax+vm_local_vars], 0h
 	
 	; pop the value to alloca
 	push [ebp+arg0]
@@ -23,6 +22,8 @@ vm_alloca PROC
 	mov ebx, [ebx+vm_sp]
 	mov [ebx+vm_local_vars], eax
 	
+finish:
+
 	mov ebp, esp
 	pop ebp
 	ret
