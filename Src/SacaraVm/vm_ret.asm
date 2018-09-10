@@ -53,8 +53,7 @@ push_return_value:
 	call vm_stack_push_enc
 
 finish:	
-	add esp, 0Ch
-	mov ebp, esp
+	mov esp, ebp
 	pop ebp
 	ret
 vm_ret ENDP

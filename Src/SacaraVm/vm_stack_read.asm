@@ -21,7 +21,7 @@ vm_stack_read PROC
 	push [ebp+arg0]
 	call vm_stack_push_enc
 	
-	mov ebp, esp
+	mov esp, ebp
 	pop ebp
 	ret
 vm_stack_read ENDP

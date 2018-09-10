@@ -3,7 +3,7 @@ vm_nop PROC
 	push ebp
 	mov ebp, esp	
 	mov eax, eax
-	mov ebp, esp
+	mov esp, ebp
 	pop ebp
 	ret
 vm_nop ENDP

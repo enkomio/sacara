@@ -11,7 +11,7 @@ vm_jump PROC
 	mov ebx, [ebp+arg0]
 	mov [ebx+vm_ip], eax
 
-	mov ebp, esp
+	mov esp, ebp
 	pop ebp
 	ret
 vm_jump ENDP

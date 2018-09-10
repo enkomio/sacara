@@ -6,7 +6,7 @@ vm_halt PROC
 	mov eax, [ebx+vm_flags]
 	or eax, 80000000h ; set halt flag
 	mov [ebx+vm_flags], eax
-	mov ebp, esp
+	mov esp, ebp
 	pop ebp
 	ret
 vm_halt ENDP

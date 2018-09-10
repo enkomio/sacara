@@ -62,8 +62,7 @@ set_arguments:
 	mov eax, [ebp+arg0]
 	mov [eax+vm_ip], ebx
 	
-	add esp, 0Ch
-	mov ebp, esp
+	mov esp, ebp
 	pop ebp
 	ret
 vm_call ENDP

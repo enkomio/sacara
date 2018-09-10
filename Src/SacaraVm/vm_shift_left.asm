@@ -22,7 +22,7 @@ vm_shift_left PROC
 	push [ebp+arg0]
 	call vm_stack_push_enc
 
-	mov ebp, esp
+	mov esp, ebp
 	pop ebp
 	ret
 vm_shift_left ENDP

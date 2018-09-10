@@ -48,8 +48,7 @@ save_return_value:
 	push [ebp+arg0]
 	call vm_stack_push_enc
 
-	add esp, 0Ch
-	mov ebp, esp
+	mov esp, ebp
 	pop ebp
 	ret
 vm_native_call ENDP

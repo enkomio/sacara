@@ -17,8 +17,7 @@ vm_native_write PROC
 	mov ecx, [ebp+local0]
 	mov [ebx], cl
 	
-	add esp, 4
-	mov ebp, esp
+	mov esp, ebp
 	pop ebp
 	ret
 vm_native_write ENDP

@@ -21,8 +21,7 @@ vm_pop PROC
 	push [ebp+arg0]
 	call vm_local_var_set
 	
-	add esp, 4
-	mov ebp, esp
+	mov esp, ebp
 	pop ebp
 	ret
 vm_pop ENDP

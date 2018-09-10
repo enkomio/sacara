@@ -35,8 +35,7 @@ heap_alloc PROC
 	; call HeapAlloc
 	call eax 
 
-	add esp, 8
-	mov ebp, esp
+	mov esp, ebp
 	pop ebp
 	ret 4h
 heap_alloc ENDP
@@ -76,8 +75,7 @@ heap_free PROC
 	call find_exported_func
 	call eax
 	
-	add esp, 8
-	mov ebp, esp
+	mov esp, ebp
 	pop ebp
 	ret 04h
 heap_free ENDP
@@ -134,7 +132,7 @@ search_opcode_loop:
 not_found:
 	xor eax, eax
 found:
-	mov ebp, esp
+	mov esp, ebp
 	pop ebp
 	ret 0Ch
 find_vm_handler ENDP
@@ -184,7 +182,7 @@ loop_epilogue:
 	loop hash_loop
 
 exit:
-	mov ebp, esp
+	mov esp, ebp
 	pop ebp
 	ret 8
 hash_string endp
@@ -196,7 +194,6 @@ hash_string endp
 find_module_base proc
 	push ebp
 	mov ebp, esp
-
 	sub esp, 8h
 
 	assume fs:nothing
@@ -254,9 +251,7 @@ module_found:
 	mov eax, [eax+10h] ; DllBase
 
 module_not_found:
-	add esp, 8h
-
-	mov ebp, esp
+	mov esp, ebp
 	pop ebp
 	ret 4
 find_module_base endp
@@ -358,25 +353,20 @@ error:
 	xor eax, eax
 	
 finish:
-	add esp, 8
-	mov ebp, esp
+	mov esp, ebp
 	pop ebp
 	ret 8
 find_exported_func ENDP
 
 ; *****************************
-; arguments: vm context, dword
+; arguments: XOR key, dword
 ; *****************************
 decode_dword PROC
 	push ebp
 	mov ebp, esp
 
-	; compute stack offset
-	mov ebx, [ebp+arg0]
-	mov ebx, [ebx+vm_sp]
-	mov ecx, [ebx+vm_stack_top]
-	sub ecx, [ebx+vm_stack_base]
-	not ecx
+	; get XOR key
+	mov ecx, [ebp+arg0]
 
 	; read dword to encode
 	mov eax, [ebp+arg1]
@@ -404,24 +394,20 @@ decode_dword PROC
 	shl ecx, 10h
 	or eax, ecx
 
-	mov ebp, esp
+	mov esp, ebp
 	pop ebp
 	ret 8
 decode_dword ENDP
 
 ; *****************************
-; arguments: vm context, dword
+; arguments: XOR key, dword
 ; *****************************
 encode_dword PROC
 	push ebp
 	mov ebp, esp
 
-	; compute stack offset
-	mov ebx, [ebp+arg0]
-	mov ebx, [ebx+vm_sp]
-	mov ecx, [ebx+vm_stack_top]
-	sub ecx, [ebx+vm_stack_base]
-	not ecx
+	; get XOR key
+	mov ecx, [ebp+arg0]
 
 	; read dword to encode
 	mov eax, [ebp+arg1]
@@ -452,7 +438,7 @@ encode_dword PROC
 	shl eax, 10h
 	or ax, dx
 
-	mov ebp, esp
+	mov esp, ebp
 	pop ebp
 	ret 8
 encode_dword ENDP

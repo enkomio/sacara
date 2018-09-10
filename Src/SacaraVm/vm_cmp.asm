@@ -41,7 +41,7 @@ set_carry_flag:
 finish:
 	mov [ebx+vm_flags], ecx
 
-	mov ebp, esp
+	mov esp, ebp
 	pop ebp
 	ret
 vm_cmp ENDP

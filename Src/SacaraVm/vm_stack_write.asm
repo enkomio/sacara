@@ -23,8 +23,7 @@ vm_stack_write PROC
 	lea ebx, [ebx+TYPE DWORD*ecx]	
 	mov [ebx], eax
 		
-	add esp, 4
-	mov ebp, esp
+	mov esp, ebp
 	pop ebp
 	ret
 vm_stack_write ENDP

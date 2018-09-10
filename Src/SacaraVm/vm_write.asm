@@ -23,8 +23,7 @@ vm_write PROC
 	mov ecx, [ebp+local1]
 	mov [ebx], cl
 	
-	add esp, 8
-	mov ebp, esp
+	mov esp, ebp
 	pop ebp
 	ret
 vm_write ENDP

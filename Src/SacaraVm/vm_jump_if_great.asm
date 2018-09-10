@@ -18,7 +18,7 @@ vm_jump_if_great PROC
 	mov [ebx+vm_ip], eax
 
 finish:	
-	mov ebp, esp
+	mov esp, ebp
 	pop ebp
 	ret
 vm_jump_if_great ENDP

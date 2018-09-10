@@ -12,7 +12,7 @@ vm_push_immediate PROC
 	push [ebp+arg0]
 	call vm_stack_push_enc
 	
-	mov ebp, esp
+	mov esp, ebp
 	pop ebp
 	ret
 vm_push_immediate ENDP

@@ -29,7 +29,7 @@ vm_local_var_set PROC
 	mov ebx, [ebp+arg2]
 	mov [eax], ebx
 
-	mov ebp, esp
+	mov esp, ebp
 	pop ebp
 	ret 0Ch
 vm_local_var_set ENDP
@@ -53,7 +53,7 @@ vm_local_var_get PROC
 	; read the value
 	mov eax, [eax]
 
-	mov ebp, esp
+	mov esp, ebp
 	pop ebp
 	ret 8h
 vm_local_var_get ENDP
@@ -78,7 +78,7 @@ vm_stack_push PROC
 	mov ebx, [ebx+vm_stack_top]
 	mov [ebx], eax
 
-	mov ebp, esp
+	mov esp, ebp
 	pop ebp
 	ret 8h
 vm_stack_push ENDP
@@ -89,10 +89,17 @@ vm_stack_push ENDP
 vm_stack_push_enc PROC
 	push ebp
 	mov ebp, esp
+
+	; compute stack offset as XOR key
+	mov ebx, [ebp+arg0]
+	mov ebx, [ebx+vm_sp]
+	mov ecx, [ebx+vm_stack_top]
+	sub ecx, [ebx+vm_stack_base]
+	not ecx
 		
 	; encode value
 	push [ebp+arg1]
-	push [ebp+arg0]
+	push ecx
 	call encode_dword
 
 	; push encoded value
@@ -100,7 +107,7 @@ vm_stack_push_enc PROC
 	push [ebp+arg0]
 	call vm_stack_push
 
-	mov ebp, esp
+	mov esp, ebp
 	pop ebp
 	ret 8h
 vm_stack_push_enc ENDP
@@ -116,12 +123,19 @@ vm_stack_pop_enc PROC
 	push [ebp+arg0]
 	call vm_stack_pop
 
+	; compute stack offset as XOR key
+	mov ebx, [ebp+arg0]
+	mov ebx, [ebx+vm_sp]
+	mov ecx, [ebx+vm_stack_top]
+	sub ecx, [ebx+vm_stack_base]
+	not ecx
+
 	; decode value
 	push eax
-	push [ebp+arg0]
+	push ecx
 	call decode_dword
 
-	mov ebp, esp
+	mov esp, ebp
 	pop ebp
 	ret 4h
 vm_stack_pop_enc ENDP
@@ -145,7 +159,7 @@ vm_stack_pop PROC
 	; decrement stack by 1 DWORD
 	sub dword ptr [ebx+vm_stack_top], TYPE DWORD
 
-	mov ebp, esp
+	mov esp, ebp
 	pop ebp
 	ret 4h
 vm_stack_pop ENDP
@@ -169,7 +183,7 @@ vm_init_stack_frame PROC
 	mov ebx, [ebp+arg0]
 	mov dword ptr [ebx+vm_local_vars], 0h
 
-	mov ebp, esp
+	mov esp, ebp
 	pop ebp
 	ret 8h
 vm_init_stack_frame ENDP
@@ -216,7 +230,7 @@ vm_init PROC
 	mov ebx, [ebp+arg2]
 	mov [ecx+vm_code_size], ebx
 
-	mov ebp, esp
+	mov esp, ebp
 	pop ebp
 	ret 0Ch
 vm_init ENDP
@@ -241,7 +255,7 @@ vm_free PROC
 	push [eax+vm_sp]
 	call heap_free
 	
-	mov ebp, esp
+	mov esp, ebp
 	pop ebp
 	ret 4h
 vm_free ENDP
@@ -266,7 +280,7 @@ vm_is_stack_empty PROC
 equals:
 	inc eax
 finish:
-	mov ebp, esp
+	mov esp, ebp
 	pop ebp
 	ret 4h
 vm_is_stack_empty ENDP
@@ -282,7 +296,7 @@ vm_increment_ip PROC
 	mov ebx, [eax]
 	lea ebx, [ebx+vm_ip+ecx]
 	mov [eax+vm_ip], ebx
-	mov ebp, esp
+	mov esp, ebp
 	pop ebp
 	ret 8
 vm_increment_ip ENDP
@@ -320,7 +334,7 @@ finish:
 	call vm_increment_ip
 	pop eax
 
-	mov ebp, esp
+	mov esp, ebp
 	pop ebp
 	ret 8
 vm_read_code ENDP
@@ -360,7 +374,7 @@ error:
 	mov eax, [eax+vm_ip]
 
 end_execution:	
-	mov ebp, esp
+	mov esp, ebp
 	pop ebp
 	ret 8
 vm_execute ENDP
@@ -388,7 +402,7 @@ clear_flags:
 	; clear first 4 bits since they are flags and save the result
 	and eax, 0FFFh
 
-	mov ebp, esp
+	mov esp, ebp
 	pop ebp
 	ret 8h
 vm_decode_opcode ENDP
@@ -423,7 +437,7 @@ vm_loop:
 	test ebx, 80000000h
 	je vm_loop
 	
-	mov ebp, esp
+	mov esp, ebp
 	pop ebp
 	ret 8
 vm_run ENDP
