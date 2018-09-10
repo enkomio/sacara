@@ -1,4 +1,4 @@
-﻿namespace ES.Sacara
+﻿namespace ES.Sacara.Asm
 
 open System
 open System.Text
@@ -123,7 +123,7 @@ module Program =
     let main argv = 
         printBanner()
 
-        let parser = ArgumentParser.Create<CLIArguments>(programName = "sacara.exe")
+        let parser = ArgumentParser.Create<CLIArguments>(programName = "SacaraAsm.exe")
         try            
             let results = parser.Parse(argv)
                     

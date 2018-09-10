@@ -5,14 +5,14 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>97ab451e-bd2a-48d4-b54e-e067c9948513</ProjectGuid>
+    <ProjectGuid>b235ed67-bfb7-4a84-9b61-544ade917dfe</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Sacara</RootNamespace>
-    <AssemblyName>Sacara</AssemblyName>
+    <RootNamespace>SacaraAsm</RootNamespace>
+    <AssemblyName>SacaraAsm</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <UseStandardResourceNames>true</UseStandardResourceNames>
-    <Name>Sacara</Name>
+    <Name>SacaraAsm</Name>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
