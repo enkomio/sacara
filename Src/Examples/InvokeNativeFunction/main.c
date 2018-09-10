@@ -11,6 +11,8 @@ proc main
 endp
 
 To compile this code in VS, set Basic Runtime Checks settings to Default.
+
+Generated with command: SacaraAsm.exe --gen-intermediate --gen-clang --encrypt-opcodes --encrypt-operands --multiple-opcodes test.sacara
 */
 
 
@@ -20,13 +22,13 @@ To compile this code in VS, set Basic Runtime Checks settings to Default.
 
 // this code was generated with the Sacara assembler
 uint8_t code[] = {
-	0x25,0x44,0xC7,0x37,0x72,0x52,           // /* 2544C7377252 */ loc_00000000: VmPushImmediate 0x527237C7
-	0x18,0xF,                                // /* 180F         */ loc_00000006: VmAlloca 
-	0x25,0x44,0xCE,0x3F,0x7A,0x5A,           // /* 2544CE3F7A5A */ loc_00000008: VmPushImmediate 0x5A7A3FCE
-	0x25,0x44,0xD4,0x25,0x60,0x40,           // /* 2544D4256040 */ loc_0000000E: VmPushImmediate 0x406025D4
-	0xB4,0x41,0x48,0xD2,                     // /* B44148D2     */ loc_00000014: VmPushVariable 0xD248
-	0x4F,0x3,                                // /* 4F03         */ loc_00000018: VmNativeCall 
-	0xED,0x6                                 // /* ED06         */ loc_0000001A: VmHalt 
+	0x4D,0xC1,0xC7,0x37,0x72,0x52,           // /* 4DC1C7377252 */ loc_00000000: VmPushImmediate 0x527237C7
+	0x8B,0x86,                               // /* 8B86         */ loc_00000006: VmAlloca 
+	0x45,0xC1,0xCE,0x3F,0x7A,0x5A,           // /* 45C1CE3F7A5A */ loc_00000008: VmPushImmediate 0x5A7A3FCE
+	0x5F,0xC1,0xD4,0x25,0x60,0x40,           // /* 5FC1D4256040 */ loc_0000000E: VmPushImmediate 0x406025D4
+	0xA,0xC9,0x48,0xD2,                      // /* 0AC948D2     */ loc_00000014: VmPushVariable 0xD248
+	0x10,0x81,                               // /* 1081         */ loc_00000018: VmNativeCall 
+	0xE3,0x84                                // /* E384         */ loc_0000001A: VmHalt 
 };
 
 typedef struct _vm_context {
