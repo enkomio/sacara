@@ -7,7 +7,7 @@ vm_pop PROC
 
 	; get the value to insert in the local var
 	push [ebp+arg0]
-	call vm_stack_pop
+	call vm_stack_pop_enc
 	mov [ebp+local0], eax
 
 	; read the local variable index

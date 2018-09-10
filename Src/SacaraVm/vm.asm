@@ -84,6 +84,49 @@ vm_stack_push PROC
 vm_stack_push ENDP
 
 ; *****************************
+; arguments: vm context, imm
+; *****************************
+vm_stack_push_enc PROC
+	push ebp
+	mov ebp, esp
+		
+	; encode value
+	push [ebp+arg1]
+	push [ebp+arg0]
+	call encode_dword
+
+	; push encoded value
+	push eax
+	push [ebp+arg0]
+	call vm_stack_push
+
+	mov ebp, esp
+	pop ebp
+	ret 8h
+vm_stack_push_enc ENDP
+
+; *****************************
+; arguments: vm context
+; *****************************
+vm_stack_pop_enc PROC
+	push ebp
+	mov ebp, esp
+
+	; read encoded value
+	push [ebp+arg0]
+	call vm_stack_pop
+
+	; decode value
+	push eax
+	push [ebp+arg0]
+	call decode_dword
+
+	mov ebp, esp
+	pop ebp
+	ret 4h
+vm_stack_pop_enc ENDP
+
+; *****************************
 ; arguments: vm context
 ; *****************************
 vm_stack_pop PROC
@@ -288,7 +331,7 @@ vm_read_code ENDP
 ; *****************************
 vm_execute PROC
 	push ebp
-	mov ebp, esp		
+	mov ebp, esp
 	
 	; find the handler
 	push [ebp+arg1]	

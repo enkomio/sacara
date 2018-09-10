@@ -267,7 +267,6 @@ find_module_base endp
 find_exported_func PROC
 	push ebp
 	mov ebp, esp
-
 	sub esp, 8
 	
 	; check MZ signature
@@ -364,3 +363,96 @@ finish:
 	pop ebp
 	ret 8
 find_exported_func ENDP
+
+; *****************************
+; arguments: vm context, dword
+; *****************************
+decode_dword PROC
+	push ebp
+	mov ebp, esp
+
+	; compute stack offset
+	mov ebx, [ebp+arg0]
+	mov ebx, [ebx+vm_sp]
+	mov ecx, [ebx+vm_stack_top]
+	sub ecx, [ebx+vm_stack_base]
+	not ecx
+
+	; read dword to encode
+	mov eax, [ebp+arg1]
+
+	; step 1 XOR to get original second byte
+	xor al, ah
+
+	; step 2 ror
+	ror eax, 10h
+
+	; step 3 save value second byte
+	xor cl, al
+	shl cx, 8h
+
+	; step 4 shlr
+	mov ebx, eax
+	shr ebx, 18h
+	shrd ax, bx, 8h
+
+	; step 5  hardcoded XOR
+	xor ax, 0B9D3h
+	
+	; compose final value
+	and eax, 0FFFFFFh
+	shl ecx, 10h
+	or eax, ecx
+
+	mov ebp, esp
+	pop ebp
+	ret 8
+decode_dword ENDP
+
+; *****************************
+; arguments: vm context, dword
+; *****************************
+encode_dword PROC
+	push ebp
+	mov ebp, esp
+
+	; compute stack offset
+	mov ebx, [ebp+arg0]
+	mov ebx, [ebx+vm_sp]
+	mov ecx, [ebx+vm_stack_top]
+	sub ecx, [ebx+vm_stack_base]
+	not ecx
+
+	; read dword to encode
+	mov eax, [ebp+arg1]
+
+	; step 1 hardcoded XOR
+	xor ax, 0B9D3h
+
+	; step 2 xor SP
+	mov ebx, eax
+	shr ebx, 018h
+	xor bx, cx
+	shl bx, 8h
+
+	; step 3 SHLD
+	mov si, ax ; save AX
+	shr si, 8h ; save only first 2 bytes
+	shld ax, bx, 8h
+
+	; step 4 XOR missed bytes with third and four bytes
+	mov edx, eax
+	shr edx, 10h
+	xor dx, si
+
+	; compose final value	
+	shl esi, 08h
+	mov dh, 0h	
+	or dx, si
+	shl eax, 10h
+	or ax, dx
+
+	mov ebp, esp
+	pop ebp
+	ret 8
+encode_dword ENDP

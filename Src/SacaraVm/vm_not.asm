@@ -5,7 +5,7 @@ vm_not PROC
 	
 	; read the operand
 	push [ebp+arg0]
-	call vm_stack_pop
+	call vm_stack_pop_enc
 
 	; do operation	
 	not eax
@@ -13,7 +13,7 @@ vm_not PROC
 	; push result
 	push eax
 	push [ebp+arg0]
-	call vm_stack_push
+	call vm_stack_push_enc
 
 	mov ebp, esp
 	pop ebp

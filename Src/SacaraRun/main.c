@@ -40,7 +40,7 @@ static const char *const usage[] = {
 	NULL
 };
 
-uint32_t run_code(char* filename)
+uint32_t run_code(char* filename, int argc, const char** argv)
 {
 	uint32_t result = -1;	
 	HANDLE hFile = NULL;	
@@ -64,6 +64,13 @@ uint32_t run_code(char* filename)
 
 				// initialize the VM context structure
 				vm_init(&ctx, file_content, file_size);
+
+				// set the arguments
+				for (uint32_t i = 0; i < argc; i++)
+				{
+					uint32_t num = (uint32_t)strtol(argv[i], NULL, 16);
+					vm_local_var_set(&ctx, i, num);
+				}
 
 				// run the code
 				result = vm_run(&ctx);
@@ -100,12 +107,12 @@ int main(int argc, const char** argv)
 
 	struct argparse argparse;
 	argparse_init(&argparse, options, usage, 0);
-	argparse_describe(&argparse, "\nSacaraRun allows to execute Sacara Intermediate Language (SIL) code", NULL);
+	argparse_describe(&argparse, "\nSacaraRun allows to execute Sacara Intermediate Language (SIL) code", "\nUsage: sacara.exe <OPTIONS> [arg0|arg1|...]");
 	argc = argparse_parse(&argparse, argc, argv);
 
 	if (path != NULL)
 	{
-		result = run_code(path);
+		result = run_code(path, argc, argv);
 		if (result)
 		{
 			printf("An error was encountered during the code execution. Error at offset: %d", result);

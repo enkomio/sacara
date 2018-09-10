@@ -12,7 +12,7 @@ vm_ret PROC
 
 	; save to local var the value to return to the previous function
 	push [ebp+arg0]
-	call vm_stack_pop
+	call vm_stack_pop_enc
 	mov [ebp+local0], eax
 	mov dword ptr [ebp+local2], 1h
 
@@ -39,7 +39,7 @@ remove_stack_frame:
 	jz push_return_value
 		
 	push [ebp+arg0]
-	call vm_stack_pop
+	call vm_stack_pop_enc
 	mov ebx, [ebp+arg0]
 	mov [ebx+vm_ip], eax
 
@@ -50,7 +50,7 @@ push_return_value:
 
 	push [ebp+local0]
 	push [ebp+arg0]
-	call vm_stack_push
+	call vm_stack_push_enc
 
 finish:	
 	add esp, 0Ch

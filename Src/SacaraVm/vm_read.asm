@@ -5,7 +5,7 @@ vm_read PROC
 	
 	; pop the offset that we want to read
 	push [ebp+arg0]
-	call vm_stack_pop
+	call vm_stack_pop_enc
 	
 	; read opcode
 	mov ebx, [ebp+arg0]
@@ -16,7 +16,7 @@ vm_read PROC
 	; push the value on top of the stack
 	push eax
 	push [ebp+arg0]
-	call vm_stack_push
+	call vm_stack_push_enc
 	
 	mov ebp, esp
 	pop ebp

@@ -5,11 +5,11 @@ vm_cmp PROC
 	
 	; read arguments
 	push [ebp+arg0]
-	call vm_stack_pop
+	call vm_stack_pop_enc
 	mov edx, eax
 
 	push [ebp+arg0]
-	call vm_stack_pop
+	call vm_stack_pop_enc
 
 	; do comparison and save result
 	cmp edx, eax

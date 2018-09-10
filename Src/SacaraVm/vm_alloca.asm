@@ -10,7 +10,7 @@ vm_alloca PROC
 	
 	; pop the value to alloca
 	push [ebp+arg0]
-	call vm_stack_pop
+	call vm_stack_pop_enc
 
 	; allocate the new memory
 	lea eax, [eax*TYPE DWORD]

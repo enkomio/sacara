@@ -6,17 +6,17 @@ vm_native_call PROC
 	
 	; save native address
 	push [ebp+arg0]
-	call vm_stack_pop
+	call vm_stack_pop_enc
 	mov [ebp+local0], eax
 
 	; save number of parameters
 	push [ebp+arg0]
-	call vm_stack_pop
+	call vm_stack_pop_enc
 	mov [ebp+local1], eax
 	
 	; get flag to see if we have to clean the stack
 	push [ebp+arg0]
-	call vm_stack_pop
+	call vm_stack_pop_enc
 	mov [ebp+local2], eax
 
 	; push the managed value into the native stack
@@ -27,7 +27,7 @@ vm_native_call PROC
 arguments_push:
 	push ecx; save loop counter
 	push [ebp+arg0]
-	call vm_stack_pop
+	call vm_stack_pop_enc
 	pop ecx ; restore counter
 	push eax ; push argument into the native stack
 	loop arguments_push	
@@ -46,7 +46,7 @@ invoke_native_code:
 save_return_value:
 	push eax ; push return value
 	push [ebp+arg0]
-	call vm_stack_push
+	call vm_stack_push_enc
 
 	add esp, 0Ch
 	mov ebp, esp

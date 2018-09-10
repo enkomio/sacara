@@ -6,12 +6,12 @@ vm_write PROC
 	
 	; read the offset
 	push [ebp+arg0]
-	call vm_stack_pop
+	call vm_stack_pop_enc
 	mov [ebp+local0], eax
 
 	; read opcode to write
 	push [ebp+arg0]
-	call vm_stack_pop
+	call vm_stack_pop_enc
 	mov [ebp+local1], eax
 
 	; to go the offset

@@ -5,12 +5,12 @@ vm_shift_right PROC
 	
 	; read the first operand
 	push [ebp+arg0]
-	call vm_stack_pop
+	call vm_stack_pop_enc
 	push eax
 
 	; read the second operand
 	push [ebp+arg0]
-	call vm_stack_pop
+	call vm_stack_pop_enc
 	mov cl, al
 
 	; do operation
@@ -20,7 +20,7 @@ vm_shift_right PROC
 	; push result
 	push eax
 	push [ebp+arg0]
-	call vm_stack_push
+	call vm_stack_push_enc
 
 	mov ebp, esp
 	pop ebp

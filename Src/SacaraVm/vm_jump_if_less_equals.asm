@@ -5,7 +5,7 @@ vm_jump_if_less_equals PROC
 	
 	; pop the value
 	push [ebp+arg0]
-	call vm_stack_pop
+	call vm_stack_pop_enc
 
 	; test the carry flag
 	mov ebx, [ebp+arg0]
