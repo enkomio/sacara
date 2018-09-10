@@ -8,6 +8,11 @@ vm_push_variable PROC
 	push [ebp+arg0]
 	call vm_read_code
 
+	; decode operand if necessary
+	push eax
+	push [ebp+arg0]
+	call vm_decode_word_operand
+
 	; read the variable value
 	push eax
 	push [ebp+arg0]
@@ -17,6 +22,10 @@ vm_push_variable PROC
 	push eax
 	push [ebp+arg0]
 	call vm_stack_push_enc
+
+	; clear operands encrypted flag
+	push [ebp+arg0]
+	call vm_clear_operands_encryption_flag
 	
 	mov esp, ebp
 	pop ebp

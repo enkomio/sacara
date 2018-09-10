@@ -26,8 +26,7 @@ type SacaraAssembler(settings: AssemblerSettings) =
     let mutable _currentFunction = new IrFunction(String.Empty)
     let mutable _functions = new List<IrFunction>()
     let mutable _currentLabel: String option = None
-    let mutable _currentIp = 0
-    let mutable _random = new Random()
+    let mutable _currentIp = 0    
 
     let addOperand(opCode: IrOpCode) =
         if _currentLabel.IsSome then
@@ -128,39 +127,13 @@ type SacaraAssembler(settings: AssemblerSettings) =
 
     let parseAst(ast: Program) =
         match ast with
-        | Program sl -> sl |> List.iter(parseStatement)
-
-    let shouldEncrypt(vmOpCode: VmOpCode) =
-        let n = _random.Next(0,10)
-        let opCodeToNotEncrypt = [VmByte; VmWord; VmDoubleWord]
-        (opCodeToNotEncrypt |> List.contains vmOpCode.Type |> not) && ([3; 8] |> List.contains(n) |> not)
-
-    let encryptVmOpCode(vmOpCode: VmOpCode) =
-        if shouldEncrypt(vmOpCode) then
-            let numericOpCode = BitConverter.ToUInt16(vmOpCode.VmOp, 0)
-            let mutable encNumericOpCode = numericOpCode ^^^ uint16 0x5B ^^^ uint16(vmOpCode.Offset + vmOpCode.VmOp.Length)
-            
-            // clear flags
-            encNumericOpCode <- encNumericOpCode &&& uint16 0xFFF
-
-            // set encrypted flag
-            encNumericOpCode <- encNumericOpCode ||| uint16 0x8000
-            
-            let encOpCode = BitConverter.GetBytes(encNumericOpCode)
-
-            Array.Copy(encOpCode, vmOpCode.Buffer, encOpCode.Length)
-            vmOpCode.SyncOpAndOperandsWithBuffer()
+        | Program sl -> sl |> List.iter(parseStatement)    
 
     let assemblyIrOpCode(symbolTable: SymbolTable, settings: AssemblerSettings) (opCode: IrOpCode) =
         if opCode.Label.IsSome then
             symbolTable.AddLabel(opCode.Label.Value, _currentIp)
 
         let vmOpCode = opCode.Assemble(_currentIp, symbolTable, settings)
-
-        // encrypt the opcode if necessary
-        if settings.RandomlyEncryptOpCode then  
-            encryptVmOpCode(vmOpCode)            
-
         _currentIp <- _currentIp + vmOpCode.Buffer.Length
         vmOpCode
 
@@ -256,6 +229,9 @@ type SacaraAssembler(settings: AssemblerSettings) =
 
         // fix the offset
         symbolTable.FixPlaceholders(vmFunctions)
+
+        // obfuscate
+        Obfuscator.obfuscate(vmFunctions, settings)
 
         vmFunctions 
 

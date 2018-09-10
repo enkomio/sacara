@@ -304,6 +304,97 @@ vm_increment_ip ENDP
 ; *****************************
 ; arguments: vm_context, size
 ; *****************************
+vm_clear_operands_encryption_flag PROC
+	push ebp
+	mov ebp, esp
+
+	mov eax, [ebp+arg0]
+	mov ecx, [eax+vm_flags]
+	and ecx, 0f7ffffffh
+	mov [eax+vm_flags], ecx
+
+	mov esp, ebp
+	pop ebp
+	ret 4
+vm_clear_operands_encryption_flag ENDP
+
+; *****************************
+; arguments: vm_context, operand word
+; *****************************
+vm_decode_word_operand PROC
+	push ebp
+	mov ebp, esp
+
+	push 0CA50h
+	push [ebp+arg1]
+	push [ebp+arg0]
+	call vm_decode_operand
+	and eax, 0FFFFh
+
+	mov esp, ebp
+	pop ebp
+	ret 8
+vm_decode_word_operand ENDP
+
+; *****************************
+; arguments: vm_context, operand double word
+; *****************************
+vm_decode_double_word_operand PROC
+	push ebp
+	mov ebp, esp
+
+	push 0547431C0h
+	push [ebp+arg1]
+	push [ebp+arg0]
+	call vm_decode_operand	
+
+	mov esp, ebp
+	pop ebp
+	ret 8
+vm_decode_double_word_operand ENDP
+
+; *****************************
+; arguments: vm_context, operand double word, hardcoded key
+; *****************************
+vm_decode_operand PROC
+	push ebp
+	mov ebp, esp
+
+	; check operand encryption flag
+	mov eax, [ebp+arg0]
+	mov ecx, [eax+vm_flags]
+	test ecx, 08000000h
+	jz not_decode
+
+	; comput dynamic enc key	
+	mov ebx, [eax+vm_ip]
+	mov eax, ebx
+	shl ebx, 8h
+	or eax, ebx
+	shl ebx, 8h
+	or eax, ebx
+	shl ebx, 8h
+	or eax, ebx
+
+	; decrypt operator
+	mov ebx, [ebp+arg1]
+	mov edx, [ebp+arg2]
+	xor ebx, edx
+	xor eax, ebx
+	jmp finish
+
+not_decode:
+	mov eax, [ebp+arg1]
+
+finish:
+	mov esp, ebp
+	pop ebp
+	ret 0Ch
+vm_decode_operand ENDP
+
+; *****************************
+; arguments: vm_context, size
+; *****************************
 vm_read_code PROC
 	push ebp
 	mov ebp, esp
@@ -385,8 +476,20 @@ vm_execute ENDP
 vm_decode_opcode PROC
 	push ebp
 	mov ebp, esp
+		
+	; check if the encrypt operands flag is set
+	mov eax, [ebp+arg1]
+	test eax, 04000h
+	jz check_opcode_flags
 
-	; check if the encrypt flag is set
+	; set the operands are encrypted flag in the global status flag
+	mov ebx, [ebp+arg0]
+	mov ecx, [ebx+vm_flags]
+	or ecx, 8000000h
+	mov [ebx+vm_flags], ecx
+
+check_opcode_flags:
+	; check if the encrypt opcode flag is set
 	mov eax, [ebp+arg1]
 	test eax, 08000h
 	jz clear_flags

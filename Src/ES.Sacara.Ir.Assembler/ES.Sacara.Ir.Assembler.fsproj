@@ -47,6 +47,7 @@
     <Compile Include="AssemblerSettings.fs" />
     <Compile Include="Instructions.fs" />
     <Compile Include="OpCodes.fs" />
+    <Compile Include="Obfuscator.fs" />
     <Compile Include="SacaraAssembler.fs" />
     <None Include="vm_opcodes.json">
       <Link>vm_opcodes.json</Link>

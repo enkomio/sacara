@@ -2,12 +2,12 @@
 
 This is an example program that use sacara VM in order to invoke a native function. The code assembled is the following one:
 
-proc main			
-	push 0		// number of bytes to remove from the native stack after the invocation
-	push 0		// number of arguments to push from the managed stack to the native stack
-	push local0 // this value is setted by the program
-	ncall		// invoke the function, we ignore the return value
-	halt		// end the VM execution
+proc main
+	push 0		   // number of bytes to remove from the native stack after the invocation
+	push 0		   // number of arguments to push from the managed stack to the native stack
+	push func_ptr  // this value is setted by the program
+	ncall		   // invoke the function, we ignore the return value
+	halt	 	   // end the VM execution
 endp
 
 To compile this code in VS, set Basic Runtime Checks settings to Default.
@@ -20,11 +20,13 @@ To compile this code in VS, set Basic Runtime Checks settings to Default.
 
 // this code was generated with the Sacara assembler
 uint8_t code[] = {
-		0x25,0x4,0x0,0x0,0x0,0x0,                // /* 250400000000 */ loc_00000000: VmPushImmediate 0x0
-		0x25,0x4,0x0,0x0,0x0,0x0,                // /* 250400000000 */ loc_00000006: VmPushImmediate 0x0
-		0xB4,0x1,0x0,0x0,                        // /* B4010000     */ loc_0000000C: VmPushVariable 0x0
-		0x4F,0x3,                                // /* 4F03         */ loc_00000010: VmNativeCall
-		0xED,0x6                                 // /* ED06         */ loc_00000012: VmHalt
+	0x25,0x44,0xC7,0x37,0x72,0x52,           // /* 2544C7377252 */ loc_00000000: VmPushImmediate 0x527237C7
+	0x18,0xF,                                // /* 180F         */ loc_00000006: VmAlloca 
+	0x25,0x44,0xCE,0x3F,0x7A,0x5A,           // /* 2544CE3F7A5A */ loc_00000008: VmPushImmediate 0x5A7A3FCE
+	0x25,0x44,0xD4,0x25,0x60,0x40,           // /* 2544D4256040 */ loc_0000000E: VmPushImmediate 0x406025D4
+	0xB4,0x41,0x48,0xD2,                     // /* B44148D2     */ loc_00000014: VmPushVariable 0xD248
+	0x4F,0x3,                                // /* 4F03         */ loc_00000018: VmNativeCall 
+	0xED,0x6                                 // /* ED06         */ loc_0000001A: VmHalt 
 };
 
 typedef struct _vm_context {

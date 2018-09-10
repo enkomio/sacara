@@ -8,9 +8,19 @@ vm_push_immediate PROC
 	push [ebp+arg0]
 	call vm_read_code
 
+	; decode operand if necessary
+	push eax
+	push [ebp+arg0]
+	call vm_decode_double_word_operand
+
+	; push the value
 	push eax
 	push [ebp+arg0]
 	call vm_stack_push_enc
+
+	; clear operands encrypted flag
+	push [ebp+arg0]
+	call vm_clear_operands_encryption_flag
 	
 	mov esp, ebp
 	pop ebp
