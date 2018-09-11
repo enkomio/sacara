@@ -2,7 +2,8 @@ include const.inc
 include strings.inc
 include instructions_headers.inc
 include utility.asm
-include macro.asm
+
+include vm_macro.asm
 
 ; compute size of the code related to the VM. 
 ; These offset are used by the find_vm_handler routine
@@ -539,6 +540,8 @@ vm_run PROC
 	mov ebp, esp
 	
 vm_loop:		
+	check_debugger
+
 	; read the opcode to execute	
 	push 2
 	push [ebp+arg0]

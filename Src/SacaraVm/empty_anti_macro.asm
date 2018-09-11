@@ -1,0 +1,2 @@
+check_debugger MACRO
+ENDM

@@ -82,6 +82,10 @@
       <SubSystem>NotSet</SubSystem>
       <ModuleDefinitionFile>sacara.def</ModuleDefinitionFile>
     </Link>
+    <MASM>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <PreprocessorDefinitions>ENABLE_ANTI_ANALYSIS=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </MASM>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -103,6 +107,7 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -123,8 +128,10 @@
     <MASM Include="main.asm" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="anti_macro.asm" />
     <None Include="const.inc" />
-    <None Include="macro.asm" />
+    <None Include="empty_anti_macro.asm" />
+    <None Include="vm_macro.asm" />
     <None Include="sacara.def" />
     <None Include="vm_add.asm" />
     <None Include="vm_div.asm" />

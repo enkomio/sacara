@@ -3,6 +3,8 @@ vm_push_immediate PROC
 	push ebp
 	mov ebp, esp
 
+	check_debugger
+
 	; read the immediate to push	
 	push 4
 	push [ebp+arg0]

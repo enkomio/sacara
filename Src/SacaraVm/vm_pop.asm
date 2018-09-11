@@ -4,6 +4,8 @@ vm_pop PROC
 	mov ebp, esp	
 	sub esp, 4
 
+	check_debugger
+
 	; get the value to insert in the local var
 	push [ebp+arg0]
 	call_vm_stack_pop_enc

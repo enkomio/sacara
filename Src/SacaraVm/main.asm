@@ -10,6 +10,13 @@ ExitProcess proto,dwExitCode:dword
 
 .CODE
 
+; the flag is specified as a MAM preprocessor.
+IF ENABLE_ANTI_ANALYSIS
+	include anti_macro.asm
+ELSE
+	include empty_anti_macro.asm
+ENDIF
+
 include vm.asm
 
 main PROC

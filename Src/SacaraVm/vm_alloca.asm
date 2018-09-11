@@ -2,6 +2,8 @@ header_VmAlloca
 vm_alloca PROC
 	push ebp
 	mov ebp, esp
+
+	check_debugger
 	
 	; pop the value to alloca
 	push [ebp+arg0]
