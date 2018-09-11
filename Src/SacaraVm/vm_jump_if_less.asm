@@ -5,7 +5,7 @@ vm_jump_if_less PROC
 	
 	; pop the value
 	push [ebp+arg0]
-	call vm_stack_pop_enc
+	call_vm_stack_pop_enc
 
 	; read the carry flag
 	mov ebx, [ebp+arg0]

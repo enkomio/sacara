@@ -5,7 +5,7 @@ vm_alloca PROC
 	
 	; pop the value to alloca
 	push [ebp+arg0]
-	call vm_stack_pop_enc
+	call_vm_stack_pop_enc
 	push eax
 
 	; verify if not already allocated
@@ -18,7 +18,7 @@ vm_alloca PROC
 	; allocate the new memory
 	lea eax, [eax*TYPE DWORD]
 	push eax
-	call heap_alloc
+	call_heap_alloc
 
 	; set the new memory in the header
 	mov ebx, [ebp+arg0]
@@ -26,7 +26,6 @@ vm_alloca PROC
 	mov [ebx+vm_local_vars], eax
 	
 finish:
-
 	mov esp, ebp
 	pop ebp
 	ret

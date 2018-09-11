@@ -6,13 +6,13 @@ vm_ret PROC
 
 	; check if the stack is empty
 	push [ebp+arg0]
-	call vm_is_stack_empty
+	call_vm_is_stack_empty
 	cmp eax, 1
 	jz remove_stack_frame
 
 	; save to local var the value to return to the previous function
 	push [ebp+arg0]
-	call vm_stack_pop_enc
+	call_vm_stack_pop_enc
 	mov [ebp+local0], eax
 	mov dword ptr [ebp+local2], 1h
 
@@ -25,7 +25,7 @@ remove_stack_frame:
 
 	; free current stack pointer
 	push [ebp+arg0]
-	call vm_free
+	call_vm_free
 
 	; set the previous stack pointer
 	mov ebx, [ebp+local1]
@@ -34,12 +34,12 @@ remove_stack_frame:
 
 	; reset the saved vm IP if the current stack is not empty
 	push [ebp+arg0]
-	call vm_is_stack_empty
+	call_vm_is_stack_empty
 	cmp eax, 1
 	jz push_return_value
 		
 	push [ebp+arg0]
-	call vm_stack_pop_enc
+	call_vm_stack_pop_enc
 	mov ebx, [ebp+arg0]
 	mov [ebx+vm_ip], eax
 
@@ -50,7 +50,7 @@ push_return_value:
 
 	push [ebp+local0]
 	push [ebp+arg0]
-	call vm_stack_push_enc
+	call_vm_stack_push_enc
 
 finish:	
 	mov esp, ebp

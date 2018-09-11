@@ -1,13 +1,143 @@
 include const.inc
 include strings.inc
-include utility.asm
 include instructions_headers.inc
+include utility.asm
+include macro.asm
 
 ; compute size of the code related to the VM. 
 ; These offset are used by the find_vm_handler routine
 start_vm_instructions:
 include instructions.inc
 vm_instructions_size DWORD $ - start_vm_instructions
+
+; *****************************
+; arguments: vm_context, size
+; *****************************
+vm_read_code PROC
+	push ebp
+	mov ebp, esp
+
+	; read vm ip
+	mov ebp, esp
+	mov eax, [ebp+arg0]
+	mov ebx, [eax+vm_ip]
+
+	; read word opcode
+	mov esi, [eax+vm_code]
+	lea esi, [esi+ebx]
+	xor eax, eax
+
+	cmp dword ptr [ebp+arg1], TYPE DWORD
+	je read_four_bytes
+	mov ax, word ptr [esi]
+	jmp finish
+
+read_four_bytes:
+	mov eax, dword ptr [esi]
+
+finish:
+	push eax
+	; increment the VM ip
+	push [ebp+arg1]
+	push [ebp+arg0]
+	call vm_increment_ip
+	pop eax
+
+	mov esp, ebp
+	pop ebp
+	ret 8
+vm_read_code ENDP
+
+; *****************************
+; arguments: vm_context, operand double word
+; *****************************
+vm_decode_double_word_operand PROC
+	push ebp
+	mov ebp, esp
+
+	push 0547431C0h
+	push [ebp+arg1]
+	push [ebp+arg0]
+	call vm_decode_operand	
+
+	mov esp, ebp
+	pop ebp
+	ret 8
+vm_decode_double_word_operand ENDP
+
+; *****************************
+; arguments: vm context, imm
+; *****************************
+vm_stack_push_enc PROC
+	push ebp
+	mov ebp, esp
+
+	; compute stack offset as XOR key
+	mov ebx, [ebp+arg0]
+	mov ebx, [ebx+vm_sp]
+	mov ecx, [ebx+vm_stack_top]
+	sub ecx, [ebx+vm_stack_base]
+	not ecx
+		
+	; encode value
+	push [ebp+arg1]
+	push ecx
+	call encode_dword
+
+	; push encoded value
+	push eax
+	push [ebp+arg0]
+	call vm_stack_push
+
+	mov esp, ebp
+	pop ebp
+	ret 8h
+vm_stack_push_enc ENDP
+
+; *****************************
+; arguments: vm context
+; *****************************
+vm_stack_pop_enc PROC
+	push ebp
+	mov ebp, esp
+
+	; read encoded value
+	push [ebp+arg0]
+	call vm_stack_pop
+
+	; compute stack offset as XOR key
+	mov ebx, [ebp+arg0]
+	mov ebx, [ebx+vm_sp]
+	mov ecx, [ebx+vm_stack_top]
+	sub ecx, [ebx+vm_stack_base]
+	not ecx
+
+	; decode value
+	push eax
+	push ecx
+	call decode_dword
+
+	mov esp, ebp
+	pop ebp
+	ret 4h
+vm_stack_pop_enc ENDP
+
+; *****************************
+; arguments: vm_context, size
+; *****************************
+vm_clear_operands_encryption_flag PROC
+	push ebp
+	mov ebp, esp
+
+	mov eax, [ebp+arg0]
+	mov ecx, [eax+vm_flags]
+	and ecx, 0f7ffffffh
+	mov [eax+vm_flags], ecx
+
+	mov esp, ebp
+	pop ebp
+	ret 4
+vm_clear_operands_encryption_flag ENDP
 
 ; *****************************
 ; arguments: vm context, var index, imm
@@ -82,63 +212,6 @@ vm_stack_push PROC
 	pop ebp
 	ret 8h
 vm_stack_push ENDP
-
-; *****************************
-; arguments: vm context, imm
-; *****************************
-vm_stack_push_enc PROC
-	push ebp
-	mov ebp, esp
-
-	; compute stack offset as XOR key
-	mov ebx, [ebp+arg0]
-	mov ebx, [ebx+vm_sp]
-	mov ecx, [ebx+vm_stack_top]
-	sub ecx, [ebx+vm_stack_base]
-	not ecx
-		
-	; encode value
-	push [ebp+arg1]
-	push ecx
-	call encode_dword
-
-	; push encoded value
-	push eax
-	push [ebp+arg0]
-	call vm_stack_push
-
-	mov esp, ebp
-	pop ebp
-	ret 8h
-vm_stack_push_enc ENDP
-
-; *****************************
-; arguments: vm context
-; *****************************
-vm_stack_pop_enc PROC
-	push ebp
-	mov ebp, esp
-
-	; read encoded value
-	push [ebp+arg0]
-	call vm_stack_pop
-
-	; compute stack offset as XOR key
-	mov ebx, [ebp+arg0]
-	mov ebx, [ebx+vm_sp]
-	mov ecx, [ebx+vm_stack_top]
-	sub ecx, [ebx+vm_stack_base]
-	not ecx
-
-	; decode value
-	push eax
-	push ecx
-	call decode_dword
-
-	mov esp, ebp
-	pop ebp
-	ret 4h
-vm_stack_pop_enc ENDP
 
 ; *****************************
 ; arguments: vm context
@@ -302,23 +375,6 @@ vm_increment_ip PROC
 vm_increment_ip ENDP
 
 ; *****************************
-; arguments: vm_context, size
-; *****************************
-vm_clear_operands_encryption_flag PROC
-	push ebp
-	mov ebp, esp
-
-	mov eax, [ebp+arg0]
-	mov ecx, [eax+vm_flags]
-	and ecx, 0f7ffffffh
-	mov [eax+vm_flags], ecx
-
-	mov esp, ebp
-	pop ebp
-	ret 4
-vm_clear_operands_encryption_flag ENDP
-
-; *****************************
 ; arguments: vm_context, operand word
 ; *****************************
 vm_decode_word_operand PROC
@@ -335,23 +391,6 @@ vm_decode_word_operand PROC
 	pop ebp
 	ret 8
 vm_decode_word_operand ENDP
-
-; *****************************
-; arguments: vm_context, operand double word
-; *****************************
-vm_decode_double_word_operand PROC
-	push ebp
-	mov ebp, esp
-
-	push 0547431C0h
-	push [ebp+arg1]
-	push [ebp+arg0]
-	call vm_decode_operand	
-
-	mov esp, ebp
-	pop ebp
-	ret 8
-vm_decode_double_word_operand ENDP
 
 ; *****************************
 ; arguments: vm_context, operand double word, hardcoded key
@@ -393,65 +432,43 @@ finish:
 vm_decode_operand ENDP
 
 ; *****************************
-; arguments: vm_context, size
-; *****************************
-vm_read_code PROC
-	push ebp
-	mov ebp, esp
-
-	; read vm ip
-	mov ebp, esp
-	mov eax, [ebp+arg0]
-	mov ebx, [eax+vm_ip]
-
-	; read word opcode
-	mov esi, [eax+vm_code]
-	lea esi, [esi+ebx]
-	xor eax, eax
-
-	cmp dword ptr [ebp+arg1], TYPE DWORD
-	je read_four_bytes
-	mov ax, word ptr [esi]
-	jmp finish
-
-read_four_bytes:
-	mov eax, dword ptr [esi]
-
-finish:
-	push eax
-	; increment the VM ip
-	push [ebp+arg1]
-	push [ebp+arg0]
-	call vm_increment_ip
-	pop eax
-
-	mov esp, ebp
-	pop ebp
-	ret 8
-vm_read_code ENDP
-
-; *****************************
 ; arguments: vm_context, extracted opcode
 ; return: 0 on success, opcode index on error
 ; *****************************
 vm_execute PROC
 	push ebp
 	mov ebp, esp
-	
+	sub esp, 4h
+
 	; find the handler
 	push [ebp+arg1]	
 	push vm_instructions_size
 	push start_vm_instructions
 	call find_vm_handler
 
-	; invoke the handler if found
+	; relocate code
+	test eax, eax
+	je error
+	push eax
+	call relocate_code	
+
+	; handler found?
 	test eax, eax
 	je error
 
-	push [ebp+arg0] ; all handlers take 1 argument which is the VM context
+	; save allocated memory
+	mov [ebp+local0], eax 
+
+	; invoke the handler
+	push [ebp+arg0]			; VM context	
 	call eax
-	add esp, 4
+	add esp, 04h
 	xor eax, eax
+	
+	; free allocated memory
+	push [ebp+local0]
+	call free_relocated_code
+
 	jmp end_execution
 
 error:
@@ -476,6 +493,9 @@ vm_execute ENDP
 vm_decode_opcode PROC
 	push ebp
 	mov ebp, esp
+
+	; the first 4 bits of the opcode are flags, 
+	; which meaning is: |opcode is encrypted|operand is encrypt|..|..|
 		
 	; check if the encrypt operands flag is set
 	mov eax, [ebp+arg1]

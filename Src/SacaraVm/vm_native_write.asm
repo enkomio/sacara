@@ -6,12 +6,12 @@ vm_native_write PROC
 	
 	; read the native address
 	push [ebp+arg0]
-	call vm_stack_pop_enc
+	call_vm_stack_pop_enc
 	mov [ebp+local0], eax
 
 	; read byte to write
 	push [ebp+arg0]
-	call vm_stack_pop_enc
+	call_vm_stack_pop_enc
 			
 	; write the byte
 	mov ecx, [ebp+local0]

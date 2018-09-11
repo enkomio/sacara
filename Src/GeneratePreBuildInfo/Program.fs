@@ -96,7 +96,7 @@ module Program =
         )
 
         // write end marker
-        sb.AppendFormat("header_end EQU <DWORD 0{0}h, 0{1}h>", marker2, marker1).AppendLine() |> ignore
+        sb.Append("header_end EQU <DWORD marker2, marker1>").AppendLine() |> ignore
         
         // copy file
         let fileContent = sb.ToString()
@@ -112,10 +112,10 @@ module Program =
     let private hashString(name: String) =
         let mutable hash = uint32 0
         name.ToUpperInvariant()
-        |> Seq.iter(fun c ->
+        |> Seq.iteri(fun i c ->
             let h1 = (hash + uint32 c) * uint32 1024
             let h2 = ror h1
-            hash <- h1 ^^^ h2
+            hash <- (h1 ^^^ h2) ^^^ (uint32 i ^^^ uint32 c)
         )
         hash
 
@@ -127,10 +127,14 @@ module Program =
             // module names
             "kernel32.dll"
             "ntdll.dll"
+            "kernelbase.dll"
 
             // function names
             "GetProcessHeap"
             "RtlAllocateHeap"
+            "VirtualAlloc"
+            "VirtualFree"
+            "VirtualProtect"
             "RtlFreeHeap"
         ] 
         |> List.map(fun name -> (name, hashString(name)))

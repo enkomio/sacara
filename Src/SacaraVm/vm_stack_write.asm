@@ -6,12 +6,12 @@ vm_stack_write PROC
 	
 	; pop the offset that we want to write to
 	push [ebp+arg0]
-	call vm_stack_pop_enc
+	call_vm_stack_pop_enc
 	mov [ebp+local0], eax
 
 	; pop the value that we want to write
 	push [ebp+arg0]
-	call vm_stack_pop_enc
+	call_vm_stack_pop_enc
 
 	; read the stack base
 	mov ebx, [ebp+arg0]

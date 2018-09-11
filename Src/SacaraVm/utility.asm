@@ -81,7 +81,7 @@ heap_free PROC
 heap_free ENDP
 
 ; *****************************
-; arguments: start_memory, size, marker
+; arguments: start_memory, size, opcode
 ; *****************************
 find_vm_handler PROC
 	push ebp
@@ -143,10 +143,12 @@ find_vm_handler ENDP
 hash_string proc
 	push ebp
 	mov ebp, esp
+	sub esp, 4
 	
 	xor eax, eax
 	mov esi, [ebp+arg0] ; memory
 	mov ecx, [ebp+arg1] ; size
+	mov dword ptr [ebp+local0], 0h
 		
 hash_loop: 
 	cmp byte ptr [esi], 0
@@ -164,6 +166,11 @@ hash_loop:
 	and bl, 11011111b ; clar bit 5
 
 hash_iteration:
+	push esi ;save value
+	mov esi, ebx
+	xor esi, [ebp+local0]
+	inc dword ptr [ebp+local0]
+
 	add edx, ebx
 	push eax
 	mov eax, edx
@@ -176,6 +183,9 @@ hash_iteration:
 	ror ebx, 6
 	xor edx, ebx
 	mov eax, edx
+
+	xor eax, esi
+	pop esi ; restore value
 
 loop_epilogue:
 	inc esi	
@@ -262,7 +272,7 @@ find_module_base endp
 find_exported_func PROC
 	push ebp
 	mov ebp, esp
-	sub esp, 8
+	sub esp, 0Ch
 	
 	; check MZ signature
 	mov ebx, [ebp+arg0] ; DLL base
@@ -290,9 +300,10 @@ find_exported_func PROC
 	; save index
 	xor eax, eax
 	mov [ebp+local0], edx ; save IMAGE_EXPORT_DIRECTORY
-	mov [ebp+local1], eax  ; save index
-
+	mov [ebp+local1], eax ; save index
+	
 function_name_loop:
+	mov [ebp+local2], ecx ; save loop counter
 	mov edx, [ebp+local0] ; IMAGE_EXPORT_DIRECTORY
 	mov ebx, [ebp+local1] ; index
 
@@ -304,22 +315,19 @@ function_name_loop:
 	add edi, [ebp+arg0] ; function name VA
 	
 	; scan to find the NULL char
-	push eax
 	xor eax, eax	
 	mov esi, edi
+	mov ecx, 512h
 	repnz scasb
-	pop eax
 
 	; compute name length
 	sub edi, esi
 	dec edi
 
 	; compute function name hash
-	push ecx
 	push edi
 	push esi
 	call hash_string
-	pop ecx
 
 	; compare hash
 	cmp eax, [ebp+arg1]
@@ -328,6 +336,7 @@ function_name_loop:
 	; go to next name pointer
 	inc dword ptr [ebp+local1]
 
+	mov ecx, [ebp+local2]
 	loop function_name_loop
 	jmp error
 
@@ -442,3 +451,121 @@ encode_dword PROC
 	pop ebp
 	ret 8
 encode_dword ENDP
+
+; *****************************
+; arguments: func addr
+; *****************************
+relocate_code PROC
+	push ebp
+	mov ebp, esp
+	sub esp, 10h
+	
+	; search the function footer
+	mov edi, [ebp+arg0]
+search_marker2:	
+	cmp dword ptr [edi], marker2
+	je search_marker1
+	inc edi
+	loopne search_marker2
+	jne not_found	
+	
+	; verify if it is followed by marker1
+search_marker1:
+	add edi, TYPE DWORD
+	cmp dword ptr [edi], marker1
+	jne search_marker2	
+
+	; compute function length
+	lea edi, [edi-TYPE DWORD]
+	mov eax, [ebp+arg0]
+	sub edi, eax
+	mov [ebp+local0], edi
+	
+	; find kernelbase addr
+	push hash_kernelbase_dll
+	call find_module_base
+	mov [ebp+local1], eax
+
+	; allocate memory
+	push hash_VirtualAlloc
+	push [ebp+local1]
+	call find_exported_func	
+	test eax, eax
+	je not_found
+
+	; call VirtualAlloc
+	push PAGE_READWRITE
+	push MEM_COMMIT
+	push [ebp+local0]
+	push 0h
+	call eax
+	test eax, eax
+	je not_found
+	mov [ebp+local3], eax
+
+	; copy memory
+	mov esi, [ebp+arg0]
+	mov edi, [ebp+local3]
+	mov ecx, [ebp+local0]	
+	rep movsb
+
+	; set exec flag
+	push hash_VirtualProtect
+	push [ebp+local1]
+	call find_exported_func	
+	test eax, eax
+	je not_found
+	
+	; call VirtualProtect
+	lea ebx, [ebp+local0]
+	push ebx
+	push PAGE_EXECUTE_READ
+	push [ebp+local0]	
+	push [ebp+local3]
+	call eax
+	test eax, eax
+	je not_found
+	jmp found
+
+not_found:
+	xor eax, eax
+found:
+	mov eax, [ebp+local3]
+	mov esp, ebp
+	pop ebp
+	ret 04h
+relocate_code ENDP
+
+; *****************************
+; arguments: func addr
+; *****************************
+free_relocated_code PROC
+	push ebp
+	mov ebp, esp
+	sub esp, 8
+
+	; find kernelbase addr
+	push hash_kernelbase_dll
+	call find_module_base
+	mov [ebp+local0], eax
+	test eax, eax
+	je finish
+
+	; free memory
+	push hash_VirtualFree
+	push [ebp+local0]
+	call find_exported_func	
+	test eax, eax
+	je finish
+
+	; call VirtualFree
+	push MEM_RELEASE
+	push 0h
+	push [ebp+arg0]
+	call eax
+
+finish:
+	mov esp, ebp
+	pop ebp
+	ret 04h
+free_relocated_code ENDP

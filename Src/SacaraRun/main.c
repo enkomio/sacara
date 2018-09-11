@@ -68,7 +68,7 @@ uint32_t run_code(char* filename, int argc, const char** argv)
 				// set the arguments
 				for (uint32_t i = 0; i < argc; i++)
 				{
-					uint32_t num = (uint32_t)strtol(argv[i], NULL, 16);
+					uint32_t num = (uint32_t)strtol(argv[i], NULL, 10);
 					vm_local_var_set(&ctx, i, num);
 				}
 
