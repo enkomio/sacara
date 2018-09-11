@@ -2,10 +2,10 @@
 ## Sacara
 #################
 
-.fake/*
-.paket/*
-fake/*
-paket-files/*
+.fake/
+.paket/
+fake/
+paket-files/
 
 
 #################
