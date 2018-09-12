@@ -27,4 +27,4 @@ vm_div PROC
 	pop ebp
 	ret
 vm_div ENDP
-header_end
+header_marker

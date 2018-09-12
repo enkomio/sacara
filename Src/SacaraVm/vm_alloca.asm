@@ -2,7 +2,6 @@ header_VmAlloca
 vm_alloca PROC
 	push ebp
 	mov ebp, esp
-
 	check_debugger
 	
 	; pop the value to alloca
@@ -32,4 +31,4 @@ finish:
 	pop ebp
 	ret
 vm_alloca ENDP
-header_end
+header_marker

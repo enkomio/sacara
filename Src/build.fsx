@@ -69,6 +69,13 @@ let genFSAssemblyInfo (projectPath) =
     FAKE targets
 *)
 Target.create "Clean" (fun _ ->
+    nativeProjects
+    |> List.iter(fun projectFile ->
+        let projName = Path.GetFileNameWithoutExtension(projectFile)
+        let projReleaseDir = Path.Combine(projName, "Release")
+        Shell.cleanDir projReleaseDir
+    )
+
     Shell.cleanDir buildDir
     Directory.ensure buildDir
 

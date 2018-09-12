@@ -12,4 +12,4 @@ vm_get_sp PROC
 	pop ebp
 	ret
 vm_get_sp ENDP
-header_end
+header_marker

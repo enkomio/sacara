@@ -26,4 +26,4 @@ vm_and PROC
 	pop ebp
 	ret
 vm_and ENDP
-header_end
+header_marker

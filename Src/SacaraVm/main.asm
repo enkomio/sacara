@@ -21,14 +21,12 @@ include vm.asm
 
 main PROC
 	push ebp
-	mov ebp, esp
-	
+	mov ebp, esp	
 	cmp dword ptr [ebp+arg1], DLL_PROCESS_ATTACH	
 	jne finish
-	mov eax, 1
-		
-finish:
-
+	check_debugger
+	mov eax, 1		
+finish:	
 	mov esp, ebp
 	pop ebp
 	ret

@@ -10,4 +10,4 @@ vm_halt PROC
 	pop ebp
 	ret
 vm_halt ENDP
-header_end
+header_marker

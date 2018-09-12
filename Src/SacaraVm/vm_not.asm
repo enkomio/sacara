@@ -19,4 +19,4 @@ vm_not PROC
 	pop ebp
 	ret
 vm_not ENDP
-header_end
+header_marker

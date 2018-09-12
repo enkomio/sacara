@@ -19,4 +19,4 @@ vm_native_read PROC
 	pop ebp
 	ret
 vm_native_read ENDP
-header_end
+header_marker

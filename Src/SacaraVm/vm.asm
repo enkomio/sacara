@@ -146,6 +146,7 @@ vm_clear_operands_encryption_flag ENDP
 vm_local_var_set PROC
 	push ebp
 	mov ebp, esp
+	pushad
 
 	; get the local var buffer
 	mov eax, [ebp+arg0]
@@ -160,6 +161,7 @@ vm_local_var_set PROC
 	mov ebx, [ebp+arg2]
 	mov [eax], ebx
 
+	popad
 	mov esp, ebp
 	pop ebp
 	ret 0Ch
@@ -171,6 +173,8 @@ vm_local_var_set ENDP
 vm_local_var_get PROC
 	push ebp
 	mov ebp, esp
+	sub esp, 4
+	pushad
 
 	; get the local var buffer
 	mov eax, [ebp+arg0]
@@ -183,7 +187,10 @@ vm_local_var_get PROC
 
 	; read the value
 	mov eax, [eax]
+	mov [ebp+local0], eax
 
+	popad
+	mov eax, [ebp+local0]
 	mov esp, ebp
 	pop ebp
 	ret 8h
@@ -244,6 +251,7 @@ vm_stack_pop ENDP
 vm_init_stack_frame PROC
 	push ebp
 	mov ebp, esp
+	
 	mov eax, [ebp+arg0] ; read stack base
 	mov edx, [ebp+arg1] ; previous stack frame pointer
 
@@ -256,7 +264,7 @@ vm_init_stack_frame PROC
 	; init space for local vars	
 	mov ebx, [ebp+arg0]
 	mov dword ptr [ebx+vm_local_vars], 0h
-
+		
 	mov esp, ebp
 	pop ebp
 	ret 8h
@@ -269,6 +277,8 @@ vm_init_stack_frame ENDP
 vm_init PROC
 	push ebp
 	mov ebp, esp
+	pushad 
+
 	mov eax, [ebp+arg0]
 	mov [eax+vm_ip], dword ptr 0h	; zero VM ip
 	mov [eax+vm_flags], dword ptr 0h; zero flags
@@ -304,6 +314,7 @@ vm_init PROC
 	mov ebx, [ebp+arg2]
 	mov [ecx+vm_code_size], ebx
 
+	popad
 	mov esp, ebp
 	pop ebp
 	ret 0Ch
@@ -315,6 +326,7 @@ vm_init ENDP
 vm_free PROC
 	push ebp
 	mov ebp, esp
+	pushad
 
 	; get stack pointer addr
 	mov eax, [ebp+arg0]
@@ -329,6 +341,7 @@ vm_free PROC
 	push [eax+vm_sp]
 	call heap_free
 	
+	popad
 	mov esp, ebp
 	pop ebp
 	ret 4h
@@ -446,14 +459,12 @@ vm_execute PROC
 	push vm_instructions_size
 	push start_vm_instructions
 	call find_vm_handler
-
-	; relocate code
 	test eax, eax
 	je error
-	push eax
-	call relocate_code	
 
-	; handler found?
+	; relocate code	
+	push eax
+	call relocate_code
 	test eax, eax
 	je error
 
@@ -464,12 +475,8 @@ vm_execute PROC
 	push [ebp+arg0]			; VM context	
 	call eax
 	add esp, 04h
-	xor eax, eax
 	
-	; free allocated memory
-	push [ebp+local0]
-	call free_relocated_code
-
+	xor eax, eax
 	jmp end_execution
 
 error:
@@ -483,6 +490,12 @@ error:
 	mov eax, [eax+vm_ip]
 
 end_execution:	
+	push eax
+	; free allocated memory
+	push [ebp+local0]
+	call free_relocated_code
+	pop eax
+
 	mov esp, ebp
 	pop ebp
 	ret 8
@@ -538,6 +551,8 @@ vm_decode_opcode ENDP
 vm_run PROC
 	push ebp
 	mov ebp, esp
+	sub esp, 4
+	pushad
 	
 vm_loop:		
 	check_debugger
@@ -556,6 +571,7 @@ vm_loop:
 	push eax
 	push [ebp+arg0]
 	call vm_execute
+	mov [ebp+local0], eax
 		
 	; check the finish flag in the context
 	mov ebx, [ebp+arg0]
@@ -563,6 +579,8 @@ vm_loop:
 	test ebx, 80000000h
 	je vm_loop
 	
+	popad
+	mov eax, [ebp+local0]
 	mov esp, ebp
 	pop ebp
 	ret 8

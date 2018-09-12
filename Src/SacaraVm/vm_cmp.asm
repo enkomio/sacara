@@ -45,4 +45,4 @@ finish:
 	pop ebp
 	ret
 vm_cmp ENDP
-header_end
+header_marker

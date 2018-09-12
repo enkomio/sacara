@@ -25,4 +25,4 @@ vm_mul PROC
 	pop ebp
 	ret
 vm_mul ENDP
-header_end
+header_marker

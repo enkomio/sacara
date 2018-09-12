@@ -22,4 +22,4 @@ vm_read PROC
 	pop ebp
 	ret
 vm_read ENDP
-header_end
+header_marker

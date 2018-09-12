@@ -52,4 +52,4 @@ save_return_value:
 	pop ebp
 	ret
 vm_native_call ENDP
-header_end
+header_marker

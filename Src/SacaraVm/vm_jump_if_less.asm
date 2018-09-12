@@ -22,4 +22,4 @@ finish:
 	pop ebp
 	ret
 vm_jump_if_less ENDP
-header_end
+header_marker

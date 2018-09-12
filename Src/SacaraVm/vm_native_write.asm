@@ -21,4 +21,4 @@ vm_native_write PROC
 	pop ebp
 	ret
 vm_native_write ENDP
-header_end
+header_marker

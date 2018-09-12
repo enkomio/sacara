@@ -7,4 +7,4 @@ vm_nop PROC
 	pop ebp
 	ret
 vm_nop ENDP
-header_end
+header_marker

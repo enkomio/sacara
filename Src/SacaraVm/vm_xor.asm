@@ -26,4 +26,4 @@ vm_xor PROC
 	pop ebp
 	ret
 vm_xor ENDP
-header_end
+header_marker

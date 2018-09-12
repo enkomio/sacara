@@ -66,4 +66,4 @@ set_arguments:
 	pop ebp
 	ret
 vm_call ENDP
-header_end
+header_marker

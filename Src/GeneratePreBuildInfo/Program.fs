@@ -96,7 +96,7 @@ module Program =
         )
 
         // write end marker
-        sb.Append("header_end EQU <DWORD marker2, marker1>").AppendLine() |> ignore
+        sb.Append("header_marker EQU <DWORD marker2, marker1>").AppendLine() |> ignore
         
         // copy file
         let fileContent = sb.ToString()

@@ -26,4 +26,4 @@ vm_shift_right PROC
 	pop ebp
 	ret
 vm_shift_right ENDP
-header_end
+header_marker

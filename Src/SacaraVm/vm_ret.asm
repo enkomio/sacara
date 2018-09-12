@@ -57,4 +57,4 @@ finish:
 	pop ebp
 	ret
 vm_ret ENDP
-header_end
+header_marker

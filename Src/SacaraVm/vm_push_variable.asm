@@ -31,4 +31,4 @@ vm_push_variable PROC
 	pop ebp
 	ret
 vm_push_variable ENDP
-header_end
+header_marker

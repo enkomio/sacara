@@ -15,4 +15,4 @@ vm_jump PROC
 	pop ebp
 	ret
 vm_jump ENDP
-header_end
+header_marker

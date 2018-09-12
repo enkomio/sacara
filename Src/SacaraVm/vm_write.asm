@@ -27,4 +27,4 @@ vm_write PROC
 	pop ebp
 	ret
 vm_write ENDP
-header_end
+header_marker

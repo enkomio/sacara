@@ -12,4 +12,4 @@ vm_get_ip PROC
 	pop ebp
 	ret
 vm_get_ip ENDP
-header_end
+header_marker

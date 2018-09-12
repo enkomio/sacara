@@ -2,513 +2,511 @@
   {
     "Name": "VmRet",
     "Bytes": [
-      "Ag4=",
-      "kws=",
-      "VA8=",
-      "Wgs=",
-      "Sgc="
+      "MQk=",
+      "pAE="
     ],
     "OpCodes": [
-      3400,
-      2875,
-      4090,
-      3040,
-      2032
+      2458,
+      279
     ]
   },
   {
     "Name": "VmNop",
     "Bytes": [
-      "igY=",
-      "BgM=",
-      "FAc=",
-      "iAQ="
+      "yg0=",
+      "UA0=",
+      "cg8=",
+      "VwI=",
+      "oAM="
     ],
     "OpCodes": [
-      1587,
-      951,
-      1957,
-      1073
+      3440,
+      3582,
+      4056,
+      743,
+      814
     ]
   },
   {
     "Name": "VmAdd",
     "Bytes": [
-      "Sg4=",
-      "ig0=",
-      "Egk=",
-      "6g0=",
-      "lgI="
+      "vws=",
+      "OgI=",
+      "TAc=",
+      "8gE="
     ],
     "OpCodes": [
-      3824,
-      3376,
-      2488,
-      3408,
-      548
+      2830,
+      643,
+      2045,
+      347
     ]
   },
   {
     "Name": "VmPushImmediate",
     "Bytes": [
-      "KgI=",
-      "Xgc=",
-      "LwE=",
-      "UAw=",
-      "KwA="
+      "fw4=",
+      "0wM=",
+      "uAU=",
+      "tw4=",
+      "QwY="
     ],
     "OpCodes": [
-      656,
-      2028,
-      415,
-      3326,
-      147
+      3791,
+      891,
+      1286,
+      3591,
+      1675
     ]
   },
   {
     "Name": "VmPushVariable",
     "Bytes": [
-      "8AA=",
-      "mw4="
+      "TQ0=",
+      "BAg=",
+      "Dgc=",
+      "xQY=",
+      "dA4="
     ],
     "OpCodes": [
-      91,
-      3628
+      3581,
+      1866,
+      1980,
+      1653,
+      3802
     ]
   },
   {
     "Name": "VmPop",
     "Bytes": [
-      "Lg0=",
-      "mwo=",
-      "eA8="
+      "uws=",
+      "Dww=",
+      "/AU=",
+      "7gQ="
     ],
     "OpCodes": [
-      3486,
-      2605,
-      4032
+      2818,
+      3262,
+      1357,
+      1119
     ]
   },
   {
     "Name": "VmCall",
     "Bytes": [
-      "hw0=",
-      "iwI=",
-      "cg8=",
-      "cgI=",
-      "Wgg="
+      "LAY=",
+      "yAg=",
+      "twQ="
     ],
     "OpCodes": [
-      3383,
-      563,
-      4056,
-      728,
-      2272
+      1692,
+      2160,
+      1025
     ]
   },
   {
     "Name": "VmJump",
     "Bytes": [
-      "twA=",
-      "3Ao=",
-      "uwM="
+      "fQ8=",
+      "hAw=",
+      "fAU=",
+      "KA0="
     ],
     "OpCodes": [
-      1,
-      2668,
-      781
+      4044,
+      3125,
+      1485,
+      3473
     ]
   },
   {
     "Name": "VmAlloca",
     "Bytes": [
-      "hQw=",
-      "WQw="
+      "dg8=",
+      "awM=",
+      "TgY=",
+      "DAM="
     ],
     "OpCodes": [
-      3126,
-      3298
+      4039,
+      978,
+      1791,
+      957
     ]
   },
   {
     "Name": "VmHalt",
     "Bytes": [
-      "XAs=",
-      "qwU=",
-      "eAc=",
-      "Ugo="
+      "XAM=",
+      "8gw=",
+      "fg4="
     ],
     "OpCodes": [
-      3053,
-      1298,
-      1985,
-      2811
+      1004,
+      3162,
+      3790
     ]
   },
   {
     "Name": "VmCmp",
     "Bytes": [
-      "RwI=",
-      "Iw8=",
-      "Pws=",
-      "NAo="
+      "VQk=",
+      "CQ8=",
+      "qQU="
     ],
     "OpCodes": [
-      758,
-      4010,
-      2958,
-      2693
+      2535,
+      4019,
+      1299
     ]
   },
   {
     "Name": "VmStackWrite",
     "Bytes": [
-      "Pgw=",
-      "4w4=",
-      "Dgw="
+      "sAo=",
+      "nQE="
     ],
     "OpCodes": [
-      3214,
-      3669,
-      3262
+      2587,
+      302
     ]
   },
   {
     "Name": "VmStackRead",
     "Bytes": [
-      "Kw8=",
-      "Bw0=",
-      "TQc="
+      "8Ak=",
+      "rww=",
+      "GQ4=",
+      "0gk="
     ],
     "OpCodes": [
-      3997,
-      3505,
-      2047
+      2393,
+      3102,
+      3744,
+      2427
     ]
   },
   {
     "Name": "VmJumpIfLess",
     "Bytes": [
-      "sww=",
-      "QwM="
+      "iQY=",
+      "YQ0=",
+      "9Ak="
     ],
     "OpCodes": [
-      3076,
-      1012
+      1587,
+      3563,
+      2372
     ]
   },
   {
     "Name": "VmJumpIfLessEquals",
     "Bytes": [
-      "UAY=",
-      "5wE=",
-      "ow8="
+      "VAs=",
+      "Qg8=",
+      "8A0="
     ],
     "OpCodes": [
-      1784,
-      337,
-      3861
+      3044,
+      3978,
+      3416
     ]
   },
   {
     "Name": "VmJumpIfGreat",
     "Bytes": [
-      "ZgA=",
-      "PQk=",
-      "mwI="
+      "uw8=",
+      "9Ac=",
+      "hQ8="
     ],
     "OpCodes": [
-      214,
-      2447,
-      557
+      3853,
+      1860,
+      3895
     ]
   },
   {
     "Name": "VmJumpIfGreatEquals",
     "Bytes": [
-      "OA8=",
-      "FQU=",
-      "ygU="
+      "ywI=",
+      "Fg8=",
+      "gwo="
     ],
     "OpCodes": [
-      3968,
-      1447,
-      1394
+      637,
+      4006,
+      2613
     ]
   },
   {
     "Name": "VmRead",
     "Bytes": [
-      "2A4=",
-      "0w4=",
-      "7As=",
-      "xgY=",
-      "UAQ="
+      "wQQ=",
+      "zw0=",
+      "Ywo=",
+      "lgg=",
+      "iQw="
     ],
     "OpCodes": [
-      3686,
-      3707,
-      2898,
-      1652,
-      1278
+      1033,
+      3455,
+      2795,
+      2084,
+      3121
     ]
   },
   {
     "Name": "VmWrite",
     "Bytes": [
-      "+Qc=",
-      "mQA=",
-      "EgI=",
-      "jQQ="
+      "1As=",
+      "AwQ=",
+      "gAg="
     ],
     "OpCodes": [
-      1856,
-      32,
-      699,
-      1084
+      2916,
+      1205,
+      2248
     ]
   },
   {
     "Name": "VmGetIp",
     "Bytes": [
-      "PAQ=",
-      "oQw=",
-      "XQI="
+      "7g4=",
+      "bQI=",
+      "0gQ=",
+      "yAY="
     ],
     "OpCodes": [
-      1164,
-      3115,
-      751
+      3679,
+      732,
+      1147,
+      1649
     ]
   },
   {
     "Name": "VmGetSp",
     "Bytes": [
-      "Egw=",
-      "sgs=",
-      "LgI=",
-      "igA=",
-      "Xgg="
+      "hgc=",
+      "qQQ=",
+      "gw8="
     ],
     "OpCodes": [
-      3256,
-      2840,
-      668,
-      48,
-      2284
+      1846,
+      1043,
+      3893
     ]
   },
   {
     "Name": "VmNativeRead",
     "Bytes": [
-      "TQQ=",
-      "ggM=",
-      "Hwg="
+      "SAU=",
+      "EA0=",
+      "PAY=",
+      "vw0="
     ],
     "OpCodes": [
-      1279,
-      970,
-      2217
+      1521,
+      3513,
+      1677,
+      3342
     ]
   },
   {
     "Name": "VmNativeWrite",
     "Bytes": [
-      "qg0=",
-      "0wk="
+      "wA8=",
+      "XQo="
     ],
     "OpCodes": [
-      3357,
-      2404
+      3851,
+      2798
     ]
   },
   {
     "Name": "VmNativeCall",
     "Bytes": [
-      "4AA=",
-      "vws=",
-      "1gg=",
-      "mAc=",
-      "lA4="
+      "GgI=",
+      "1AA=",
+      "LQQ=",
+      "WQo=",
+      "zAo="
     ],
     "OpCodes": [
-      110,
-      2831,
-      2148,
-      1830,
-      3642
+      672,
+      122,
+      1181,
+      2785,
+      2674
     ]
   },
   {
     "Name": "VmByte",
     "Bytes": [
-      "7gI=",
-      "5gQ=",
-      "9wc=",
-      "TwI=",
-      "Tg8="
+      "wAI=",
+      "9AU=",
+      "LQ4=",
+      "DAM=",
+      "2gE="
     ],
     "OpCodes": [
-      604,
-      1108,
-      1863,
-      767,
-      4092
+      526,
+      1370,
+      3741,
+      946,
+      352
     ]
   },
   {
     "Name": "VmWord",
     "Bytes": [
-      "agM=",
-      "7wI="
+      "Xg8=",
+      "NQI=",
+      "MgQ=",
+      "ygQ=",
+      "IQI="
     ],
     "OpCodes": [
-      989,
-      600
+      4076,
+      645,
+      1176,
+      1136,
+      681
     ]
   },
   {
     "Name": "VmDoubleWord",
     "Bytes": [
-      "rQ0=",
-      "ZQs=",
-      "bQU="
+      "Mwo=",
+      "0A8=",
+      "Fgg="
     ],
     "OpCodes": [
-      3359,
-      3031,
-      1503
+      2693,
+      3960,
+      2214
     ]
   },
   {
     "Name": "VmSub",
     "Bytes": [
-      "LQY=",
-      "fwE="
+      "wQg=",
+      "4Qw="
     ],
     "OpCodes": [
-      1694,
-      456
+      2058,
+      3178
     ]
   },
   {
     "Name": "VmMul",
     "Bytes": [
-      "zAQ=",
-      "wgM=",
-      "jwU=",
-      "pAc=",
-      "xws="
+      "qQY=",
+      "/QQ="
     ],
     "OpCodes": [
-      1138,
-      776,
-      1343,
-      1834,
-      2935
+      1554,
+      1102
     ]
   },
   {
     "Name": "VmDiv",
     "Bytes": [
-      "Kgc=",
-      "gA0=",
-      "1AQ="
+      "NA0=",
+      "QwY=",
+      "mwk=",
+      "/AE="
     ],
     "OpCodes": [
-      1938,
-      3528,
-      1124
+      3461,
+      1674,
+      2338,
+      333
     ]
   },
   {
     "Name": "VmAnd",
     "Bytes": [
-      "cA0=",
-      "GgI=",
-      "yAw=",
-      "Iwc="
+      "dwg=",
+      "jwQ=",
+      "gwQ="
     ],
     "OpCodes": [
-      3545,
-      675,
-      3185,
-      1962
+      2241,
+      1081,
+      1077
     ]
   },
   {
     "Name": "VmShiftRight",
     "Bytes": [
-      "mQw=",
-      "6QY=",
-      "ag0=",
-      "LAA="
+      "RwM=",
+      "Wgs=",
+      "4gI=",
+      "mQE="
     ],
     "OpCodes": [
-      3104,
-      1616,
-      3539,
-      157
+      1014,
+      3043,
+      619,
+      288
     ]
   },
   {
     "Name": "VmShiftLeft",
     "Bytes": [
-      "3QU=",
-      "mgg=",
-      "HwI="
+      "OwM=",
+      "DAI=",
+      "NgY=",
+      "Hgk="
     ],
     "OpCodes": [
-      1391,
-      2082,
-      681
+      898,
+      701,
+      1671,
+      2479
     ]
   },
   {
     "Name": "VmOr",
     "Bytes": [
-      "sQU=",
-      "LwA=",
-      "BwA=",
-      "IAY="
+      "oQk=",
+      "sgI=",
+      "3go="
     ],
     "OpCodes": [
-      1304,
-      158,
-      182,
-      1705
+      2347,
+      538,
+      2670
     ]
   },
   {
     "Name": "VmNot",
     "Bytes": [
-      "fAo=",
-      "1wg=",
-      "ewI=",
-      "Dgs=",
-      "wQI="
+      "KQQ=",
+      "OQs=",
+      "cQ4=",
+      "zQs="
     ],
     "OpCodes": [
-      2754,
-      2151,
-      707,
-      3004,
-      521
+      1168,
+      2944,
+      3800,
+      2940
     ]
   },
   {
     "Name": "VmXor",
     "Bytes": [
-      "8AU=",
-      "VQE=",
-      "vAc=",
-      "YAI="
+      "iAg=",
+      "MAc=",
+      "4wQ=",
+      "CwI="
     ],
     "OpCodes": [
-      1369,
-      484,
-      1805,
-      745
+      2097,
+      1945,
+      1130,
+      690
     ]
   }
 ]
