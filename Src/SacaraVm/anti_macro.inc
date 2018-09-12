@@ -1,7 +1,7 @@
 ; *****************************
-; arguments: VM context as first parameter
+; arguments: VM context
 ; *****************************
-check_debugger MACRO	
+check_debugger_via_trap_flag MACRO	
 	assume fs:nothing
 	pushad
 	pushfd
@@ -29,4 +29,50 @@ check_debugger_finish:
 	popfd
 	popad
 	assume fs:error		
+ENDM
+
+; *****************************
+; arguments: VM context
+; *****************************
+check_debugger_via_HeapAlloc MACRO
+	pushad
+	pushfd
+
+	; GetProcessHeap
+	push hash_kernel32_dll
+	call find_module_base
+	push hash_GetProcessHeap
+	push eax
+	call find_exported_func
+	call eax
+	
+	; prepare arguments for RtlAllocateHeap
+	push TYPE DWORD ; Size
+	push 0h ; Flags
+	push eax ; ProcessHeap
+
+	; RtlAllocateHeap
+	push hash_ntdll_dll
+	call find_module_base
+	push hash_RtlAllocateHeap
+	push eax
+	call find_exported_func
+	call eax
+
+	; do check
+	mov eax, [eax]
+	mov ebx, eax
+	shr ebx, 10h
+	xor bx, ax
+	cmp bx, 04AA0h
+	jne finish
+
+	; write garbage at the VM code
+	mov eax, [ebp+arg0] ; get VM context
+	inc dword ptr [eax+vm_ip]
+
+finish:
+
+	popfd
+	popad
 ENDM

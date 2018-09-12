@@ -314,6 +314,8 @@ vm_init PROC
 	mov ebx, [ebp+arg2]
 	mov [ecx+vm_code_size], ebx
 
+	check_debugger_via_HeapAlloc
+
 	popad
 	mov esp, ebp
 	pop ebp
@@ -555,7 +557,7 @@ vm_run PROC
 	pushad
 	
 vm_loop:		
-	check_debugger
+	check_debugger_via_trap_flag
 
 	; read the opcode to execute	
 	push 2

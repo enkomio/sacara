@@ -3,8 +3,7 @@ vm_pop PROC
 	push ebp
 	mov ebp, esp	
 	sub esp, 4
-
-	check_debugger
+	check_debugger_via_trap_flag
 
 	; get the value to insert in the local var
 	push [ebp+arg0]

@@ -24,7 +24,7 @@ main PROC
 	mov ebp, esp	
 	cmp dword ptr [ebp+arg1], DLL_PROCESS_ATTACH	
 	jne finish
-	check_debugger
+	check_debugger_via_trap_flag
 	mov eax, 1		
 finish:	
 	mov esp, ebp

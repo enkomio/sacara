@@ -85,7 +85,7 @@
     </Link>
     <MASM>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <PreprocessorDefinitions>ENABLE_ANTI_ANALYSIS=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>ENABLE_ANTI_ANALYSIS=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </MASM>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

@@ -2,8 +2,7 @@ header_VmPushImmediate
 vm_push_immediate PROC
 	push ebp
 	mov ebp, esp
-
-	check_debugger
+	check_debugger_via_trap_flag
 
 	; read the immediate to push	
 	push 4
