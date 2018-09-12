@@ -462,6 +462,7 @@ relocate_code PROC
 	
 	; search the function footer
 	mov edi, [ebp+arg0]
+	mov ecx, 2018h ; dummy max value to search for
 search_marker2:	
 	cmp dword ptr [edi], marker2
 	je search_marker1

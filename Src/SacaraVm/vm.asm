@@ -3,7 +3,7 @@ include strings.inc
 include instructions_headers.inc
 include utility.asm
 
-include vm_macro.asm
+include vm_macro.inc
 
 ; compute size of the code related to the VM. 
 ; These offset are used by the find_vm_handler routine

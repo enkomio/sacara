@@ -81,7 +81,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <ModuleDefinitionFile>sacara.def</ModuleDefinitionFile>
-      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>      
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
     <MASM>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -110,8 +110,8 @@
       <OptimizeReferences>true</OptimizeReferences>
       <SubSystem>Console</SubSystem>
       <ModuleDefinitionFile>sacara.def</ModuleDefinitionFile>
-      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>      
-	  <GenerateDebugInformation>false</GenerateDebugInformation>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
     </Link>
     <MASM>
       <PreprocessorDefinitions>ENABLE_ANTI_ANALYSIS=1</PreprocessorDefinitions>
@@ -135,10 +135,10 @@
     <MASM Include="main.asm" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="anti_macro.asm" />
+    <None Include="anti_macro.inc" />
     <None Include="const.inc" />
-    <None Include="empty_anti_macro.asm" />
-    <None Include="vm_macro.asm" />
+    <None Include="empty_anti_macro.inc" />
+    <None Include="vm_macro.inc" />
     <None Include="sacara.def" />
     <None Include="vm_add.asm" />
     <None Include="vm_div.asm" />
