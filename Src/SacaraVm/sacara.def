@@ -1,4 +1,4 @@
-LIBRARY sacara
+LIBRARY SacaraVm
 EXPORTS 
 vm_init
 vm_run

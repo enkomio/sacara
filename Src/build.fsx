@@ -5,7 +5,6 @@
 #load ".fake/build.fsx/intellisense.fsx"
 
 open System
-open System.Reflection
 open System.IO
 open Fake.DotNet
 open Fake.Core
@@ -27,6 +26,19 @@ let buildDir = "./build"
 
 // Package dir
 let deployDir = "./deploy"
+
+// project list
+let nativeProjects = [        
+    "SacaraVm.vcxproj"
+    "SacaraRun.vcxproj"
+]
+
+let dotNetProjects = [        
+    "SacaraAsm.fsproj"
+]
+
+let projects = nativeProjects@dotNetProjects
+
 
 // Read additional information from the release notes document
 let releaseNotesData = 
@@ -82,11 +94,10 @@ Target.create "Compile" (fun _ ->
         |> Trace.logItems "AppBuild-Output: "
 
     // build all projects
-    [
-        "Sacara"
-    ]
+    projects
     |> List.map(fun projName ->
-        let projFile = Path.Combine(projName, projName + ".fsproj")
+        let projDir = Path.GetFileNameWithoutExtension(projName)
+        let projFile = Path.Combine(projDir, projName)
         Trace.log("Build project: " + projFile)
         projFile
     )
@@ -94,6 +105,40 @@ Target.create "Compile" (fun _ ->
 )
 
 Target.create "Release" (fun _ ->
+    let mutable dlls = []
+    let mutable exes = []
+
+    // copy native binaries to build directory
+    nativeProjects
+    |> Seq.iter(fun projName ->
+        let projBase = Path.GetFileNameWithoutExtension(projName)
+        let binaryNoExtension = Path.Combine(projBase, "Release", projBase)
+        let binary =
+            if File.Exists(binaryNoExtension + ".exe") then 
+                exes <- projBase::exes
+                binaryNoExtension + ".exe"
+            else
+                let dll = binaryNoExtension + ".dll"
+                dlls <- dll::dlls
+                dll
+                
+                
+        let projBuildDir = Path.Combine(buildDir, projBase)
+        Directory.ensure projBuildDir
+        Trace.log(String.Format("Copy file '{0}' to '{1}'", binary, projBuildDir))
+        Shell.copyFile projBuildDir binary        
+    )
+
+    // copy all DLLs in all EXE directory
+    exes
+    |> List.iter(fun exe ->
+        dlls
+        |> List.iter(fun dllFile ->
+            let exeDir = Path.Combine(buildDir, exe)
+            Shell.copyFile exeDir dllFile 
+        )
+    )
+
     let forbidden = [".pdb"]    
     !! (buildDir + "/**/*.*")         
     |> Seq.filter(fun f -> 

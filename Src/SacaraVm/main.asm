@@ -1,5 +1,5 @@
 comment !
-This is the implementation of the Sacara VM.
+This is the implementation of the SacaraVM.
 2018 (C) Antonio 's4tan' Parata
 !
 
