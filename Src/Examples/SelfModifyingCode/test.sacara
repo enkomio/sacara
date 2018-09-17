@@ -1,0 +1,63 @@
+proc main			
+	/* decrypt the secret code */
+	push 0
+	push decrypt
+	call
+
+	/* invoke the secre algo with the input values */
+	push arg0
+	push arg1
+	push 2 /* number of input arguments */
+	push secret_algo
+	call
+	
+	push 0 /* clean the stack? */ 
+	push 1 /* number of input arguments */
+	push print_func
+	ncall		   
+	halt	 	   
+endp
+
+proc secret_algo
+start_secret_code:
+	/* mul the two arguments */
+	mul	
+	/* XOR the sum with a static const */
+	push 0xCAFEBABE
+	xor 
+	ret
+end_secret_code:
+	nop
+endp
+
+proc decrypt
+	/* init local variables */
+	push start_secret_code
+	pop code_offset
+	
+encryption_loop:	
+	/* read the byte and decode it with enc key 0xAA */
+	push code_offset
+	read
+	push 0xAA
+	xor
+	
+	/* write back the decrypted value */
+	push code_offset
+	write
+	
+	/* increment offset */
+	push code_offset
+	push 1
+	add
+	pop code_offset
+	
+	/* check if we have completed the decryption by compare offset */
+	push code_offset
+	push end_secret_code
+	cmp
+	push encryption_loop
+	jumpifg
+	
+	ret
+endp

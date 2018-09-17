@@ -1,0 +1,7 @@
+proc main
+	push 0		   /* number of bytes to remove from the native stack after the invocation */
+	push 0		   /* number of arguments to push from the managed stack to the native stack */
+	push func_ptr  /* this value is setted by the program */
+	ncall		   /* invoke the function, we ignore the return value */
+	halt	 	   /* end the VM execution */
+endp
