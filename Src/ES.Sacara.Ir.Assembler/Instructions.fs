@@ -31,7 +31,7 @@ type IrOpCodes =
     | Pop
 
     // pop from the stack two values, that are the offset of the method to call and the number of arguments to push in the
-    // ne stack frame. Once done the setup of the new stack frame invoke the code at the specified offset.
+    // new stack frame. Once done the setup of the new stack frame invoke the code at the specified offset.
     // eg. call
     | Call
 
@@ -76,7 +76,7 @@ type IrOpCodes =
     // eg. jumpifle
     | JumpIfLessEquals
 
-    // pop a values from the stack and jump to it if the sign flag is not set
+    // pop a value from the stack and jump to it if the sign flag is not set
     // eg. jumpifg
     | JumpIfGreat
 
