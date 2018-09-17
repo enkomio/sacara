@@ -18,7 +18,7 @@ To run a Sacara compiled script you can use the *SacaraRun* utility, or embedd t
 
 Find below an example of execution:
 
-<i src="https://raw.githubusercontent.com/enkomio/media/master/sacara/sacara_run.gif" />
+<img src="https://raw.githubusercontent.com/enkomio/media/master/sacara/sacara_run.gif" />
 
 For more examples take a look at the Examples folder.
 
