@@ -59,7 +59,7 @@ check_debugger_via_HeapAlloc MACRO
 	call find_exported_func
 	call eax
 
-	; do check
+	; do check for 0xBAADF00D
 	mov eax, [eax]
 	mov ebx, eax
 	shr ebx, 10h

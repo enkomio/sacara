@@ -28,6 +28,9 @@ vm_call PROC
 	; extract the arguments from the stack frame and 
 	; temporary save them into the native stack
 	mov ecx, [ebp+local2]
+	test ecx, ecx
+	jz save_previous_ip
+
 get_arguments:	
 	push ecx ; save counter
 	push [ebp+arg0]
@@ -36,6 +39,7 @@ get_arguments:
 	push eax ; push argument in the native stack
 	loop get_arguments
 
+save_previous_ip:
 	; save on top of the current stack frame the ip
 	mov eax, [ebp+arg0]	
 	push [eax+vm_ip]
@@ -50,6 +54,8 @@ get_arguments:
 	; push the arguments saved in the native 
 	; stack in the new managed stack
 	mov ecx, [ebp+local2]
+	test ecx, ecx
+	jz set_vm_ip_to_new_offset
 set_arguments:
 	mov [ebp+local2], ecx ; save counter
 	push [ebp+arg0]
@@ -57,6 +63,7 @@ set_arguments:
 	mov ecx, [ebp+local2] ; restore counter
 	loop set_arguments
 		
+set_vm_ip_to_new_offset:
 	; move the sp to the specific offset
 	mov ebx, [ebp+local0]
 	mov eax, [ebp+arg0]

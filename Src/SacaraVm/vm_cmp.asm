@@ -3,11 +3,12 @@ vm_cmp PROC
 	push ebp
 	mov ebp, esp	
 	
-	; read arguments
+	; read first argument
 	push [ebp+arg0]
 	call_vm_stack_pop_enc
 	mov edx, eax
 
+	; read second argument
 	push [ebp+arg0]
 	call_vm_stack_pop_enc
 
