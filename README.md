@@ -20,7 +20,7 @@ Find below an example of execution:
 
 <img src="https://raw.githubusercontent.com/enkomio/media/master/sacara/sacara_run.gif" />
 
-For more examples take a look at the Examples folder.
+For more examples take a look at the <a href="https://github.com/enkomio/sacara/tree/master/Src/Examples">Examples folder</a>.
 
 ## Build Sacara
 _Sacara_ is currently developed by using VisualStudio 2017 Community Edition. To build the source code you have to:
