@@ -1,0 +1,4 @@
+#include "Res/InvokeNativeFunctionDllVer.rc"
+#include "Res/InvokeNativeFunctionDllMnu.rc"
+#include "Res/InvokeNativeFunctionDllDlg.rc"
+#include "Res/InvokeNativeFunctionDllRes.rc"
