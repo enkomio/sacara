@@ -6,11 +6,10 @@ This is the implementation of the SacaraVM.
 .386
 .model flat,stdcall
 .stack 4096
-ExitProcess proto,dwExitCode:dword
 
 .CODE
 
-; the flag is specified as a MAM preprocessor.
+; the flag is specified as a MASM preprocessor.
 IF ENABLE_ANTI_ANALYSIS
 	include anti_macro.inc
 ELSE
