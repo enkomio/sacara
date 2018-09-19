@@ -164,6 +164,7 @@
     <None Include="vm_native_read.asm" />
     <None Include="vm_native_write.asm" />
     <None Include="vm_nop.asm" />
+    <None Include="vm_nor.asm" />
     <None Include="vm_not.asm" />
     <None Include="vm_or.asm" />
     <None Include="vm_read.asm" />

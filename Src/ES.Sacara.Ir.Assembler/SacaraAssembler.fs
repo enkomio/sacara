@@ -120,6 +120,8 @@ type SacaraAssembler(settings: AssemblerSettings) =
             addOperand(new IrOpCode(IrOpCodes.Not))
         | Xor ->
             addOperand(new IrOpCode(IrOpCodes.Xor))
+        | Nor ->
+            addOperand(new IrOpCode(IrOpCodes.Nor))
         | ShiftLeft ->
             addOperand(new IrOpCode(IrOpCodes.ShiftLeft))
         | ShiftRight ->

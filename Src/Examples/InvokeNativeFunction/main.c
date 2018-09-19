@@ -32,8 +32,8 @@ uint8_t code[] = {
 };
 
 typedef struct _vm_context {
-	uint32_t *ip;
-	uint32_t *stack;
+	uint32_t ip;
+	uint32_t stack;
 	uint32_t status_flag;
 	uint32_t *code;
 	uint32_t code_size;

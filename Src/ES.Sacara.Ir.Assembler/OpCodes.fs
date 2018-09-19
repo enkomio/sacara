@@ -243,6 +243,7 @@ and IrOpCode(opType: IrOpCodes) =
             | Or -> getVmOpCode(VmOr, settings)
             | Not -> getVmOpCode(VmNot, settings)
             | Xor -> getVmOpCode(VmXor, settings)
+            | Nor -> getVmOpCode(VmNor, settings)
             | ShiftLeft -> getVmOpCode(VmShiftLeft, settings)
             | ShiftRight -> getVmOpCode(VmShiftRight, settings)
             | Byte -> getMacroOpCodeBytes(VmByte)

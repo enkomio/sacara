@@ -36,6 +36,7 @@ module IrAst =
         | Or
         | Not
         | Xor
+        | Nor
         | ShiftRight
         | ShiftLeft
         | Byte of Int32 list

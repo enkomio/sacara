@@ -159,6 +159,10 @@ type IrOpCodes =
     // eg. xor
     | Xor
 
+    // pop two values from the stack, OR the first value with the second one, NOT the result and push the result on the stack
+    // eg. nor
+    | Nor
+
 // these are the op codes of the VM
 type VmOpCodes =    
     | VmRet
@@ -197,6 +201,7 @@ type VmOpCodes =
     | VmOr
     | VmNot
     | VmXor
+    | VmNor
 
 module Instructions =
     type VmOpCodeItem() =

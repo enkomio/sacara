@@ -125,3 +125,6 @@ module internal IrParserUtility =
 
     let xor() =
         Xor
+
+    let nor() =
+        Nor

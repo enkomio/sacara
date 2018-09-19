@@ -110,4 +110,7 @@ header_VmNot EQU <DWORD 0069C7E0Dh, 064C84F77h, 4h, 00429h, 00B39h, 00E71h, 00BC
 ; real opcodes: 00831h, 00799h, 0046Ah, 002B2h
 header_VmXor EQU <DWORD 0069C7E0Dh, 064C84F77h, 4h, 00888h, 00730h, 004E3h, 0020Bh>
 
+; real opcodes: 00870h, 00DCCh, 00820h, 007A5h
+header_VmNor EQU <DWORD 064680E77h, 092B0A9AEh, 4h, 008C9h, 00D7Dh, 00899h, 00714h>
+
 header_marker EQU <DWORD marker2, marker1>

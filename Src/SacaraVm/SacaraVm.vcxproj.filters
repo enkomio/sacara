@@ -113,6 +113,9 @@
     <None Include="empty_anti_macro.inc" />
     <None Include="anti_macro.inc" />
     <None Include="vm_macro.inc" />
+    <None Include="vm_nor.asm">
+      <Filter>vm_instructions</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="vm_instructions">
