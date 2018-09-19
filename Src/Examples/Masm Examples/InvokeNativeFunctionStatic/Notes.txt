@@ -1,0 +1,170 @@
+;------------------------------------------------------------------------------
+The following changes where made to vm.asm to compile the SacaraVm as a static 
+library that would change the exported vm functions to use prototypes with 
+typed parameters.
+
+This allows for us to use the Invoke command, which makes it easier to write 
+code to call functions. Using Invoke lets the assembler setup all the technical 
+stack stuff, base pointer and parameters offsets. This means we dont have to 
+push arguments, adjust stacks manually (for allocating space for local vars) 
+or use base pointer +/- offsets for referencing of locals or parameters used in
+the functions.
+
+Also as the library is static and not just an import library, we dont require
+the SacaraVm.dll as all the functions are statically linked into our program.
+;------------------------------------------------------------------------------
+
+
+vm_free             PROTO STDCALL :DWORD
+vm_init             PROTO STDCALL :DWORD,:DWORD,:DWORD
+vm_local_var_get    PROTO STDCALL :DWORD,:DWORD
+vm_local_var_set    PROTO STDCALL :DWORD,:DWORD,:DWORD
+vm_run              PROTO STDCALL :DWORD 
+
+
+; *****************************
+; arguments: vm context, var index, imm
+; *****************************
+vm_local_var_set PROC USES EBX vmcontext:DWORD, varindex:DWORD, imm:DWORD
+
+	; get the local var buffer
+	mov eax, vmcontext
+	mov eax, [eax+vm_sp]
+	mov eax, [eax+vm_local_vars]
+
+	; go to the given offset
+	mov ebx, varindex
+	lea eax, [eax+TYPE DWORD*ebx]
+
+	; set the value
+	mov ebx, imm
+	mov [eax], ebx
+
+	ret
+vm_local_var_set ENDP
+
+; *****************************
+; arguments: vm context, var index
+; *****************************
+vm_local_var_get PROC USES EBX vmcontext:DWORD, varindex:DWORD
+	LOCAL dwVarValue:DWORD
+
+	; get the local var buffer
+	mov eax, vmcontext
+	mov eax, [eax+vm_sp]
+	mov eax, [eax+vm_local_vars]
+
+	; go to the given offset
+	mov ebx, varindex
+	lea eax, [eax+TYPE DWORD*ebx]
+
+	; read the value
+	mov eax, [eax]
+	mov dwVarValue, eax
+
+	mov eax, dwVarValue
+	ret
+vm_local_var_get ENDP
+
+; *****************************
+; arguments: vm_context, vm_code, vm_code_size
+; *****************************
+vm_init PROC USES EBX ECX vmcontext:DWORD, vmcode:DWORD, vmcode_size:DWORD
+	
+    mov eax, vmcontext
+	mov [eax+vm_ip], dword ptr 0h	; zero VM ip
+	mov [eax+vm_flags], dword ptr 0h; zero flags
+
+	; allocate space for the stack
+	push vm_stack_size
+	call heap_alloc
+	
+	; save the stack pointer
+	mov ecx, vmcontext
+	mov [ecx+vm_sp], eax
+
+	; init stack frame
+	push 0h ; no previous stack frame
+	push eax
+	call vm_init_stack_frame
+
+	; init the local var space since this is the VM init function
+	; by doing so we allow to external program to set local variables
+	; value that can be read by the VM code	
+	push vm_stack_vars_size
+	call heap_alloc
+	mov ebx, vmcontext
+	mov ebx, [ebx+vm_sp]
+	mov [ebx+vm_local_vars], eax
+		
+	; set the code pointer
+	mov ebx, vmcode
+	mov ecx, vmcontext
+	mov [ecx+vm_code], ebx
+
+	; set the code size
+	mov ebx, vmcode_size
+	mov [ecx+vm_code_size], ebx
+
+	check_debugger_via_HeapAlloc
+
+	ret
+vm_init ENDP
+
+; *****************************
+; arguments: vm_context
+; *****************************
+vm_free PROC vmcontext:DWORD
+
+	; get stack pointer addr
+	mov eax, vmcontext
+	mov eax, [eax+vm_sp]
+
+	; free vars buffer
+	push [eax+vm_local_vars]
+	call heap_free
+
+	; free stack frame	
+	mov eax, vmcontext
+	push [eax+vm_sp]
+	call heap_free
+	
+	ret
+vm_free ENDP
+
+; *****************************
+; arguments: vm_context
+; return: 0 on success, opcode index on error
+; *****************************
+vm_run PROC USES EBX vmcontext:DWORD
+	LOCAL dwResult:DWORD
+	
+vm_loop:		
+	check_debugger_via_trap_flag
+
+	; read the opcode to execute	
+	push 2
+	push vmcontext
+	call vm_read_code
+
+	; decode opcode
+	push eax
+	push vmcontext
+	call vm_decode_opcode
+
+	; execute the VM instruction
+	push eax
+	push vmcontext
+	call vm_execute
+	mov dwResult, eax
+		
+	; check the finish flag in the context
+	mov ebx, vmcontext
+	mov ebx, [ebx+vm_flags]
+	test ebx, 80000000h
+	je vm_loop
+	
+	mov eax, dwResult
+	ret
+vm_run ENDP
+

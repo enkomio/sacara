@@ -12,11 +12,17 @@ Of course nothing will stop an highly skilled reverse engineer :)
  
 ## Using Sacara
 
-In order to compile a script implemented in the Sacara Intermediate Language (SIL), you have to use the Sacara assembler. 
+In order to compile a script implemented in the Sacara Intermediate Language (SIL), you have to use the Sacara assembler <a href="https://github.com/enkomio/sacara/tree/master/Src/SacaraAsm">**SacaraAsm**</a>. 
 
-To run a Sacara compiled script you can use the SacaraRun utility, or embedd the code inside your source code and using the exported APIs to run the SIL in a more controlled environment.
+To run a Sacara compiled script you can use the <a href="https://github.com/enkomio/sacara/tree/master/Src/SacaraRun">**SacaraRun**</a> utility, or embedd the code inside your source code and using the exported APIs to run the SIL in a more controlled environment.
 
-Take a look at the Examples folder for examples of usage.
+The Sacara VM is implemented in the <a href="https://github.com/enkomio/sacara/tree/master/Src/SacaraVm">**SacaraVM**</a> dll.
+
+Find below an example of execution:
+
+<img src="https://raw.githubusercontent.com/enkomio/media/master/sacara/sacara_run.gif" />
+
+For more examples take a look at the <a href="https://github.com/enkomio/sacara/tree/master/Src/Examples">Examples folder</a>.
 
 ## Build Sacara
 _Sacara_ is currently developed by using VisualStudio 2017 Community Edition. To build the source code you have to:

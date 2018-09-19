@@ -1,0 +1,4 @@
+#include "Res/InvokeNativeFunctionStaticVer.rc"
+#include "Res/InvokeNativeFunctionStaticMnu.rc"
+#include "Res/InvokeNativeFunctionStaticDlg.rc"
+#include "Res/InvokeNativeFunctionStaticRes.rc"
