@@ -1,9 +1,11 @@
-﻿namespace ES.Sacara.Ir.Assembler
+﻿namespace ES.Sacara.Ir.Obfuscator
 
 open System
 open System.Linq
+open ES.Sacara.Ir.Core
 
-module internal Obfuscator =
+[<AutoOpen>]
+module Obfuscators =
     let mutable private _random = new Random()
 
     let private shouldEncrypt(vmOpCode: VmOpCode) =
@@ -11,7 +13,7 @@ module internal Obfuscator =
         let opCodeToNotEncrypt = [VmByte; VmWord; VmDoubleWord]
         (opCodeToNotEncrypt |> List.contains vmOpCode.Type |> not) && ([3; 8] |> List.contains(n) |> not)
 
-    let private encryptVmOpCode(vmOpCode: VmOpCode) =
+    let encryptVmOpCode(vmOpCode: VmOpCode) =
         if shouldEncrypt(vmOpCode) then
             let numericOpCode = BitConverter.ToUInt16(vmOpCode.VmOp, 0)
             let mutable encNumericOpCode = numericOpCode ^^^ uint16 0x5B ^^^ uint16(vmOpCode.Offset + vmOpCode.VmOp.Length)
@@ -26,7 +28,7 @@ module internal Obfuscator =
             Array.Copy(encOpCode, vmOpCode.Buffer, encOpCode.Length)
             vmOpCode.SyncOpAndOperandsWithBuffer()
 
-    let private encryptVmOperands(vmOpCode: VmOpCode) =
+    let encryptVmOperands(vmOpCode: VmOpCode) =
         if vmOpCode.Operands.Any() then
             // encrypt the operands
             let mutable operandLength = vmOpCode.Operands.[0].Length
@@ -68,18 +70,20 @@ module internal Obfuscator =
 
             // sync fields with buffer value
             vmOpCode.SyncOpAndOperandsWithBuffer()
+
+    let private applyLabel(irCode: IrOpCode) (rewrittenOpCodes: IrOpCode list) =
+        rewrittenOpCodes.[0].Label <- irCode.Label
+        rewrittenOpCodes
     
-    let obfuscate(vmFunctions: VmFunction list, settings: AssemblerSettings) =
-        vmFunctions
-        |> List.iter(fun irFunction ->
-            irFunction.Body
-            |> List.iter(fun vmOpCode ->
-                // encrypt the opcode if necessary
-                if settings.RandomlyEncryptOpCode then  
-                    encryptVmOpCode(vmOpCode)          
-            
-                // encrypt operands if necessary
-                if settings.EncryptOperands then
-                    encryptVmOperands(vmOpCode)
-            )
+    let reWriteInstructionWithNorOperator(body: IrOpCode seq, useMultipleOpcodeForSameInstruction: Boolean) =        
+        body
+        |> Seq.map(fun irCode ->
+            let setLabel = applyLabel irCode
+            match irCode.Type with
+            | Not -> NorRewriter.rewriteNot(useMultipleOpcodeForSameInstruction) |> setLabel
+            | And -> NorRewriter.rewriteAnd(useMultipleOpcodeForSameInstruction) |> setLabel
+            | Or -> NorRewriter.rewriteOr(useMultipleOpcodeForSameInstruction) |> setLabel
+            | Xor -> NorRewriter.rewriteXor(useMultipleOpcodeForSameInstruction) |> setLabel
+            | _ -> [irCode]
         )
+        |> Seq.concat

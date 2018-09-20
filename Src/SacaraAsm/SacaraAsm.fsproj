@@ -25,7 +25,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DocumentationFile>bin\$(Configuration)\$(AssemblyName).XML</DocumentationFile>
     <Prefer32Bit>true</Prefer32Bit>
-    <StartArguments>--encrypt-operands --gen-intermediate --gen-clang test.sacara</StartArguments>
+    <StartArguments>--use-nor --multiple-opcodes --encrypt-operands --gen-intermediate --gen-clang test.sacara</StartArguments>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -66,6 +66,11 @@
     <ProjectReference Include="..\ES.Sacara.Ir.Assembler\ES.Sacara.Ir.Assembler.fsproj">
       <Name>ES.Sacara.Ir.Assembler</Name>
       <Project>{03828e7e-c679-4aee-b670-e312ffc0c8a2}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\ES.Sacara.Ir.Core\ES.Sacara.Ir.Core.fsproj">
+      <Name>ES.Sacara.Ir.Core</Name>
+      <Project>{c8d0627b-7512-4bad-9018-56c8753f9c81}</Project>
       <Private>True</Private>
     </ProjectReference>
     <ProjectReference Include="..\ES.Sacara.Ir.Parser\ES.Sacara.Ir.Parser.fsproj">

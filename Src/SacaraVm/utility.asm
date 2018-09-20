@@ -107,7 +107,7 @@ first_marker_found:
 	mov eax, edi
 	add eax, 4
 	push ecx ; save outer loop counter
-	mov edx, [eax] ; read the number of possible opcodes
+	mov edx, [eax] ; read the number of possible opcodes	
 	mov ecx, edx ; set the loop counter
 	
 	; search for the given opcode
@@ -127,11 +127,11 @@ search_opcode_loop:
 	; function found, save the read address in EAX
 	; EDI contains the address of marker2
 	lea eax, [edi+TYPE DWORD*edx+8]
-	jmp found
+	jmp finish
 
 not_found:
 	xor eax, eax
-found:
+finish:
 	mov esp, ebp
 	pop ebp
 	ret 0Ch

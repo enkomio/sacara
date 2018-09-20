@@ -123,11 +123,6 @@
     <ClCompile Include="main.c" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\SacaraVm\SacaraVm.vcxproj">
-      <Project>{2724956c-b73e-4f0f-a394-574900e8cd02}</Project>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="test.sacara" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -4,6 +4,8 @@ open System
 open System.Collections.Generic
 open ES.Sacara.Ir.Parser
 open ES.Sacara.Ir.Parser.IrAst
+open ES.Sacara.Ir.Core
+open ES.Sacara.Ir.Obfuscator
 
 type IrAssemblyCode = {
     Functions: VmFunction list
@@ -41,36 +43,36 @@ type SacaraAssembler(settings: AssemblerSettings) =
 
     let rec parseStatement(statement: Statement) =
         match statement with
-        | Procedure procType ->            
+        | Statement.Procedure procType ->            
             _currentFunction <- new IrFunction(procType.Name)
             _functions.Add(_currentFunction)
             procType.Body |> List.iter(parseStatement)
-        | Push pushType ->
-            let push = new IrOpCode(IrOpCodes.Push)
+        | Statement.Push pushType ->
+            let push = new IrOpCode(IrOpCodes.Push, settings.UseMultipleOpcodeForSameInstruction)
             push.Operands.Add(parseExpression(pushType.Operand))
             addOperand(push)
-        | Pop popType ->
-            let pop = new IrOpCode(IrOpCodes.Pop)
+        | Statement.Pop popType ->
+            let pop = new IrOpCode(IrOpCodes.Pop, settings.UseMultipleOpcodeForSameInstruction)
             pop.Operands.Add(new Operand(popType.Identifier))
             addOperand(pop)
-        | Label labelType -> 
+        | Statement.Label labelType -> 
             _currentLabel <- Some labelType.Name
             parseStatement(labelType.Statement)
-        | Call callType -> 
-            addOperand(new IrOpCode(if callType.Native then IrOpCodes.NativeCall else IrOpCodes.Call))
-        | Read readType ->
-            addOperand(new IrOpCode(if readType.Native then IrOpCodes.NativeRead else IrOpCodes.Read))
-        | Write writeType ->
-            addOperand(new IrOpCode(if writeType.Native then IrOpCodes.NativeWrite else IrOpCodes.Write))
-        | Nop -> 
-            addOperand(new IrOpCode(IrOpCodes.Nop))
-        | GetIp ->
-            addOperand(new IrOpCode(IrOpCodes.GetIp))        
-        | Add ->
-            addOperand(new IrOpCode(IrOpCodes.Add))
-        | Ret ->
-            addOperand(new IrOpCode(IrOpCodes.Ret))
-        | JumpIf jumpIfType -> 
+        | Statement.Call callType -> 
+            addOperand(new IrOpCode((if callType.Native then IrOpCodes.NativeCall else IrOpCodes.Call), settings.UseMultipleOpcodeForSameInstruction))
+        | Statement.Read readType ->
+            addOperand(new IrOpCode((if readType.Native then IrOpCodes.NativeRead else IrOpCodes.Read), settings.UseMultipleOpcodeForSameInstruction))
+        | Statement.Write writeType ->
+            addOperand(new IrOpCode((if writeType.Native then IrOpCodes.NativeWrite else IrOpCodes.Write), settings.UseMultipleOpcodeForSameInstruction))
+        | Statement.Nop -> 
+            addOperand(new IrOpCode(IrOpCodes.Nop, settings.UseMultipleOpcodeForSameInstruction))
+        | Statement.GetIp ->
+            addOperand(new IrOpCode(IrOpCodes.GetIp, settings.UseMultipleOpcodeForSameInstruction))        
+        | Statement.Add ->
+            addOperand(new IrOpCode(IrOpCodes.Add, settings.UseMultipleOpcodeForSameInstruction))
+        | Statement.Ret ->
+            addOperand(new IrOpCode(IrOpCodes.Ret, settings.UseMultipleOpcodeForSameInstruction))
+        | Statement.JumpIf jumpIfType -> 
             let opCode =
                 match (jumpIfType.JumpIfEquals, jumpIfType.JumpIfLess) with
                 | (true, true) -> IrOpCodes.JumpIfLessEquals
@@ -78,58 +80,58 @@ type SacaraAssembler(settings: AssemblerSettings) =
                 | (false, true) -> IrOpCodes.JumpIfLess
                 | (false, false) -> IrOpCodes.JumpIfGreat
 
-            addOperand(new IrOpCode(opCode))
-        | Jump ->
-            addOperand(new IrOpCode(IrOpCodes.Jump))
-        | Empty -> ()
-        | Alloca ->
-            addOperand(new IrOpCode(IrOpCodes.Alloca))
-        | Byte b ->
-            let byte = new IrOpCode(IrOpCodes.Byte)
+            addOperand(new IrOpCode(opCode, settings.UseMultipleOpcodeForSameInstruction))
+        | Statement.Jump ->
+            addOperand(new IrOpCode(IrOpCodes.Jump, settings.UseMultipleOpcodeForSameInstruction))
+        | Statement.Empty -> ()
+        | Statement.Alloca ->
+            addOperand(new IrOpCode(IrOpCodes.Alloca, settings.UseMultipleOpcodeForSameInstruction))
+        | Statement.Byte b ->
+            let byte = new IrOpCode(IrOpCodes.Byte, settings.UseMultipleOpcodeForSameInstruction)
             byte.Operands.Add(new Operand(b))
             addOperand(byte)
-        | Word w ->
-            let word = new IrOpCode(IrOpCodes.Word)
+        | Statement.Word w ->
+            let word = new IrOpCode(IrOpCodes.Word, settings.UseMultipleOpcodeForSameInstruction)
             word.Operands.Add(new Operand(w))
             addOperand(word)
-        | DoubleWord dw ->
-            let dword = new IrOpCode(IrOpCodes.DoubleWord)
+        | Statement.DoubleWord dw ->
+            let dword = new IrOpCode(IrOpCodes.DoubleWord, settings.UseMultipleOpcodeForSameInstruction)
             dword.Operands.Add(new Operand(dw))
             addOperand(dword)
-        | Halt ->
-            addOperand(new IrOpCode(IrOpCodes.Halt))
-        | Cmp ->
-            addOperand(new IrOpCode(IrOpCodes.Cmp))
-        | GetSp ->
-            addOperand(new IrOpCode(IrOpCodes.GetSp))
-        | StackRead ->
-            addOperand(new IrOpCode(IrOpCodes.StackRead))
-        | StackWrite ->
-            addOperand(new IrOpCode(IrOpCodes.StackWrite))
-        | Sub ->
-            addOperand(new IrOpCode(IrOpCodes.Sub))
-        | Mul ->
-            addOperand(new IrOpCode(IrOpCodes.Mul))
-        | Div ->
-            addOperand(new IrOpCode(IrOpCodes.Div))
-        | And ->
-            addOperand(new IrOpCode(IrOpCodes.And))
-        | Or ->
-            addOperand(new IrOpCode(IrOpCodes.Or))
-        | Not ->
-            addOperand(new IrOpCode(IrOpCodes.Not))
-        | Xor ->
-            addOperand(new IrOpCode(IrOpCodes.Xor))
-        | Nor ->
-            addOperand(new IrOpCode(IrOpCodes.Nor))
-        | ShiftLeft ->
-            addOperand(new IrOpCode(IrOpCodes.ShiftLeft))
-        | ShiftRight ->
-            addOperand(new IrOpCode(IrOpCodes.ShiftRight))
-        | SetIp ->
-            addOperand(new IrOpCode(IrOpCodes.SetIp))
-        | SetSp ->
-            addOperand(new IrOpCode(IrOpCodes.SetSp))
+        | Statement.Halt ->
+            addOperand(new IrOpCode(IrOpCodes.Halt, settings.UseMultipleOpcodeForSameInstruction))
+        | Statement.Cmp ->
+            addOperand(new IrOpCode(IrOpCodes.Cmp, settings.UseMultipleOpcodeForSameInstruction))
+        | Statement.GetSp ->
+            addOperand(new IrOpCode(IrOpCodes.GetSp, settings.UseMultipleOpcodeForSameInstruction))
+        | Statement.StackRead ->
+            addOperand(new IrOpCode(IrOpCodes.StackRead, settings.UseMultipleOpcodeForSameInstruction))
+        | Statement.StackWrite ->
+            addOperand(new IrOpCode(IrOpCodes.StackWrite, settings.UseMultipleOpcodeForSameInstruction))
+        | Statement.Sub ->
+            addOperand(new IrOpCode(IrOpCodes.Sub, settings.UseMultipleOpcodeForSameInstruction))
+        | Statement.Mul ->
+            addOperand(new IrOpCode(IrOpCodes.Mul, settings.UseMultipleOpcodeForSameInstruction))
+        | Statement.Div ->
+            addOperand(new IrOpCode(IrOpCodes.Div, settings.UseMultipleOpcodeForSameInstruction))
+        | Statement.And ->
+            addOperand(new IrOpCode(IrOpCodes.And, settings.UseMultipleOpcodeForSameInstruction))
+        | Statement.Or ->
+            addOperand(new IrOpCode(IrOpCodes.Or, settings.UseMultipleOpcodeForSameInstruction))
+        | Statement.Not ->
+            addOperand(new IrOpCode(IrOpCodes.Not, settings.UseMultipleOpcodeForSameInstruction))
+        | Statement.Xor ->
+            addOperand(new IrOpCode(IrOpCodes.Xor, settings.UseMultipleOpcodeForSameInstruction))
+        | Statement.Nor ->
+            addOperand(new IrOpCode(IrOpCodes.Nor, settings.UseMultipleOpcodeForSameInstruction))
+        | Statement.ShiftLeft ->
+            addOperand(new IrOpCode(IrOpCodes.ShiftLeft, settings.UseMultipleOpcodeForSameInstruction))
+        | Statement.ShiftRight ->
+            addOperand(new IrOpCode(IrOpCodes.ShiftRight, settings.UseMultipleOpcodeForSameInstruction))
+        | Statement.SetIp ->
+            addOperand(new IrOpCode(IrOpCodes.SetIp, settings.UseMultipleOpcodeForSameInstruction))
+        | Statement.SetSp ->
+            addOperand(new IrOpCode(IrOpCodes.SetSp, settings.UseMultipleOpcodeForSameInstruction))
 
     let parseAst(ast: Program) =
         match ast with
@@ -139,11 +141,26 @@ type SacaraAssembler(settings: AssemblerSettings) =
         if opCode.Label.IsSome then
             symbolTable.AddLabel(opCode.Label.Value, _currentIp)
 
-        let vmOpCode = opCode.Assemble(_currentIp, symbolTable, settings)
+        let vmOpCode = opCode.Assemble(_currentIp, symbolTable)
         _currentIp <- _currentIp + vmOpCode.Buffer.Length
         vmOpCode
 
-    let assemblyFunctionBody(irFunctionBody: IrOpCode seq, symbolTable: SymbolTable, settings: AssemblerSettings) =        
+    let obfuscate(vmFunctions: VmFunction list, settings: AssemblerSettings) =
+        vmFunctions
+        |> List.iter(fun irFunction ->
+            irFunction.Body
+            |> List.iter(fun vmOpCode ->
+                // encrypt the opcode if necessary
+                if settings.RandomlyEncryptOpCode then  
+                    Obfuscators.encryptVmOpCode(vmOpCode)          
+            
+                // encrypt operands if necessary
+                if settings.EncryptOperands then
+                    Obfuscators.encryptVmOperands(vmOpCode)
+            )
+        )
+
+    let assemblyFunctionBody(irFunctionBody: IrOpCode seq, symbolTable: SymbolTable, settings: AssemblerSettings) =
         irFunctionBody
         |> Seq.map(assemblyIrOpCode(symbolTable, settings))
         |> Seq.toList
@@ -171,10 +188,10 @@ type SacaraAssembler(settings: AssemblerSettings) =
         
         // create alloca instruction
         if allVariables.Count > 0 then
-            let pushInstr = new IrOpCode(IrOpCodes.Push)
+            let pushInstr = new IrOpCode(IrOpCodes.Push, settings.UseMultipleOpcodeForSameInstruction)
             pushInstr.Operands.Add(new Operand(allVariables.Count))
 
-            let allocaInstr = new IrOpCode(IrOpCodes.Alloca)
+            let allocaInstr = new IrOpCode(IrOpCodes.Alloca, settings.UseMultipleOpcodeForSameInstruction)
             [pushInstr;allocaInstr]@opCodes
         else    
             opCodes
@@ -185,8 +202,13 @@ type SacaraAssembler(settings: AssemblerSettings) =
         // the analyzed function is a symbol, this will ensure that instruction like call foo, will be correctly assembled
         symbolTable.AddLabel(irFunction.Name, _currentIp)
 
+        let rawBody =
+            if settings.UseNorOperator
+            then Obfuscators.reWriteInstructionWithNorOperator(irFunction.Body, settings.UseMultipleOpcodeForSameInstruction) |> Seq.toList
+            else irFunction.Body |> Seq.toList
+
         // add alloca instruction to compute space for local variables
-        let fullBody = addAllocaInstruction(symbolTable, irFunction.Body |> Seq.toList)
+        let fullBody = addAllocaInstruction(symbolTable, rawBody)
                             
         // proceed to assemble VM opcodes        
         {Body=assemblyFunctionBody(fullBody, symbolTable, settings)}
@@ -237,7 +259,7 @@ type SacaraAssembler(settings: AssemblerSettings) =
         symbolTable.FixPlaceholders(vmFunctions)
 
         // obfuscate
-        Obfuscator.obfuscate(vmFunctions, settings)
+        obfuscate(vmFunctions, settings)
 
         vmFunctions 
 

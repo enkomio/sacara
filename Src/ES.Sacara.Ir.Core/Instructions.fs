@@ -1,4 +1,4 @@
-﻿namespace ES.Sacara.Ir.Assembler
+﻿namespace ES.Sacara.Ir.Core
 
 open System
 open System.Reflection

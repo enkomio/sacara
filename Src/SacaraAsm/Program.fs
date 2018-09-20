@@ -17,6 +17,7 @@ module Program =
         | Add_Junk
         | Reorder_Functions
         | Multiple_OpCodes
+        | Use_Nor
         | Gen_AsmLang
         | Gen_CLang
         | Gen_Intermediate
@@ -33,6 +34,7 @@ module Program =
                 | Add_Junk -> "insert junk instructions in the original source code."
                 | Reorder_Functions -> "the function order will be set casually inside the final code."
                 | Multiple_OpCodes -> "use different byte representation for the same opcode."
+                | Use_Nor -> "whenever possible use the NOR operator."
                 | Gen_AsmLang -> "generate a MASM syntax file of the geenrated opcode."
                 | Gen_CLang -> "generate a C syntax file of the geenrated opcode."
                 | Gen_Intermediate -> "generate a text file that is the textual representation of the generated code."
@@ -140,7 +142,8 @@ module Program =
                         ReorderFunctions = results.Contains(<@ Reorder_Functions @>),
                         UseMultipleOpcodeForSameInstruction = results.Contains(<@ Multiple_OpCodes @>),
                         RandomlyEncryptOpCode = results.Contains(<@ Encrypt_OpCodes @>),
-                        EncryptOperands = results.Contains(<@ Encrypt_Operands @>)
+                        EncryptOperands = results.Contains(<@ Encrypt_Operands @>),
+                        UseNorOperator = results.Contains(<@ Use_Nor @>)
                     )
 
                 let sourceFilename = results.GetResult(<@ SourceFile @>)                

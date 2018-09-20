@@ -7,6 +7,10 @@ This is the implementation of the SacaraVM.
 .model flat,stdcall
 .stack 4096
 
+.DATA
+
+VERSION BYTE '1.1',0
+
 .CODE
 
 ; the flag is specified as a MASM preprocessor.

@@ -230,7 +230,7 @@ vm_stack_pop PROC
 
 	; read stack frame header
 	mov ebx, [ebp+arg0]
-	mov ebx, [ebx+vm_sp] 
+	mov ebx, [ebx+vm_sp]
 
 	; read value
 	mov ecx, [ebx+vm_stack_top]
@@ -455,7 +455,7 @@ vm_execute PROC
 	push ebp
 	mov ebp, esp
 	sub esp, 4h
-
+	
 	; find the handler
 	push [ebp+arg1]	
 	push vm_instructions_size
@@ -555,7 +555,7 @@ vm_run PROC
 	mov ebp, esp
 	sub esp, 4
 	pushad
-	
+
 vm_loop:		
 	check_debugger_via_trap_flag
 

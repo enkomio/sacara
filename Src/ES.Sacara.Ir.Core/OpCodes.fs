@@ -1,4 +1,4 @@
-﻿namespace ES.Sacara.Ir.Assembler
+﻿namespace ES.Sacara.Ir.Core
 
 open System
 open System.Collections.Generic
@@ -169,21 +169,21 @@ and VmOpCode = {
         )
 
 
-and IrOpCode(opType: IrOpCodes) =
+and IrOpCode(opType: IrOpCodes, useMultipleOpcodeForSameInstruction: Boolean) =
     let rnd = new Random()
 
-    let chooseRepresentation(opCodes: Int32 list, settings: AssemblerSettings) =
-        if settings.UseMultipleOpcodeForSameInstruction
+    let chooseRepresentation(opCodes: Int32 list) =
+        if useMultipleOpcodeForSameInstruction
             then opCodes.[rnd.Next(opCodes.Length)]
             else opCodes.[0]
         |> uint16
         |> BitConverter.GetBytes
     
-    let getVmOpCode(opCode: VmOpCodes, settings: AssemblerSettings) =
+    let getVmOpCode(opCode: VmOpCodes) =
         let opCodes = Instructions.bytes.[opCode]
-        (chooseRepresentation(opCodes, settings), opCode)
+        (chooseRepresentation(opCodes), opCode)
     
-    let getNotPureStackBasedVmOpCode(operands: Operand seq, symbolTable: SymbolTable, indexes: VmOpCodes list, settings: AssemblerSettings) =                
+    let getNotPureStackBasedVmOpCode(operands: Operand seq, symbolTable: SymbolTable, indexes: VmOpCodes list) =                
         let firstOperand = operands |> Seq.head
         let vmOpCode = 
             match firstOperand.Value with
@@ -197,57 +197,57 @@ and IrOpCode(opType: IrOpCodes) =
             | _ -> failwith "Invalid operand type"
 
         let opCodes = Instructions.bytes.[vmOpCode]
-        (chooseRepresentation(opCodes, settings), vmOpCode)
+        (chooseRepresentation(opCodes), vmOpCode)
 
     let getMacroOpCodeBytes(vmOpCode: VmOpCodes) =
         // macro doesn't have any bytes as opCode, I have just to encode the operands
         (Array.empty<Byte>, vmOpCode)
-        
+                
     member val Type = opType with get
     member val Operands = new List<Operand>() with get
     member val Label: String option = None with get, set
 
-    member this.Assemble(ip: Int32, symbolTable: SymbolTable, settings: AssemblerSettings) =
+    member this.Assemble(ip: Int32, symbolTable: SymbolTable) =
         let operands = new List<Byte array>()
         
         // encode the operation
         let (opBytes, vmOpCode) =
             match this.Type with
-            | Ret -> getVmOpCode(VmRet, settings)
-            | Nop -> getVmOpCode(VmNop, settings)
-            | Add -> getVmOpCode(VmAdd, settings)
-            | Push -> getNotPureStackBasedVmOpCode(this.Operands, symbolTable, [VmPushImmediate; VmPushVariable], settings)
-            | Pop -> getVmOpCode(VmPop, settings)
-            | Call -> getVmOpCode(VmCall, settings)
-            | NativeCall -> getVmOpCode(VmNativeCall, settings)
-            | Read -> getVmOpCode(VmRead, settings)
-            | NativeRead -> getVmOpCode(VmNativeRead, settings)
-            | Write -> getVmOpCode(VmWrite, settings)
-            | NativeWrite -> getVmOpCode(VmNativeWrite, settings)
-            | GetIp -> getVmOpCode(VmGetIp, settings)
-            | Jump -> getVmOpCode(VmJump, settings)
-            | JumpIfLess -> getVmOpCode(VmJumpIfLess, settings)
-            | JumpIfLessEquals -> getVmOpCode(VmJumpIfLessEquals, settings)
-            | JumpIfGreat -> getVmOpCode(VmJumpIfGreat, settings)
-            | JumpIfGreatEquals -> getVmOpCode(VmJumpIfGreatEquals, settings)
-            | Alloca -> getVmOpCode(VmAlloca, settings)
-            | Halt -> getVmOpCode(VmHalt, settings)
-            | Cmp -> getVmOpCode(VmCmp, settings)
-            | GetSp -> getVmOpCode(VmGetSp, settings)
-            | StackWrite -> getVmOpCode(VmStackWrite, settings)
-            | StackRead -> getVmOpCode(VmStackRead, settings)
-            | Sub -> getVmOpCode(VmSub, settings)
-            | Mul -> getVmOpCode(VmMul, settings)
-            | Div -> getVmOpCode(VmDiv, settings)
-            | And -> getVmOpCode(VmAnd, settings)
-            | Or -> getVmOpCode(VmOr, settings)
-            | Not -> getVmOpCode(VmNot, settings)
-            | Xor -> getVmOpCode(VmXor, settings)
-            | Nor -> getVmOpCode(VmNor, settings)
-            | ShiftLeft -> getVmOpCode(VmShiftLeft, settings)
-            | ShiftRight -> getVmOpCode(VmShiftRight, settings)
-            | SetIp -> getVmOpCode(VmSetIp, settings)
-            | SetSp -> getVmOpCode(VmSetSp, settings)
+            | Ret -> getVmOpCode(VmRet)
+            | Nop -> getVmOpCode(VmNop)
+            | Add -> getVmOpCode(VmAdd)
+            | Push -> getNotPureStackBasedVmOpCode(this.Operands, symbolTable, [VmPushImmediate; VmPushVariable])
+            | Pop -> getVmOpCode(VmPop)
+            | Call -> getVmOpCode(VmCall)
+            | NativeCall -> getVmOpCode(VmNativeCall)
+            | Read -> getVmOpCode(VmRead)
+            | NativeRead -> getVmOpCode(VmNativeRead)
+            | Write -> getVmOpCode(VmWrite)
+            | NativeWrite -> getVmOpCode(VmNativeWrite)
+            | GetIp -> getVmOpCode(VmGetIp)
+            | Jump -> getVmOpCode(VmJump)
+            | JumpIfLess -> getVmOpCode(VmJumpIfLess)
+            | JumpIfLessEquals -> getVmOpCode(VmJumpIfLessEquals)
+            | JumpIfGreat -> getVmOpCode(VmJumpIfGreat)
+            | JumpIfGreatEquals -> getVmOpCode(VmJumpIfGreatEquals)
+            | Alloca -> getVmOpCode(VmAlloca)
+            | Halt -> getVmOpCode(VmHalt)
+            | Cmp -> getVmOpCode(VmCmp)
+            | GetSp -> getVmOpCode(VmGetSp)
+            | StackWrite -> getVmOpCode(VmStackWrite)
+            | StackRead -> getVmOpCode(VmStackRead)
+            | Sub -> getVmOpCode(VmSub)
+            | Mul -> getVmOpCode(VmMul)
+            | Div -> getVmOpCode(VmDiv)
+            | And -> getVmOpCode(VmAnd)
+            | Or -> getVmOpCode(VmOr)
+            | Not -> getVmOpCode(VmNot)
+            | Xor -> getVmOpCode(VmXor)
+            | Nor -> getVmOpCode(VmNor)
+            | ShiftLeft -> getVmOpCode(VmShiftLeft)
+            | ShiftRight -> getVmOpCode(VmShiftRight)
+            | SetIp -> getVmOpCode(VmSetIp)
+            | SetSp -> getVmOpCode(VmSetSp)
             | Byte -> getMacroOpCodeBytes(VmByte)
             | Word -> getMacroOpCodeBytes(VmWord)
             | DoubleWord -> getMacroOpCodeBytes(VmDoubleWord)           

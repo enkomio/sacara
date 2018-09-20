@@ -5,14 +5,14 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>03828e7e-c679-4aee-b670-e312ffc0c8a2</ProjectGuid>
+    <ProjectGuid>6e9a577d-e4fa-43cf-83fe-4fc03eb367a2</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>ES.Sacara.Ir.Assembler</RootNamespace>
-    <AssemblyName>ES.Sacara.Ir.Assembler</AssemblyName>
+    <RootNamespace>ES.Sacara.Ir.Obfuscator</RootNamespace>
+    <AssemblyName>ES.Sacara.Ir.Obfuscator</AssemblyName>
     <UseStandardResourceNames>true</UseStandardResourceNames>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <Name>ES.Sacara.Ir.Assembler</Name>
+    <Name>ES.Sacara.Ir.Obfuscator</Name>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -44,8 +44,8 @@
     <Compile Include="AssemblyInfo.fs" />
     <Content Include="packages.config" />
     <None Include="paket.references" />
-    <Compile Include="AssemblerSettings.fs" />
-    <Compile Include="SacaraAssembler.fs" />
+    <Compile Include="NorRewriter.fs" />
+    <Compile Include="Obfuscator.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Core">
@@ -64,16 +64,6 @@
     <ProjectReference Include="..\ES.Sacara.Ir.Core\ES.Sacara.Ir.Core.fsproj">
       <Name>ES.Sacara.Ir.Core</Name>
       <Project>{c8d0627b-7512-4bad-9018-56c8753f9c81}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\ES.Sacara.Ir.Obfuscator\ES.Sacara.Ir.Obfuscator.fsproj">
-      <Name>ES.Sacara.Ir.Obfuscator</Name>
-      <Project>{6e9a577d-e4fa-43cf-83fe-4fc03eb367a2}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\ES.Sacara.Ir.Parser\ES.Sacara.Ir.Parser.fsproj">
-      <Name>ES.Sacara.Ir.Parser</Name>
-      <Project>{853ed852-dc8b-4796-a1b1-a53db8672851}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>

@@ -5,12 +5,12 @@ namespace GeneratePreBuildInfo
 open System
 open System.Collections.Generic
 open System.Text
-open ES.Sacara.Ir.Assembler
 open Microsoft.FSharp.Reflection
 open Newtonsoft.Json
 open System.IO
 open System.Reflection
-open ES.Sacara.Ir.Assembler.Instructions
+open ES.Sacara.Ir.Core
+open ES.Sacara.Ir.Core.Instructions
 
 module Program =
     let private wrtieFile(filename: String, content: String) =
@@ -55,7 +55,7 @@ module Program =
         
         // copy file
         let curDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
-        let assemblerSrcFile = Path.Combine(curDir, "..", "..", "..", "ES.Sacara.Ir.Assembler", "vm_opcodes.json")
+        let assemblerSrcFile = Path.Combine(curDir, "..", "..", "..", "ES.Sacara.Ir.Core", "vm_opcodes.json")
         wrtieFile(assemblerSrcFile, opCodeJson)
         Console.WriteLine("Files copied to: " + assemblerSrcFile)
 
@@ -86,12 +86,10 @@ module Program =
             let realBytes = String.Join(", ", opCode.OpCodes |> Seq.map convertToDword)
 
             sb.AppendFormat(
-                "; real opcodes: {1}{0}header_{2} EQU <DWORD 0{3}h, 0{4}h, {5}h, {6}>{0}", 
+                "; real opcodes: {1}{0}header_{2} EQU <DWORD marker1, marker2, {3}h, {4}>{0}", 
                 Environment.NewLine,
                 realBytes,
                 opCode.Name,
-                marker1, 
-                marker2, 
                 opCode.Bytes.Count, 
                 obfuscatedBytes              
               
