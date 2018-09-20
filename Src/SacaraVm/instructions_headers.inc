@@ -113,4 +113,10 @@ header_VmXor EQU <DWORD 0069C7E0Dh, 064C84F77h, 4h, 00888h, 00730h, 004E3h, 0020
 ; real opcodes: 00870h, 00DCCh, 00820h, 007A5h
 header_VmNor EQU <DWORD 064680E77h, 092B0A9AEh, 4h, 008C9h, 00D7Dh, 00899h, 00714h>
 
+; real opcodes: 00405h, 00BA4h, 00B2Eh, 00D36h
+header_VmSetIp EQU <DWORD 0B5A87334h, 09B087AC4h, 4h, 004B4h, 00B15h, 00B9Fh, 00D87h>
+
+; real opcodes: 0088Ah, 006ADh, 006D5h
+header_VmSetSp EQU <DWORD 0B5A87334h, 09B087AC4h, 3h, 00842h, 0061Bh, 00663h>
+
 header_marker EQU <DWORD marker2, marker1>

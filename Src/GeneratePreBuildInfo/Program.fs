@@ -13,6 +13,9 @@ open System.Reflection
 open ES.Sacara.Ir.Assembler.Instructions
 
 module Program =
+    let private wrtieFile(filename: String, content: String) =
+        File.WriteAllText(filename, content)
+
     let generateClearOpCodes() =
         let opCodesBytes = new HashSet<Int32>()
         let opCodes = new Dictionary<String, VmOpCodeItem>()
@@ -53,7 +56,7 @@ module Program =
         // copy file
         let curDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
         let assemblerSrcFile = Path.Combine(curDir, "..", "..", "..", "ES.Sacara.Ir.Assembler", "vm_opcodes.json")
-        File.WriteAllText(assemblerSrcFile, opCodeJson)
+        wrtieFile(assemblerSrcFile, opCodeJson)
         Console.WriteLine("Files copied to: " + assemblerSrcFile)
 
     let private convertBytesToDword(wordBytes: Byte array) =
@@ -102,7 +105,7 @@ module Program =
         let fileContent = sb.ToString()
         let curDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
         let vmSrcFile = Path.Combine(curDir, "..", "..", "..", "SacaraVm", "instructions_headers.inc")
-        File.WriteAllText(vmSrcFile, fileContent)
+        wrtieFile(vmSrcFile, fileContent)
         Console.WriteLine("Files copied to: " + vmSrcFile)
 
     let private ror(operand: UInt32) =
@@ -147,7 +150,7 @@ module Program =
         let fileContent = sb.ToString()
         let curDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
         let vmSrcFile = Path.Combine(curDir, "..", "..", "..", "SacaraVm", "strings.inc")
-        File.WriteAllText(vmSrcFile, fileContent)
+        wrtieFile(vmSrcFile, fileContent)
         Console.WriteLine("Files copied to: " + vmSrcFile)
 
     [<EntryPoint>]

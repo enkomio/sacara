@@ -116,6 +116,12 @@
     <None Include="vm_nor.asm">
       <Filter>vm_instructions</Filter>
     </None>
+    <None Include="vm_set_ip.asm">
+      <Filter>vm_instructions</Filter>
+    </None>
+    <None Include="vm_set_sp.asm">
+      <Filter>vm_instructions</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="vm_instructions">

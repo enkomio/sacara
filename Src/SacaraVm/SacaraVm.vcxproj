@@ -172,6 +172,8 @@
     <None Include="vm_pop.asm" />
     <None Include="vm_push_immediate.asm" />
     <None Include="vm_push_variable.asm" />
+    <None Include="vm_set_ip.asm" />
+    <None Include="vm_set_sp.asm" />
     <None Include="vm_shift_left.asm" />
     <None Include="vm_shift_right.asm" />
     <None Include="vm_stack_read.asm" />

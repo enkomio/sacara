@@ -13,6 +13,8 @@ type token =
   | NOT
   | XOR
   | NOR
+  | SETIP
+  | SETSP
   | EOF
   | CMP
   | GETSP
@@ -59,6 +61,8 @@ type tokenId =
     | TOKEN_NOT
     | TOKEN_XOR
     | TOKEN_NOR
+    | TOKEN_SETIP
+    | TOKEN_SETSP
     | TOKEN_EOF
     | TOKEN_CMP
     | TOKEN_GETSP

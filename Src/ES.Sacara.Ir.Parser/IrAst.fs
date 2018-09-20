@@ -39,6 +39,8 @@ module IrAst =
         | Nor
         | ShiftRight
         | ShiftLeft
+        | SetIp
+        | SetSp
         | Byte of Int32 list
         | Word of Int32 list
         | DoubleWord of Int32 list

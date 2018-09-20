@@ -246,6 +246,8 @@ and IrOpCode(opType: IrOpCodes) =
             | Nor -> getVmOpCode(VmNor, settings)
             | ShiftLeft -> getVmOpCode(VmShiftLeft, settings)
             | ShiftRight -> getVmOpCode(VmShiftRight, settings)
+            | SetIp -> getVmOpCode(VmSetIp, settings)
+            | SetSp -> getVmOpCode(VmSetSp, settings)
             | Byte -> getMacroOpCodeBytes(VmByte)
             | Word -> getMacroOpCodeBytes(VmWord)
             | DoubleWord -> getMacroOpCodeBytes(VmDoubleWord)           

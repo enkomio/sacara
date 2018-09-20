@@ -163,6 +163,14 @@ type IrOpCodes =
     // eg. nor
     | Nor
 
+    // set the value of the vm IP
+    // eg. setip
+    | SetIp
+
+    // set the value of the vm Stack Pointer
+    // eg. setsp
+    | SetSp
+
 // these are the op codes of the VM
 type VmOpCodes =    
     | VmRet
@@ -202,6 +210,8 @@ type VmOpCodes =
     | VmNot
     | VmXor
     | VmNor
+    | VmSetIp
+    | VmSetSp
 
 module Instructions =
     type VmOpCodeItem() =

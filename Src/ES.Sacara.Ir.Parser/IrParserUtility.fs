@@ -128,3 +128,9 @@ module internal IrParserUtility =
 
     let nor() =
         Nor
+
+    let setIp() =
+        SetIp
+
+    let setSp() =
+        SetSp
