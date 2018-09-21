@@ -152,11 +152,11 @@ type SacaraAssembler(settings: AssemblerSettings) =
             |> List.iter(fun vmOpCode ->
                 // encrypt the opcode if necessary
                 if settings.RandomlyEncryptOpCode then  
-                    Obfuscators.encryptVmOpCode(vmOpCode)          
+                    Engines.encryptVmOpCode(vmOpCode)          
             
                 // encrypt operands if necessary
                 if settings.EncryptOperands then
-                    Obfuscators.encryptVmOperands(vmOpCode)
+                    Engines.encryptVmOperands(vmOpCode)
             )
         )
 
@@ -204,7 +204,7 @@ type SacaraAssembler(settings: AssemblerSettings) =
 
         let rawBody =
             if settings.UseNorOperator
-            then Obfuscators.reWriteInstructionWithNorOperator(irFunction.Body, settings.UseMultipleOpcodeForSameInstruction) |> Seq.toList
+            then Engines.reWriteInstructionWithNorOperator(irFunction.Body, settings.UseMultipleOpcodeForSameInstruction) |> Seq.toList
             else irFunction.Body |> Seq.toList
 
         // add alloca instruction to compute space for local variables

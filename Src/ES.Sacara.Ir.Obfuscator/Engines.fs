@@ -5,7 +5,7 @@ open System.Linq
 open ES.Sacara.Ir.Core
 
 [<AutoOpen>]
-module Obfuscators =
+module Engines =
     let mutable private _random = new Random()
 
     let private shouldEncrypt(vmOpCode: VmOpCode) =

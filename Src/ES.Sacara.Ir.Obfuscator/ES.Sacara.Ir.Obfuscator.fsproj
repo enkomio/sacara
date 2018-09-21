@@ -45,7 +45,7 @@
     <Content Include="packages.config" />
     <None Include="paket.references" />
     <Compile Include="NorRewriter.fs" />
-    <Compile Include="Obfuscator.fs" />
+    <Compile Include="Engines.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Core">
