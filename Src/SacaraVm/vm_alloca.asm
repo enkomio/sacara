@@ -11,8 +11,8 @@ vm_alloca PROC
 
 	; verify if not already allocated
 	mov eax, [ebp+arg0]
-	mov eax, [eax+vm_sp]
-	cmp dword ptr [eax+vm_local_vars], 0h
+	mov eax, (VmContext PTR [eax]).stack_frame
+	cmp (VmStackFrame PTR [eax]).locals, 0h
 	pop eax
 	jnz finish	
 
@@ -23,8 +23,8 @@ vm_alloca PROC
 
 	; set the new memory in the header
 	mov ebx, [ebp+arg0]
-	mov ebx, [ebx+vm_sp]
-	mov [ebx+vm_local_vars], eax
+	mov ebx, (VmContext PTR [ebx]).stack_frame
+	mov (VmStackFrame PTR [ebx]).locals, eax
 	
 finish:
 	mov esp, ebp

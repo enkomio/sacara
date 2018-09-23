@@ -9,8 +9,8 @@ vm_stack_read PROC
 
 	; read the stack base
 	mov ebx, [ebp+arg0]
-	mov ebx, [ebx+vm_sp]
-	mov ebx, [ebx+vm_stack_base]
+	mov ebx, (VmContext PTR [ebx]).stack_frame
+	mov ebx,(VmStackFrame PTR [ebx]).base
 
 	; go to the offset and read the value
 	lea ebx, [ebx+TYPE DWORD*eax]

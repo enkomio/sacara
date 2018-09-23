@@ -19,8 +19,8 @@ vm_ret PROC
 remove_stack_frame:
 	; save previous stack frame to local var
 	mov eax, [ebp+arg0]
-	mov eax, [eax+vm_sp]
-	mov eax, [eax+vm_stack_previous_frame]
+	mov eax, (VmContext PTR [eax]).stack_frame
+	mov eax, (VmStackFrame PTR [eax]).previous
 	mov [ebp+local1], eax
 
 	; free current stack pointer
@@ -30,7 +30,7 @@ remove_stack_frame:
 	; set the previous stack pointer
 	mov ebx, [ebp+local1]
 	mov eax, [ebp+arg0]
-	mov [eax+vm_sp], ebx
+	mov (VmContext PTR [eax]).stack_frame, ebx
 
 	; reset the saved vm IP if the current stack is not empty
 	push [ebp+arg0]
@@ -41,7 +41,7 @@ remove_stack_frame:
 	push [ebp+arg0]
 	call_vm_stack_pop_enc
 	mov ebx, [ebp+arg0]
-	mov [ebx+vm_ip], eax
+	mov (VmContext PTR [ebx]).ip, eax
 
 	; push the return value if necessary
 push_return_value:

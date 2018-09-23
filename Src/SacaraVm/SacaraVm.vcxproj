@@ -85,7 +85,7 @@
     </Link>
     <MASM>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <PreprocessorDefinitions>ENABLE_ANTI_ANALYSIS=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </MASM>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -114,7 +114,8 @@
       <GenerateDebugInformation>false</GenerateDebugInformation>
     </Link>
     <MASM>
-      <PreprocessorDefinitions>ENABLE_ANTI_ANALYSIS=1</PreprocessorDefinitions>
+      <PreprocessorDefinitions>
+      </PreprocessorDefinitions>
     </MASM>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -136,8 +137,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="anti_macro.inc" />
+    <None Include="build_options.inc" />
     <None Include="const.inc" />
-    <None Include="empty_anti_macro.inc" />
+    <None Include="typedef.inc" />
     <None Include="vm_macro.inc" />
     <None Include="sacara.def" />
     <None Include="vm_add.asm" />

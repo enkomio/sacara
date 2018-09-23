@@ -1,5 +1,0 @@
-check_debugger_via_trap_flag MACRO
-ENDM
-
-check_debugger_via_HeapAlloc MACRO
-ENDM

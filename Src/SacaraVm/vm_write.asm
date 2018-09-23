@@ -16,7 +16,7 @@ vm_write PROC
 
 	; to go the offset
 	mov ebx, [ebp+arg0]
-	mov ebx, [ebx+vm_code]
+	mov ebx, (VmContext PTR [ebx]).code
 	add ebx, [ebp+local0]
 	
 	; write the byte

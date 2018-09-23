@@ -4,7 +4,7 @@ vm_get_sp PROC
 	mov ebp, esp	
 	
 	mov eax, [ebp+arg0]
-	push [eax+vm_sp]
+	push (VmContext PTR [eax]).stack_frame
 	push [ebp+arg0]
 	call_vm_stack_push_enc
 

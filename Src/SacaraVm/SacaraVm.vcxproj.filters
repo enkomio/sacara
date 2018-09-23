@@ -110,7 +110,6 @@
     <None Include="vm_add.asm">
       <Filter>vm_instructions</Filter>
     </None>
-    <None Include="empty_anti_macro.inc" />
     <None Include="anti_macro.inc" />
     <None Include="vm_macro.inc" />
     <None Include="vm_set_ip.asm">
@@ -122,6 +121,8 @@
     <None Include="vm_nor.asm">
       <Filter>vm_instructions</Filter>
     </None>
+    <None Include="typedef.inc" />
+    <None Include="build_options.inc" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="vm_instructions">

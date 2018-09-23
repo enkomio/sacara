@@ -15,8 +15,8 @@ vm_stack_write PROC
 
 	; read the stack base
 	mov ebx, [ebp+arg0]
-	mov ebx, [ebx+vm_sp]
-	mov ebx, [ebx+vm_stack_base]
+	mov ebx, (VmContext PTR [ebx]).stack_frame
+	mov ebx, (VmStackFrame PTR [ebx]).base
 
 	; go to the offset and write the value
 	mov ecx, [ebp+local0]

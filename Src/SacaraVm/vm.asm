@@ -1,3 +1,4 @@
+include typedef.inc
 include const.inc
 include strings.inc
 include instructions_headers.inc
@@ -9,7 +10,7 @@ include vm_macro.inc
 ; These offset are used by the find_vm_handler routine
 start_vm_instructions:
 include instructions.inc
-vm_instructions_size DWORD $ - start_vm_instructions
+VM_INSTRUCTIONS_SIZE DWORD $ - start_vm_instructions
 
 ; *****************************
 ; arguments: vm_context, size
@@ -21,10 +22,10 @@ vm_read_code PROC
 	; read vm ip
 	mov ebp, esp
 	mov eax, [ebp+arg0]
-	mov ebx, [eax+vm_ip]
+	mov ebx, (VmContext PTR [eax]).ip
 
 	; read word opcode
-	mov esi, [eax+vm_code]
+	mov esi, (VmContext PTR [eax]).code
 	lea esi, [esi+ebx]
 	xor eax, eax
 
@@ -75,9 +76,9 @@ vm_stack_push_enc PROC
 
 	; compute stack offset as XOR key
 	mov ebx, [ebp+arg0]
-	mov ebx, [ebx+vm_sp]
-	mov ecx, [ebx+vm_stack_top]
-	sub ecx, [ebx+vm_stack_base]
+	mov ebx, (VmContext PTR [ebx]).stack_frame
+	mov ecx, (VmStackFrame PTR [ebx]).top
+	sub ecx, (VmStackFrame PTR [ebx]).base
 	not ecx
 		
 	; encode value
@@ -108,9 +109,9 @@ vm_stack_pop_enc PROC
 
 	; compute stack offset as XOR key
 	mov ebx, [ebp+arg0]
-	mov ebx, [ebx+vm_sp]
-	mov ecx, [ebx+vm_stack_top]
-	sub ecx, [ebx+vm_stack_base]
+	mov ebx, (VmContext PTR [ebx]).stack_frame
+	mov ecx, (VmStackFrame PTR [ebx]).top
+	sub ecx, (VmStackFrame PTR [ebx]).base
 	not ecx
 
 	; decode value
@@ -131,9 +132,9 @@ vm_clear_operands_encryption_flag PROC
 	mov ebp, esp
 
 	mov eax, [ebp+arg0]
-	mov ecx, [eax+vm_flags]
+	mov ecx, (VmContext PTR [eax]).flags
 	and ecx, 0f7ffffffh
-	mov [eax+vm_flags], ecx
+	mov (VmContext PTR [eax]).flags, ecx
 
 	mov esp, ebp
 	pop ebp
@@ -150,8 +151,8 @@ vm_local_var_set PROC
 
 	; get the local var buffer
 	mov eax, [ebp+arg0]
-	mov eax, [eax+vm_sp]
-	mov eax, [eax+vm_local_vars]
+	mov eax, (VmContext PTR [eax]).stack_frame
+	mov eax, (VmStackFrame PTR [eax]).locals
 
 	; go to the given offset
 	mov ebx, [ebp+arg1]
@@ -178,8 +179,8 @@ vm_local_var_get PROC
 
 	; get the local var buffer
 	mov eax, [ebp+arg0]
-	mov eax, [eax+vm_sp]
-	mov eax, [eax+vm_local_vars]
+	mov eax, (VmContext PTR [eax]).stack_frame
+	mov eax, (VmStackFrame PTR [eax]).locals
 
 	; go to the given offset
 	mov ebx, [ebp+arg1]
@@ -206,14 +207,14 @@ vm_stack_push PROC
 
 	; read stack frame header
 	mov ebx, [ebp+arg0]
-	mov ebx, [ebx+vm_sp] 
+	mov ebx, (VmContext PTR [ebx]).stack_frame
 	
 	; increment stack by 1
-	add dword ptr [ebx+vm_stack_top], TYPE DWORD
+	add (VmStackFrame PTR [ebx]).top, TYPE DWORD
 	
 	; set value on top of the stack	
 	mov eax, [ebp+arg1]
-	mov ebx, [ebx+vm_stack_top]
+	mov ebx, (VmStackFrame PTR [ebx]).top
 	mov [ebx], eax
 
 	mov esp, ebp
@@ -230,15 +231,15 @@ vm_stack_pop PROC
 
 	; read stack frame header
 	mov ebx, [ebp+arg0]
-	mov ebx, [ebx+vm_sp]
+	mov ebx, (VmContext PTR [ebx]).stack_frame
 
 	; read value
-	mov ecx, [ebx+vm_stack_top]
+	mov ecx, (VmStackFrame PTR [ebx]).top
 	mov eax, [ecx]
 	mov dword ptr [ecx], 0h ; zero the value
 
 	; decrement stack by 1 DWORD
-	sub dword ptr [ebx+vm_stack_top], TYPE DWORD
+	sub (VmStackFrame PTR [ebx]).top, TYPE DWORD
 
 	mov esp, ebp
 	pop ebp
@@ -257,13 +258,13 @@ vm_init_stack_frame PROC
 
 	; fill stack frame header
 	lea ebx, [eax+TYPE DWORD*4 ]
-	mov dword ptr [eax+vm_stack_previous_frame], edx
-	mov [eax+vm_stack_base], ebx
-	mov [eax+vm_stack_top], ebx
+	mov (VmStackFrame PTR [eax]).previous, edx
+	mov (VmStackFrame PTR [eax]).base, ebx
+	mov (VmStackFrame PTR [eax]).top, ebx
 
 	; init space for local vars	
 	mov ebx, [ebp+arg0]
-	mov dword ptr [ebx+vm_local_vars], 0h
+	mov (VmStackFrame PTR [ebx]).locals, 0h
 		
 	mov esp, ebp
 	pop ebp
@@ -280,16 +281,16 @@ vm_init PROC
 	pushad 
 
 	mov eax, [ebp+arg0]
-	mov [eax+vm_ip], dword ptr 0h	; zero VM ip
-	mov [eax+vm_flags], dword ptr 0h; zero flags
+	mov (VmContext PTR [eax]).ip, dword ptr 0h	; zero VM ip
+	mov (VmContext PTR [eax]).flags, dword ptr 0h; zero flags
 
 	; allocate space for the stack
-	push vm_stack_size
+	push VM_STACK_SIZE
 	call heap_alloc
 	
 	; save the stack pointer
 	mov ecx, [ebp+arg0]
-	mov [ecx+vm_sp], eax
+	mov (VmContext PTR [ecx]).stack_frame, eax
 
 	; init stack frame
 	push 0h ; no previous stack frame
@@ -299,20 +300,20 @@ vm_init PROC
 	; init the local var space since this is the VM init function
 	; by doing so we allow to external program to set local variables
 	; value that can be read by the VM code	
-	push vm_stack_vars_size
+	push VM_STACK_VARS_SIZE
 	call heap_alloc
 	mov ebx, [ebp+arg0]
-	mov ebx, [ebx+vm_sp]
-	mov [ebx+vm_local_vars], eax
+	mov ebx, (VmContext PTR [ebx]).stack_frame
+	mov (VmStackFrame PTR [ebx]).locals, eax
 		
 	; set the code pointer
 	mov ebx, [ebp+arg1]
 	mov ecx, [ebp+arg0]
-	mov [ecx+vm_code], ebx
+	mov (VmContext PTR [ecx]).code, ebx
 
 	; set the code size
 	mov ebx, [ebp+arg2]
-	mov [ecx+vm_code_size], ebx
+	mov (VmContext PTR [ecx]).code_size, ebx
 
 	check_debugger_via_HeapAlloc
 
@@ -332,15 +333,15 @@ vm_free PROC
 
 	; get stack pointer addr
 	mov eax, [ebp+arg0]
-	mov eax, [eax+vm_sp]
+	mov eax, (VmContext PTR [eax]).stack_frame
 
 	; free vars buffer
-	push [eax+vm_local_vars]
+	push (VmStackFrame PTR [eax]).locals
 	call heap_free
 
 	; free stack frame	
 	mov eax, [ebp+arg0]
-	push [eax+vm_sp]
+	push (VmContext PTR [eax]).stack_frame
 	call heap_free
 	
 	popad
@@ -358,11 +359,11 @@ vm_is_stack_empty PROC
 
 	; get stack pointer addr
 	mov ecx, [ebp+arg0]
-	mov ecx, [ecx+vm_sp]
+	mov ecx, (VmContext PTR [ecx]).stack_frame
 
-	mov ebx, [ecx+vm_stack_base]
+	mov ebx, (VmStackFrame PTR [ecx]).base
 	xor eax, eax
-	cmp [ecx+vm_stack_top], ebx	
+	cmp (VmStackFrame PTR [ecx]).top, ebx	
 	jz equals
 	jmp finish
 
@@ -383,8 +384,8 @@ vm_increment_ip PROC
 	mov ecx, [ebp+arg1]
 	mov eax, [ebp+arg0]
 	mov ebx, [eax]
-	lea ebx, [ebx+vm_ip+ecx]
-	mov [eax+vm_ip], ebx
+	lea ebx, [ecx+(VmContext PTR [ebx]).ip]
+	mov (VmContext PTR [eax]).ip, ebx
 	mov esp, ebp
 	pop ebp
 	ret 8
@@ -417,12 +418,12 @@ vm_decode_operand PROC
 
 	; check operand encryption flag
 	mov eax, [ebp+arg0]
-	mov ecx, [eax+vm_flags]
+	mov ecx, (VmContext PTR [eax]).flags
 	test ecx, 08000000h
 	jz not_decode
 
 	; comput dynamic enc key	
-	mov ebx, [eax+vm_ip]
+	mov ebx, (VmContext PTR [eax]).ip
 	mov eax, ebx
 	shl ebx, 8h
 	or eax, ebx
@@ -454,27 +455,33 @@ vm_decode_operand ENDP
 vm_execute PROC
 	push ebp
 	mov ebp, esp
-	sub esp, 4h
-	
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	sub esp, 8h ; era 4
+	mov eax, [ebp+arg1] ; rimuovi
+	mov [ebp+local1], eax ; rimuovi
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+		
 	; find the handler
 	push [ebp+arg1]	
-	push vm_instructions_size
+	push VM_INSTRUCTIONS_SIZE
 	push start_vm_instructions
 	call find_vm_handler
 	test eax, eax
 	je error
 
-	; relocate code	
-	push eax
-	call relocate_code
-	test eax, eax
-	je error
+	IF ENABLE_CODE_RELOCATION
+		; relocate code	
+		push eax
+		call relocate_code
+		test eax, eax
+		je error
 
-	; save allocated memory
-	mov [ebp+local0], eax 
+		; save allocated memory
+		mov [ebp+local0], eax 		
+	ENDIF
 
 	; invoke the handler
-	push [ebp+arg0]			; VM context	
+	push [ebp+arg0]
 	call eax
 	add esp, 04h
 	
@@ -484,19 +491,21 @@ vm_execute PROC
 error:
 	; invalid opcode, set the halt flag and error flag
 	mov eax, [ebp+arg0]
-	mov ebx, [eax+vm_flags]
+	mov ebx, (VmContext PTR [eax]).flags
 	or ebx, 0C0000000h
-	mov [eax+vm_flags], ebx
+	mov (VmContext PTR [eax]).flags, ebx
 
 	; set eax to the offset of the opcode that generated the error
-	mov eax, [eax+vm_ip]
+	mov eax, (VmContext PTR [eax]).ip
 
 end_execution:	
-	push eax
-	; free allocated memory
-	push [ebp+local0]
-	call free_relocated_code
-	pop eax
+	IF ENABLE_CODE_RELOCATION
+		push eax
+		; free allocated memory
+		push [ebp+local0]
+		call free_relocated_code
+		pop eax
+	ENDIF
 
 	mov esp, ebp
 	pop ebp
@@ -520,9 +529,9 @@ vm_decode_opcode PROC
 
 	; set the operands are encrypted flag in the global status flag
 	mov ebx, [ebp+arg0]
-	mov ecx, [ebx+vm_flags]
+	mov ecx, (VmContext PTR [ebx]).flags
 	or ecx, 8000000h
-	mov [ebx+vm_flags], ecx
+	mov (VmContext PTR [ebx]).flags, ecx
 
 check_opcode_flags:
 	; check if the encrypt opcode flag is set
@@ -535,7 +544,7 @@ check_opcode_flags:
 	xor eax, INIT_OPCODE_XOR_KEY
 
 	mov ebx, [ebp+arg0]
-	xor eax, [ebx+vm_ip]
+	xor eax, (VmContext PTR [eax]).ip
 
 clear_flags:
 	; clear first 4 bits since they are flags and save the result
@@ -577,7 +586,7 @@ vm_loop:
 		
 	; check the finish flag in the context
 	mov ebx, [ebp+arg0]
-	mov ebx, [ebx+vm_flags]
+	mov ebx, (VmContext PTR [ebx]).flags
 	test ebx, 80000000h
 	je vm_loop
 	

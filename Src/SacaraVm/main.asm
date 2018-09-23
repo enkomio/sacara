@@ -9,16 +9,12 @@ This is the implementation of the SacaraVM.
 
 .DATA
 
-VERSION BYTE '1.1',0
+VERSION BYTE '2.0',0
 
 .CODE
 
-; the flag is specified as a MASM preprocessor.
-IF ENABLE_ANTI_ANALYSIS
-	include anti_macro.inc
-ELSE
-	include empty_anti_macro.inc
-ENDIF
+include build_options.inc
+include anti_macro.inc
 
 include vm.asm
 

@@ -9,13 +9,13 @@ vm_jump_if_great PROC
 
 	; read the carry flag
 	mov ebx, [ebp+arg0]
-	mov ebx, [ebx+vm_flags]
+	mov ebx, (VmContext PTR [ebx]).flags
 	test ebx, VM_CARRY_FLAG
 	jnz finish
 
 	; modify the vm IP
 	mov ebx, [ebp+arg0]
-	mov [ebx+vm_ip], eax
+	mov (VmContext PTR [ebx]).ip, eax
 
 finish:	
 	mov esp, ebp

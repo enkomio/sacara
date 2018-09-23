@@ -15,13 +15,13 @@ vm_call PROC
 	mov [ebp+local2], eax
 
 	; allocate space for the stack
-	push vm_stack_size
+	push VM_STACK_SIZE
 	call_heap_alloc
 	mov [ebp+local1], eax
 
 	; init stack frame
 	mov ebx, [ebp+arg0]	
-	push [ebx+vm_sp] ; previous stack frame
+	push (VmContext PTR [ebx]).stack_frame ; previous stack frame
 	push eax ; new allocated stack frame
 	call_vm_init_stack_frame
 		
@@ -42,14 +42,14 @@ get_arguments:
 save_previous_ip:
 	; save on top of the current stack frame the ip
 	mov eax, [ebp+arg0]	
-	push [eax+vm_ip]
+	push (VmContext PTR [eax]).ip
 	push [ebp+arg0]
 	call_vm_stack_push_enc
 
 	; set the new stack frame as the current one
 	mov eax, [ebp+local1]
 	mov ebx, [ebp+arg0]	
-	mov [ebx+vm_sp], eax
+	mov (VmContext PTR [ebx]).stack_frame, eax
 
 	; push the arguments saved in the native 
 	; stack in the new managed stack
@@ -67,7 +67,7 @@ set_vm_ip_to_new_offset:
 	; move the sp to the specific offset
 	mov ebx, [ebp+local0]
 	mov eax, [ebp+arg0]
-	mov [eax+vm_ip], ebx
+	mov (VmContext PTR [eax]).ip, ebx
 	
 	mov esp, ebp
 	pop ebp

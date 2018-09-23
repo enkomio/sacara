@@ -5,6 +5,7 @@
 #load ".fake/build.fsx/intellisense.fsx"
 
 open System
+open System.Text
 open System.IO
 open Fake.DotNet
 open Fake.Core
@@ -36,6 +37,13 @@ let nativeProjects = [
 let dotNetProjects = [        
     "SacaraAsm.fsproj"
 ]
+
+let buildOptions = [
+    ("ENABLE_CODE_RELOCATION", 1)
+    ("ENABLE_ANTI_DEBUGGING", 1)
+]
+let buildOptionsFilename = Path.Combine("SacaraVm", "build_options.inc")
+let savedBuildOptions = File.ReadAllText(buildOptionsFilename)
 
 let projects = nativeProjects@dotNetProjects
 
@@ -88,6 +96,15 @@ Target.create "SetAssemblyInfo" (fun _ ->
     |> Seq.iter genFSAssemblyInfo    
 )
 
+Target.create "SetBuildOptions" (fun _ ->
+    let buildOptionsContent = new StringBuilder()
+    buildOptions
+    |> List.iter(fun (name, value) -> 
+        buildOptionsContent.AppendFormat("{0} = {1}", name, value).AppendLine() |> ignore
+    )
+    File.WriteAllText(buildOptionsFilename, buildOptionsContent.ToString())
+)
+
 Target.create "Compile" (fun _ ->
     let build(project: String, buildDir: String) =
         Trace.log("Compile: " + project)
@@ -109,6 +126,10 @@ Target.create "Compile" (fun _ ->
         projFile
     )
     |> List.iter(fun projectFile -> build(projectFile, buildDir))
+)
+
+Target.create "RestoreBuildOptions" (fun _ ->
+    File.WriteAllText(buildOptionsFilename, savedBuildOptions)
 )
 
 Target.create "Release" (fun _ ->
@@ -164,10 +185,12 @@ Target.create "Default" ignore
 *)
 
 "Clean"
-  ==> "SetAssemblyInfo"
-  ==> "Compile"
-  ==> "Release"
-  ==> "Default"
+    ==> "SetAssemblyInfo"
+    ==> "SetBuildOptions"
+    ==> "Compile"
+    ==> "RestoreBuildOptions"
+    ==> "Release"
+    ==> "Default"
 
 // start build
 Target.runOrDefault "Default"

@@ -4,7 +4,7 @@ vm_get_ip PROC
 	mov ebp, esp	
 	
 	mov eax, [ebp+arg0]
-	push [eax+vm_ip]
+	push (VmContext PTR [eax]).ip
 	push [ebp+arg0]
 	call_vm_stack_push_enc
 

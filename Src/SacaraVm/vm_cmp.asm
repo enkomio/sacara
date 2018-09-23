@@ -18,7 +18,7 @@ vm_cmp PROC
 
 	; read the current flags
 	mov ebx, [ebp+arg0]
-	mov ecx, [ebx+vm_flags]
+	mov ecx, (VmContext PTR [ebx]).flags
 
 	; check zero flag
 	jz set_zero_flag
@@ -40,7 +40,7 @@ set_carry_flag:
 	or ecx, 010000000h
 
 finish:
-	mov [ebx+vm_flags], ecx
+	mov (VmContext PTR [ebx]).flags, ecx
 
 	mov esp, ebp
 	pop ebp
