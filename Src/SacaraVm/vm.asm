@@ -455,12 +455,8 @@ vm_decode_operand ENDP
 vm_execute PROC
 	push ebp
 	mov ebp, esp
-	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-	sub esp, 8h ; era 4
-	mov eax, [ebp+arg1] ; rimuovi
-	mov [ebp+local1], eax ; rimuovi
-	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-		
+	sub esp, 4h
+
 	; find the handler
 	push [ebp+arg1]	
 	push VM_INSTRUCTIONS_SIZE
