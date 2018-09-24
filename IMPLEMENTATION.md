@@ -55,8 +55,8 @@ You can insert comments in your code to make it more understandable. *Sacara* su
 
 ```
 proc main
-    push 0x123   /* push first argument */
-    push 0x456   /* push second argument */
+    push 0x123   /* push second argument */
+    push 0x456   /* push first argument */
     add          /* sum */
     halt         /* stop execution */
 endp
