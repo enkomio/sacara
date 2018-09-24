@@ -78,11 +78,11 @@ type IrOpCodes =
 
     // pop a value from the stack and jump to it if the sign flag is not set
     // eg. jumpifg
-    | JumpIfGreat
+    | JumpIfGreater
 
     // pop a values from the stack and jump to it if the sign flag or the zero flag are not set
     // eg. jumpifge
-    | JumpIfGreatEquals
+    | JumpIfGreaterEquals
 
     // allocate a given amount of space for local variables. The argument is the number of DWORD to allocate.
     // If this instruction is invoked more than one time, the size for the local variables is updated and all 
@@ -188,8 +188,8 @@ type VmOpCodes =
     | VmStackRead
     | VmJumpIfLess
     | VmJumpIfLessEquals
-    | VmJumpIfGreat
-    | VmJumpIfGreatEquals
+    | VmJumpIfGreater
+    | VmJumpIfGreaterEquals
     | VmRead
     | VmWrite
     | VmGetIp

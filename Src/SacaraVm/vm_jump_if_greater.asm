@@ -1,5 +1,5 @@
-header_VmJumpIfGreat
-vm_jump_if_great PROC
+header_VmJumpIfGreater
+vm_jump_if_greater PROC
 	push ebp
 	mov ebp, esp	
 	
@@ -21,5 +21,5 @@ finish:
 	mov esp, ebp
 	pop ebp
 	ret
-vm_jump_if_great ENDP
+vm_jump_if_greater ENDP
 header_marker

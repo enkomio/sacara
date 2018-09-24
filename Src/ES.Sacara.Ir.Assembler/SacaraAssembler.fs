@@ -76,9 +76,9 @@ type SacaraAssembler(settings: AssemblerSettings) =
             let opCode =
                 match (jumpIfType.JumpIfEquals, jumpIfType.JumpIfLess) with
                 | (true, true) -> IrOpCodes.JumpIfLessEquals
-                | (true, false) -> IrOpCodes.JumpIfGreatEquals
+                | (true, false) -> IrOpCodes.JumpIfGreaterEquals
                 | (false, true) -> IrOpCodes.JumpIfLess
-                | (false, false) -> IrOpCodes.JumpIfGreat
+                | (false, false) -> IrOpCodes.JumpIfGreater
 
             addOperand(new IrOpCode(opCode, settings.UseMultipleOpcodeForSameInstruction))
         | Statement.Jump ->

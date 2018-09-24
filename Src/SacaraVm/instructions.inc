@@ -13,8 +13,8 @@ include vm_cmp.asm
 include vm_jump.asm
 include vm_jump_if_less.asm
 include vm_jump_if_less_equals.asm
-include vm_jump_if_great.asm
-include vm_jump_if_great_equals.asm
+include vm_jump_if_greater.asm
+include vm_jump_if_greater_equals.asm
 include vm_read.asm
 include vm_write.asm
 include vm_get_ip.asm

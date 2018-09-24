@@ -48,10 +48,10 @@ header_VmJumpIfLess EQU <DWORD marker1, marker2, 3h, 00689h, 00D61h, 009F4h>
 header_VmJumpIfLessEquals EQU <DWORD marker1, marker2, 3h, 00B54h, 00F42h, 00DF0h>
 
 ; real opcodes: 00F0Dh, 00744h, 00F37h
-header_VmJumpIfGreat EQU <DWORD marker1, marker2, 3h, 00FBBh, 007F4h, 00F85h>
+header_VmJumpIfGreater EQU <DWORD marker1, marker2, 3h, 00FBBh, 007F4h, 00F85h>
 
 ; real opcodes: 0027Dh, 00FA6h, 00A35h
-header_VmJumpIfGreatEquals EQU <DWORD marker1, marker2, 3h, 002CBh, 00F16h, 00A83h>
+header_VmJumpIfGreaterEquals EQU <DWORD marker1, marker2, 3h, 002CBh, 00F16h, 00A83h>
 
 ; real opcodes: 00409h, 00D7Fh, 00AEBh, 00824h, 00C31h
 header_VmRead EQU <DWORD marker1, marker2, 5h, 004C1h, 00DCFh, 00A63h, 00896h, 00C89h>

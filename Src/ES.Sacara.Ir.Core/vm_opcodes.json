@@ -213,7 +213,7 @@
     ]
   },
   {
-    "Name": "VmJumpIfGreat",
+    "Name": "VmJumpIfGreater",
     "Bytes": [
       "uw8=",
       "9Ac=",
@@ -226,7 +226,7 @@
     ]
   },
   {
-    "Name": "VmJumpIfGreatEquals",
+    "Name": "VmJumpIfGreaterEquals",
     "Bytes": [
       "ywI=",
       "Fg8=",

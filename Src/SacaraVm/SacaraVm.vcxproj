@@ -146,7 +146,7 @@
     <None Include="vm_div.asm" />
     <None Include="vm_get_ip.asm" />
     <None Include="vm_get_sp.asm" />
-    <None Include="vm_jump_if_great_equals.asm" />
+    <None Include="vm_jump_if_greater_equals.asm" />
     <None Include="vm_jump_if_less_equals.asm" />
     <None Include="strings.inc" />
     <None Include="utility.asm" />
@@ -158,7 +158,7 @@
     <None Include="instructions.inc" />
     <None Include="instructions_headers.inc" />
     <None Include="vm_jump.asm" />
-    <None Include="vm_jump_if_great.asm" />
+    <None Include="vm_jump_if_greater.asm" />
     <None Include="vm_jump_if_less.asm" />
     <None Include="vm_mul.asm" />
     <None Include="vm_and.asm" />
