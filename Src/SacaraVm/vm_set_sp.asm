@@ -9,7 +9,8 @@ vm_set_sp PROC
 	
 	; set the Stack Pointer
 	mov ebx, [ebp+arg0]
-	mov (VmContext PTR [ebx]).stack_frame, eax
+	mov ebx, (VmContext PTR [ebx]).stack_frame
+	mov (VmStackFrame PTR [ebx]).base, eax
 
 	mov esp, ebp
 	pop ebp
