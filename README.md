@@ -26,7 +26,7 @@ For more examples take a look at the <a href="https://github.com/enkomio/sacara/
 
 ## Documentation
 
-For documentation related to how the SacaraVM can be used, please see the [IMPLEMENTATION][]3 page.
+For documentation related to how the SacaraVM can be used, please see the [IMPLEMENTATION][3] page.
 
 ## Build Sacara
 _Sacara_ is currently developed by using VisualStudio 2017 Community Edition. To build the source code you have to:
