@@ -97,7 +97,7 @@ This instruction add two values and push back the result. It pops from the stack
 * second operand
 
 ### PUSH
-*Mnemonic*: **push <imm>/<label>/<local variable>**
+*Mnemonic*: **push [imm/label/local variable]**
 
 *Popped Arguments*: **0**
 
@@ -120,7 +120,7 @@ endp
 ```
 
 ### POP
-*Mnemonic*: **pop <local variable>**
+*Mnemonic*: **pop [local variable]**
 
 *Popped Arguments*: **1**
 
@@ -267,7 +267,7 @@ This instruction allocates a given number of DOUBLE WORD to be used as storage f
 * The number of DOUBLE WORD to allocate for the local variables
 
 ### BYTE
-*Mnemonic*: **byte <byte value>, ...**
+*Mnemonic*: **byte [byte value], ...**
 
 *Popped Arguments*: **0**
 
@@ -280,7 +280,7 @@ byte "this is a string",0x00
 ```
 
 ### WORD
-*Mnemonic*: **word <word value>, ...**
+*Mnemonic*: **word [word value], ...**
 
 *Popped Arguments*: **0**
 
@@ -289,7 +289,7 @@ byte "this is a string",0x00
 This is not a real instruction, but a command for the Assembler that instruct it to emit the specified WORD in the code. It is also possible to specify more that one value by separating it with a comma (,).
 
 ### DOUBLE WORD
-*Mnemonic*: **dword <double word value>, ...**
+*Mnemonic*: **dword [double word value], ...**
 
 *Popped Arguments*: **0**
 
