@@ -24,6 +24,10 @@ Find below an example of execution:
 
 For more examples take a look at the <a href="https://github.com/enkomio/sacara/tree/master/Src/Examples">Examples folder</a>.
 
+## Documentation
+
+For documentation related to how the SacaraVM can be used, please see the [IMPLEMENTATION][3] page.
+
 ## Build Sacara
 _Sacara_ is currently developed by using VisualStudio 2017 Community Edition. To build the source code you have to:
 * clone the repository
@@ -43,3 +47,4 @@ Sacara is licensed under the [MIT license](LICENSE.TXT).
 
   [1]: https://github.com/enkomio/sacara/tree/master/Src
   [2]: https://github.com/enkomio/sacara/releases/latest
+  [3]: https://github.com/enkomio/sacara/blob/master/IMPLEMENTATION.md
