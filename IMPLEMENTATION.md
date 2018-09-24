@@ -68,6 +68,7 @@ endp
 <img src="https://raw.githubusercontent.com/enkomio/media/master/sacara/sacara_stack.png" />
 
 ### RET
+<hr/>
 *Mnemonic*: **ret**
 
 *Popped Arguments*: **0**
@@ -77,6 +78,7 @@ endp
 This instruction returns from a function, if there is a value on top of the stack it is pushed in the caller stack. The function return address is saved on top of the caller stack. When the function returns all the stack and local variables are destroyed.  
 
 ### NOP
+<hr/>
 *Mnemonic*: **nop**
 
 *Popped Arguments*: **0**
@@ -86,6 +88,7 @@ This instruction returns from a function, if there is a value on top of the stac
 This instruction does nothing, just increase the Instruction Pointer.
 
 ### ADD
+<hr/>
 *Mnemonic*: **add**
 
 *Popped Arguments*: **2**
@@ -97,6 +100,7 @@ This instruction add two values and push back the result. It pops from the stack
 * second operand
 
 ### PUSH
+<hr/>
 *Mnemonic*: **push [imm/label/local variable]**
 
 *Popped Arguments*: **0**
@@ -120,6 +124,7 @@ endp
 ```
 
 ### POP
+<hr/>
 *Mnemonic*: **pop [local variable]**
 
 *Popped Arguments*: **1**
@@ -129,6 +134,7 @@ endp
 This instruction pop from the stack a value and save the result into a local variable.
 
 ### CALL
+<hr/>
 *Mnemonic*: **call**
 
 *Popped Arguments*: **at least 2**
@@ -141,6 +147,7 @@ This instruction allows to call a user defined method. It pops from the stack:
 * the arguments.
 
 ### NATIVE CALL
+<hr/>
 *Mnemonic*: **ncall**
 
 *Popped Arguments*: **at least 3**
@@ -156,6 +163,7 @@ This instruction allows to call a *native* method outside of the VM. It pops fro
 When the native method returns, the value of the native *EAX* register is pushed on top of the stack.
 
 ### READ
+<hr/>
 *Mnemonic*: **read**
 
 *Popped Arguments*: **1**
@@ -166,6 +174,7 @@ This instruction allows to read 1 byte from the Sacara SIL code at a given offse
 * the offset of the VM IP
 
 ### NATIVE READ
+<hr/>
 *Mnemonic*: **nread**
 
 *Popped Arguments*: **1**
@@ -176,6 +185,7 @@ This instruction allows to read 1 byte from the native memory space and push the
 * the native address to read
 
 ### WRITE
+<hr/>
 *Mnemonic*: **write**
 
 *Popped Arguments*: **2**
@@ -187,6 +197,7 @@ This instruction allows to write 1 byte to the Sacara SIL code at a given offset
 * the byte to write
 
 ### NATIVE WRITE
+<hr/>
 *Mnemonic*: **nwrite**
 
 *Popped Arguments*: **2**
@@ -198,6 +209,7 @@ This instruction allows to write 1 byte to the native memory space. It pops from
 * the byte to write
 
 ### GETIP
+<hr/>
 *Mnemonic*: **getip**
 
 *Popped Arguments*: **0**
@@ -207,6 +219,7 @@ This instruction allows to write 1 byte to the native memory space. It pops from
 This instruction push into the stack the current VM IP. This value is the offset of the instruction that follow *getip*.
 
 ### JUMP
+<hr/>
 *Mnemonic*: **jump**
 
 *Popped Arguments*: **1**
@@ -217,6 +230,7 @@ This instruction jump to a given offset. It pops from the stack:
 * The offset of the VM IP to jump
 
 ### JUMP IF LESS
+<hr/>
 *Mnemonic*: **jumpifl**
 
 *Popped Arguments*: **1**
@@ -227,6 +241,7 @@ This instruction jump to a given offset according to the result of a previous co
 * The offset of the VM IP to jump
 
 ### JUMP IF LESS OR EQUAL
+<hr/>
 *Mnemonic*: **jumpifle**
 
 *Popped Arguments*: **1**
@@ -237,6 +252,7 @@ This instruction jump to a given offset according to the result of a previous co
 * The offset of the VM IP to jump
 
 ### JUMP IF GREATER
+<hr/>
 *Mnemonic*: **jumpifg**
 
 *Popped Arguments*: **1**
@@ -247,6 +263,7 @@ This instruction jump to a given offset according to the result of a previous co
 * The offset of the VM IP to jump
 
 ### JUMP IF GREATER OR EQUAL
+<hr/>
 *Mnemonic*: **jumpifge**
 
 *Popped Arguments*: **1**
@@ -257,6 +274,7 @@ This instruction jump to a given offset according to the result of a previous co
 * The offset of the VM IP to jump
 
 ### ALLOCA
+<hr/>
 *Mnemonic*: **alloca**
 
 *Popped Arguments*: **1**
@@ -267,6 +285,7 @@ This instruction allocates a given number of DOUBLE WORD to be used as storage f
 * The number of DOUBLE WORD to allocate for the local variables
 
 ### BYTE
+<hr/>
 *Mnemonic*: **byte [byte value], ...**
 
 *Popped Arguments*: **0**
@@ -280,6 +299,7 @@ byte "this is a string",0x00
 ```
 
 ### WORD
+<hr/>
 *Mnemonic*: **word [word value], ...**
 
 *Popped Arguments*: **0**
@@ -289,6 +309,7 @@ byte "this is a string",0x00
 This is not a real instruction, but a command for the Assembler that instruct it to emit the specified WORD in the code. It is also possible to specify more that one value by separating it with a comma (,).
 
 ### DOUBLE WORD
+<hr/>
 *Mnemonic*: **dword [double word value], ...**
 
 *Popped Arguments*: **0**
@@ -298,6 +319,7 @@ This is not a real instruction, but a command for the Assembler that instruct it
 This is not a real instruction, but a command for the Assembler that instruct it to emit the specified DOUBLE WORD in the code. It is also possible to specify more that one value by separating it with a comma (,).
 
 ### HALT
+<hr/>
 *Mnemonic*: **halt.**
 
 *Popped Arguments*: **0**
@@ -307,6 +329,7 @@ This is not a real instruction, but a command for the Assembler that instruct it
 This instruction tell the VM to stop the execution.
 
 ### CMP
+<hr/>
 *Mnemonic*: **cmp**
 
 *Popped Arguments*: **2**
@@ -318,6 +341,7 @@ This instruction compares two values from the stack and update the internal flag
 * The second value to compare
 
 ### GETSP
+<hr/>
 *Mnemonic*: **getsp**
 
 *Popped Arguments*: **0**
@@ -327,6 +351,7 @@ This instruction compares two values from the stack and update the internal flag
 This instruction retrieves the current value of the base of the stack and push it into the stack.
 
 ### STACK WRITE
+<hr/>
 *Mnemonic*: **swrite**
 
 *Popped Arguments*: **2**
@@ -338,6 +363,7 @@ This instruction writes a specific DOUBLE WORD to the given stack offset. It pop
 * The DOUBLE WORD to write
 
 ### STACK READ
+<hr/>
 *Mnemonic*: **sread**
 
 *Popped Arguments*: **1**
@@ -348,6 +374,7 @@ This instruction reads a DOUBLE WORD from a specified stack offset and push the 
 * The offset (as an index) of the stack location to read from
 
 ### SUB
+<hr/>
 *Mnemonic*: **sub**
 
 *Popped Arguments*: **2**
@@ -359,6 +386,7 @@ This instruction substracts the second value from the first value and push back 
 * The second value
 
 ### MUL
+<hr/>
 *Mnemonic*: **sub**
 
 *Popped Arguments*: **2**
@@ -370,6 +398,7 @@ This instruction multiplies the first value with the second value and push back 
 * The second value
 
 ### DIV
+<hr/>
 *Mnemonic*: **div**
 
 *Popped Arguments*: **2**
@@ -381,6 +410,7 @@ This instruction divides the first value with the second value and push back the
 * The second value
 
 ### AND
+<hr/>
 *Mnemonic*: **and**
 
 *Popped Arguments*: **2**
@@ -392,6 +422,7 @@ This instruction executes a bit *and* of the first value with the second value a
 * The second value
 
 ### SHIFT RIGHT
+<hr/>
 *Mnemonic*: **shiftr**
 
 *Popped Arguments*: **2**
@@ -403,6 +434,7 @@ This instruction executes a bit *shift right* on the first argument, for a numbe
 * The number of times to shift the value
 
 ### SHIFT LEFT
+<hr/>
 *Mnemonic*: **shiftl**
 
 *Popped Arguments*: **2**
@@ -414,6 +446,7 @@ This instruction executes a bit *shift left* on the first argument, for a number
 * The number of times to shift the value
 
 ### OR
+<hr/>
 *Mnemonic*: **or**
 
 *Popped Arguments*: **2**
@@ -425,6 +458,7 @@ This instruction executes a bit *or* between the first argument with the second 
 * The second value
 
 ### NOT
+<hr/>
 *Mnemonic*: **not**
 
 *Popped Arguments*: **1**
@@ -435,6 +469,7 @@ This instruction executes a bit *not* operation on the argument and push the res
 * The value to negate
 
 ### XOR
+<hr/>
 *Mnemonic*: **xor**
 
 *Popped Arguments*: **2**
@@ -446,6 +481,7 @@ This instruction executes a bit *xor* between the first argument and the second 
 * The second argument
 
 ### NOR
+<hr/>
 *Mnemonic*: **nor**
 
 *Popped Arguments*: **2**
@@ -457,6 +493,7 @@ This instruction executes a bit *nor* between the first argument and the second 
 * The second argument
 
 ### SETIP
+<hr/>
 *Mnemonic*: **setip**
 
 *Popped Arguments*: **1**
@@ -467,6 +504,7 @@ This instruction modifies the value of the Instruction Pointer with the argument
 * The new value to assign to the IP
 
 ### SETSP
+<hr/>
 *Mnemonic*: **setsp**
 
 *Popped Arguments*: **1**
