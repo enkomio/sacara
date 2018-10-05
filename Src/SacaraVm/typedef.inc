@@ -12,3 +12,15 @@ VmContext STRUCT
 	code DWORD 0h
 	code_size DWORD 0h
 VmContext ENDS
+
+MODULEINFO STRUCT
+  lpBaseOfDll DWORD ?
+  SizeOfImage DWORD ?
+  EntryPoint  DWORD ?
+MODULEINFO ENDS
+
+UNICODE_STRING STRUCT
+	_Length WORD ?
+	MaximumLength WORD ?
+	Buffer DWORD ?
+UNICODE_STRING ENDS

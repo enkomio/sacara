@@ -1,4 +1,145 @@
 ; *****************************
+; arguments:
+; *****************************
+get_vm_dll_module_name PROC
+	push ebp
+	mov ebp, esp
+	sub esp, 3 * TYPE DWORD
+	head EQU local0
+	current_entry EQU local1
+	string_buffer EQU local2
+
+	assume fs:nothing
+	mov eax, fs:[30h]  ; PEB
+	assume fs:error
+	
+	; get head module list
+	mov eax, [eax+0ch] ; Ldr
+	mov eax, [eax+14h] ; InMemoryOrderModuleList entry
+	mov [ebp+head], eax ; head
+	mov [ebp+current_entry], eax ; cur entry
+
+find_module_loop:
+	; get module name	
+	lea ebx, [eax+1Ch] ; UNICODE_STRING FullDllName
+
+	; find the last '/' character
+	mov edi, (UNICODE_STRING PTR [ebx]).Buffer
+	movzx ecx, (UNICODE_STRING PTR [ebx])._Length 
+	add edi, ecx
+	std ; scan backward
+
+	; scan memory for char '\'
+	xor eax, eax
+	mov al, 5ch
+	mov esi, edi
+	repnz scasb
+	cld
+
+compute_length:
+	add edi, 3
+	mov [ebp+string_buffer], edi
+	sub esi, edi ; compute module basename length
+
+	; compute hash of the module base name
+	push esi
+	push edi
+	call hash_string
+
+	; compare hash with the one that we want
+	cmp eax, hash_SacaraVm_dll
+	je module_found
+	
+	mov eax, [ebp+current_entry] ; cur entry
+	mov eax, [eax] ; go to next entry
+	mov [ebp+current_entry], eax
+	cmp [ebp+head], eax
+	jne find_module_loop
+
+module_found:
+	; return the string pointing to the module name
+	mov eax, [ebp+string_buffer]
+	mov esp, ebp
+	pop ebp
+	ret
+get_vm_dll_module_name ENDP
+
+; *****************************
+; Get the VM DLL base address
+; arguments:
+; *****************************
+get_vm_dll_base_address PROC
+	push ebp
+	mov ebp, esp
+
+	; local vars	
+	num_local_vars EQU 4
+	hKernel32 EQU local0
+	hProcess EQU local1	
+	hModuleVM EQU local2
+	hModulePsapi EQU local3
+	sub esp, num_local_vars * TYPE DWORD
+	
+	; get Kernel32 base
+	push hash_kernel32_dll
+	call find_module_base
+	mov [ebp+hKernel32], eax
+
+	; call LoadLibraryA
+	push hash_LoadLibraryA
+	push [ebp+hKernel32]
+	call find_exported_func
+	push 0h
+	push '   l'
+	push 'ld.i'
+	push 'pasp'
+	push esp
+	call eax
+	mov [ebp+hModulePsapi], eax
+
+	; call GetModuleHandleW
+	push hash_GetModuleHandleW
+	push [ebp+hKernel32]
+	call find_exported_func
+	push eax
+	call get_vm_dll_module_name
+	pop ebx
+	xchg eax, ebx
+	push ebx
+	call eax
+	mov [ebp+hModuleVM], eax
+
+	; call GetCurrentProcess
+	push hash_GetCurrentProcess
+	push [ebp+hKernel32]
+	call find_exported_func
+	call eax
+	mov [ebp+hProcess], eax
+	
+	; call GetModuleInformation	
+	push hash_GetModuleInformation
+	push [ebp+hModulePsapi]
+	call find_exported_func
+	sub esp, SIZEOF MODULEINFO
+	mov ebx, esp
+	push SIZEOF MODULEINFO 
+	push ebx
+	push [ebp+hModuleVM]
+	push [ebp+hProcess]
+	call eax
+	test eax, eax
+	je finish
+
+	; finally get the base address
+	mov eax, (MODULEINFO PTR [esp]).lpBaseOfDll
+
+finish:
+	mov esp, ebp
+	pop ebp
+	ret
+get_vm_dll_base_address ENDP
+
+; *****************************
 ; arguments: size to alloc
 ; *****************************
 heap_alloc PROC
@@ -186,6 +327,17 @@ hash_iteration:
 
 	xor eax, esi
 	pop esi ; restore value
+
+	; final step
+	rol eax, 7h
+	mov bl, [esi]
+	cmp bl, 'a'
+	jb do_final_step
+	cmp bl, 'z'
+	ja do_final_step
+	and bl, 11011111b ; clar bit 5
+do_final_step:
+    xor al, bl
 
 loop_epilogue:
 	inc esi	

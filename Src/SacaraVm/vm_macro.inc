@@ -14,17 +14,17 @@ call_vm_decode_word_operand MACRO
 ENDM
 
 call_vm_local_var_set MACRO
-	mov eax, vm_local_var_set
+	mov eax, vm_local_var_set_internal
 	call eax
 ENDM
 
 call_vm_local_var_get MACRO
-	mov eax, vm_local_var_get
+	mov eax, vm_local_var_get_internal
 	call eax
 ENDM
 
-call_vm_free MACRO
-	mov eax, vm_free
+call_vm_free_frame MACRO
+	mov eax, vm_free_frame
 	call eax
 ENDM
 

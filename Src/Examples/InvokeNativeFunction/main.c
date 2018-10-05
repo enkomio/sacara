@@ -31,19 +31,11 @@ uint8_t code[] = {
 	0xEC,0x3                                 // /* EC03         */ loc_0000001A: VmHalt 
 };
 
-typedef struct _vm_context {
-	uint32_t ip;
-	uint32_t stack;
-	uint32_t status_flag;
-	uint32_t *code;
-	uint32_t code_size;
-} vm_context;
-
-typedef void (__stdcall *vm_init_func)(vm_context*, uint8_t[], uint32_t);
-typedef uint32_t (__stdcall *vm_run_func)(vm_context*);
-typedef void (__stdcall *vm_free_func)(vm_context*);
-typedef void (__stdcall *vm_local_var_set_func)(vm_context*, uint32_t, uint32_t);
-typedef uint32_t (__stdcall *vm_local_var_get_func)(vm_context*, uint32_t);
+typedef uint32_t(__stdcall *vm_init_func)(uint8_t[], uint32_t);
+typedef uint32_t (__stdcall *vm_run_func)(uint32_t);
+typedef void (__stdcall *vm_free_func)(uint32_t);
+typedef void (__stdcall *vm_local_var_set_func)(uint32_t, uint32_t, uint32_t);
+typedef uint32_t (__stdcall *vm_local_var_get_func)(uint32_t, uint32_t);
 
 // VM functions
 vm_init_func vm_init = NULL;
@@ -70,22 +62,21 @@ void hello_world()
 
 int main()
 {
-	vm_context ctx = { 0 };	
-	uint32_t result = 0;
+	uint32_t result = 0, vm_handle;
 	
 	resolve_vm_functions();	
 
 	// initialize the VM context structure
-	vm_init(&ctx, code, sizeof(code));
+	vm_handle = vm_init(code, sizeof(code));
 
 	// add as local var the function address
-	vm_local_var_set(&ctx, 0, (uint32_t)hello_world);
+	vm_local_var_set(vm_handle, 0, (uint32_t)hello_world);
 
 	// run the code
-	result = vm_run(&ctx);
+	result = vm_run(vm_handle);
 
 	// free the VM
-	vm_free(&ctx);
+	vm_free(vm_handle);
 
 	return result;
 }

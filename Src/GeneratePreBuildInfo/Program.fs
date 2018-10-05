@@ -110,13 +110,23 @@ module Program =
         let n = 6
         (operand >>> n) ||| (operand <<< (32-n))
 
+    let private rol(operand: UInt32) =
+        let n = 7
+        (operand <<< n) ||| (operand >>> (32-n))
+
     let private hashString(name: String) =
         let mutable hash = uint32 0
         name.ToUpperInvariant()
         |> Seq.iteri(fun i c ->
             let h1 = (hash + uint32 c) * uint32 1024
             let h2 = ror h1
-            hash <- (h1 ^^^ h2) ^^^ (uint32 i ^^^ uint32 c)
+            let h3 = (h1 ^^^ h2) ^^^ (uint32 i ^^^ uint32 c)
+
+            // final step
+            let h4 = rol h3
+            let h5 = (byte h4 &&& byte 0xFF) ^^^ byte c
+            let h6 = h4 &&& uint32 0xFFFFFF00
+            hash <- h6 ||| uint32 h5
         )
         hash
 
@@ -129,6 +139,7 @@ module Program =
             "kernel32.dll"
             "ntdll.dll"
             "kernelbase.dll"
+            "SacaraVm.dll"
 
             // function names
             "GetProcessHeap"
@@ -137,6 +148,10 @@ module Program =
             "VirtualFree"
             "VirtualProtect"
             "RtlFreeHeap"
+            "GetCurrentProcess"
+            "GetModuleHandleW"
+            "LoadLibraryA"
+            "GetModuleInformation"
         ] 
         |> List.map(fun name -> (name, hashString(name)))
         |> List.iter(fun (name, hash) ->

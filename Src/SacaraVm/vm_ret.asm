@@ -25,7 +25,7 @@ remove_stack_frame:
 
 	; free current stack pointer
 	push [ebp+arg0]
-	call_vm_free
+	call_vm_free_frame
 
 	; set the previous stack pointer
 	mov ebx, [ebp+local1]
