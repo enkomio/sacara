@@ -16,7 +16,7 @@ module Program =
         let irInstruction = 
             [
                 proc "main"         // define the main (entry point) function
-                push "num1"         // push the first second value
+                push "num1"         // push the second value
                 push "num2"         // push the first input value
                 push 2              // push the number of arguments accepted by the invopked functions
                 push "sum_numbers"  // push the function name to invoke
