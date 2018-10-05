@@ -147,7 +147,7 @@ vm_free PROC
 
 	; free frame	
 	push eax
-	call vm_free_frame
+	call vm_free_stack_frame
 	
 	; free VM context
 	call heap_free

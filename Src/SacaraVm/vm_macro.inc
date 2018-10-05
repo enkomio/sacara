@@ -23,8 +23,8 @@ call_vm_local_var_get MACRO
 	call eax
 ENDM
 
-call_vm_free_frame MACRO
-	mov eax, vm_free_frame
+call_vm_free_stack_frame MACRO
+	mov eax, vm_free_stack_frame
 	call eax
 ENDM
 
