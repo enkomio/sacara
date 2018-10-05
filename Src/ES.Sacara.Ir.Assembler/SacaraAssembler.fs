@@ -1,6 +1,7 @@
 ﻿namespace ES.Sacara.Ir.Assembler
 
 open System
+open System.Linq
 open System.Collections.Generic
 open ES.Sacara.Ir.Parser
 open ES.Sacara.Ir.Parser.IrAst
@@ -214,8 +215,7 @@ type SacaraAssembler(settings: AssemblerSettings) =
         {Body=assemblyFunctionBody(fullBody, symbolTable, settings)}
 
     let orderFunctions(functions: List<IrFunction>, settings: AssemblerSettings) =        
-        let entryPointFunction = functions |> Seq.find(fun f -> f.Name.Equals("main", StringComparison.OrdinalIgnoreCase))
-        entryPointFunction.IsEntryPoint <- true
+        let entryPointFunction = functions |> Seq.find(fun f -> f.IsEntryPoint())
         
         let otherFunctions =
             if settings.ReorderFunctions then   
@@ -262,6 +262,28 @@ type SacaraAssembler(settings: AssemblerSettings) =
         obfuscate(vmFunctions, settings)
 
         vmFunctions 
+
+    member this.Assemble(instructions: (Ctx -> unit) list) = 
+        _functions.Clear()
+        _currentIp <- 0
+
+        let ctx = new Ctx(Settings=settings)
+
+        // complete all instructions in the given context
+        instructions
+        |> Seq.iter(fun irFunction -> irFunction(ctx))
+
+        _functions <- 
+            new List<IrFunction>(ctx.Functions
+            |> Seq.map(fun kv ->
+                let (funcName, funOpCodes) = (kv.Key, kv.Value |> Seq.filter(Option.isSome) |> Seq.map(Option.get))
+                let irFunction = new IrFunction(funcName)
+                irFunction.Body.AddRange(funOpCodes)
+                irFunction
+            ))
+
+        // generate VM opcode
+        {Functions=this.GenerateBinaryCode(_functions)}
 
     member this.Assemble(irCode: String) =
         _functions.Clear()

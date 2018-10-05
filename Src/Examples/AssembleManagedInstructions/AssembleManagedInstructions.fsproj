@@ -5,14 +5,14 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>03828e7e-c679-4aee-b670-e312ffc0c8a2</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <RootNamespace>ES.Sacara.Ir.Assembler</RootNamespace>
-    <AssemblyName>ES.Sacara.Ir.Assembler</AssemblyName>
-    <UseStandardResourceNames>true</UseStandardResourceNames>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <ProjectGuid>fc91c052-04f1-4087-826b-ffe628f85096</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>AssembleManagedInstructions</RootNamespace>
+    <AssemblyName>AssembleManagedInstructions</AssemblyName>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <Name>ES.Sacara.Ir.Assembler</Name>
+    <UseStandardResourceNames>true</UseStandardResourceNames>
+    <Name>AssembleManagedInstructions</Name>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -22,7 +22,9 @@
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DocumentationFile>bin\$(Configuration)\$(AssemblyName).XML</DocumentationFile>
+    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -31,7 +33,9 @@
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DocumentationFile>bin\$(Configuration)\$(AssemblyName).XML</DocumentationFile>
+    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
@@ -42,39 +46,32 @@
   <Import Project="$(FSharpTargetsPath)" />
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
+    <Compile Include="Program.fs" />
+    <None Include="App.config" />
     <Content Include="packages.config" />
-    <None Include="paket.references" />
-    <Compile Include="AssemblerSettings.fs" />
-    <Compile Include="ManagedInstructions.fs" />
-    <Compile Include="SacaraAssembler.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Core">
-      <HintPath>..\packages\FSharp.Core.4.5.2\lib\net45\FSharp.Core.dll</HintPath>
+      <HintPath>..\..\packages\FSharp.Core.4.5.2\lib\net45\FSharp.Core.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.ValueTuple">
-      <HintPath>..\packages\System.ValueTuple.4.4.0\lib\net461\System.ValueTuple.dll</HintPath>
+      <HintPath>..\..\packages\System.ValueTuple.4.4.0\lib\net47\System.ValueTuple.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ES.Sacara.Ir.Core\ES.Sacara.Ir.Core.fsproj">
+    <ProjectReference Include="..\..\ES.Sacara.Ir.Assembler\ES.Sacara.Ir.Assembler.fsproj">
+      <Name>ES.Sacara.Ir.Assembler</Name>
+      <Project>{03828e7e-c679-4aee-b670-e312ffc0c8a2}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ES.Sacara.Ir.Core\ES.Sacara.Ir.Core.fsproj">
       <Name>ES.Sacara.Ir.Core</Name>
       <Project>{c8d0627b-7512-4bad-9018-56c8753f9c81}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\ES.Sacara.Ir.Obfuscator\ES.Sacara.Ir.Obfuscator.fsproj">
-      <Name>ES.Sacara.Ir.Obfuscator</Name>
-      <Project>{6e9a577d-e4fa-43cf-83fe-4fc03eb367a2}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\ES.Sacara.Ir.Parser\ES.Sacara.Ir.Parser.fsproj">
-      <Name>ES.Sacara.Ir.Parser</Name>
-      <Project>{853ed852-dc8b-4796-a1b1-a53db8672851}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
