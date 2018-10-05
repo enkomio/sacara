@@ -15,7 +15,10 @@ In order to assemble a *Sacara* script you have to use the **SacaraAsm** utility
 
 The Sacara source code is called **SIL** which stands for **Sacara Intermediate Language**.
 
-You can create **SIL** code also programmatically. For an example of usage take a look at <a href="https://github.com/enkomio/sacara/blob/master/Src/Examples/AssembleManagedInstructions/Program.fs#L16"><i>this example</i></a>. All the supported functions have the same name as the one from the Instruction set below. The only notable differences are: **and** => **_and**, **or** => **_or**.
+You can create **SIL** code also programmatically. For an example of usage take a look at <a href="https://github.com/enkomio/sacara/blob/master/Src/Examples/AssembleManagedInstructions/Program.fs#L16"><i>this example</i></a>. All the supported functions have the same name as the one from the Instruction set below. The only notable differences are: 
+* **and** => **_and**
+* **or** => **_or**
+* **not** => **_not**
 
 ### Exported VM methods
 The *SacaraVM* DLL exports four methods that can be invoked programmatically. You can find an <a href="https://github.com/enkomio/sacara/blob/master/Src/Examples/InvokeNativeFunction/main.c#L42">example of usage in the <strong>Examples</strong> directory</a>.
