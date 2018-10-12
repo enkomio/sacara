@@ -10,8 +10,6 @@ proc main
 	halt	 	   // end the VM execution
 endp
 
-To compile this code in VS, set Basic Runtime Checks settings to Default.
-
 Generated with command: SacaraAsm.exe --gen-intermediate --gen-clang --encrypt-opcodes --encrypt-operands --multiple-opcodes test.sacara
 */
 
