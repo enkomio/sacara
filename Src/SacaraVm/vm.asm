@@ -127,7 +127,7 @@ vm_init PROC
 	mov eax, [ebp+vm_init_vm_context]
 	mov esp, ebp
 	pop ebp
-	ret 0Ch
+	ret 08h
 vm_init ENDP
 
 ; *****************************
@@ -205,7 +205,7 @@ vm_loop:
 	mov eax, [ebp+local0]
 	mov esp, ebp
 	pop ebp
-	ret 8
+	ret 4h
 vm_run ENDP
 
 ; *****************************
