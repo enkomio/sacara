@@ -2,7 +2,7 @@
 namespace System
 open System.Reflection
 
-[<assembly: AssemblyTitleAttribute("ES.SacaraVm")>]
+[<assembly: AssemblyTitleAttribute("DotNetBinding")>]
 [<assembly: AssemblyProductAttribute("Sacara")>]
 [<assembly: AssemblyCompanyAttribute("Enkomio")>]
 [<assembly: AssemblyDescriptionAttribute("A VM stack based IR language well suite for code protection.")>]
@@ -12,7 +12,7 @@ open System.Reflection
 do ()
 
 module internal AssemblyVersionInformation =
-    let [<Literal>] AssemblyTitle = "ES.SacaraVm"
+    let [<Literal>] AssemblyTitle = "DotNetBinding"
     let [<Literal>] AssemblyProduct = "Sacara"
     let [<Literal>] AssemblyCompany = "Enkomio"
     let [<Literal>] AssemblyDescription = "A VM stack based IR language well suite for code protection."
