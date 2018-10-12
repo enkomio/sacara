@@ -55,10 +55,8 @@ type SacaraVm() =
         _vmLocalVarSet <- Some <| NativeMethods.getFunc<NativeMethods.VmLocalVarSetFunc>(_handle, "vm_local_var_set")
         _vmLocalVarGet <- Some <| NativeMethods.getFunc<NativeMethods.VmLocalVarGetFunc>(_handle, "vm_local_var_get")
 
-    member this.Init(code: Byte array) =
+    member this.Run(code: Byte array) =
         _vmContext <- _vmInit.Value.Invoke(code, uint32 code.Length)
-
-    member this.Run() =
         _vmRun.Value.Invoke(_vmContext) |> ignore
 
     member this.LocalVarSet(index: Int32, value: Int32) =
@@ -68,9 +66,13 @@ type SacaraVm() =
         _vmLocalVarGet.Value.Invoke(_vmContext, uint32 index)
 
     member this.Free() =
-        this.Dispose()
-
-    member this.Dispose() =
+        _vmFree.Value.Invoke(_vmContext)
+        _vmContext <- uint32 0
+        
+    member this.Dispose() =  
+        if int32 _vmContext <> 0 then 
+            // release the Vm context if the Free wasn't invoked
+            this.Free()
         NativeMethods.FreeLibrary(_handle) |> ignore
 
     interface IDisposable with

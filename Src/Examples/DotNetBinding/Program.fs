@@ -17,20 +17,21 @@ module Program =
                 push 12
                 push 44
                 add
-                pop "result"
+                pop "result" // save the result in a local var to access it
                 halt
                 endp
             ] |> assembler.Assemble
         
         irInstruction.GetBuffer()
 
+    let runCode(code: Byte array) =
+        use vm = new SacaraVm()        
+        vm.Run(code)
+        vm.LocalVarGet(0)
+
     [<EntryPoint>]
     let main argv =
-        let sacaraCode = generateBytecode()
-
-        let vm = new SacaraVm()
-        vm.Init(sacaraCode)
-        vm.Run()
-        let result = vm.LocalVarGet(0)
+        let code = generateBytecode()
+        let result = runCode(code)        
         Console.WriteLine(String.Format("Code execution result: {0}", result))
         0
