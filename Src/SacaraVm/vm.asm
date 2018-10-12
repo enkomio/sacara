@@ -211,7 +211,7 @@ vm_run ENDP
 ; *****************************
 ; arguments: vm_context
 ; *****************************
-vm_free_frame PROC
+vm_free_stack_frame PROC
 	push ebp
 	mov ebp, esp
 
@@ -233,7 +233,7 @@ vm_free_frame PROC
 	mov esp, ebp
 	pop ebp
 	ret 4h
-vm_free_frame ENDP
+vm_free_stack_frame ENDP
 
 ; *****************************
 ; arguments: vm context, var index, imm
