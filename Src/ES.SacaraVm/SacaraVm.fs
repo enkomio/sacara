@@ -48,7 +48,7 @@ type SacaraVm() =
         if not(File.Exists(sacaraVmDll)) then
             failwith(String.Format("Unable to find the sacara DLL: {0}", sacaraVmDll))
 
-        _handle <- NativeMethods.LoadLibrary("SacaraVm.dll")
+        _handle <- NativeMethods.LoadLibrary(sacaraVmDll)
         _vmInit <- Some <| NativeMethods.getFunc<NativeMethods.VmInitFunc>(_handle, "vm_init")
         _vmRun <- Some <| NativeMethods.getFunc<NativeMethods.VmRunFunc>(_handle, "vm_run")
         _vmFree <- Some <| NativeMethods.getFunc<NativeMethods.VmFreeFunc>(_handle, "vm_free")
