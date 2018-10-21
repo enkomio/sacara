@@ -8,7 +8,7 @@ vm_ret PROC
 	push [ebp+arg0]
 	call_vm_is_stack_empty
 	cmp eax, 1
-	jz remove_stack_frame
+	je remove_stack_frame
 
 	; save to local var the value to return to the previous function
 	push [ebp+arg0]
@@ -31,13 +31,8 @@ remove_stack_frame:
 	mov ebx, [ebp+local1]
 	mov eax, [ebp+arg0]
 	mov (VmContext PTR [eax]).stack_frame, ebx
-
-	; reset the saved vm IP if the current stack is not empty
-	push [ebp+arg0]
-	call_vm_is_stack_empty
-	cmp eax, 1
-	jz push_return_value
-		
+			
+	; read the previously saved ip value
 	push [ebp+arg0]
 	call_vm_stack_pop_enc
 	mov ebx, [ebp+arg0]

@@ -29,3 +29,7 @@ MEM_RELEASE EQU 08000h
 ; Initial XOR opcode key
 INIT_OPCODE_XOR_KEY EQU 05Bh
 INIT_OPCODE_HEADER_XOR_KEY EQU 0B5h
+
+; Error codes
+VM_HANDLER_NOT_FOUND EQU 0FF000001h ; EAX contains to the offset of the opcode giving the error
+LOCAL_VAR_OVERFLOW EQU 0FF000002h

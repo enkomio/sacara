@@ -15,7 +15,7 @@ VM_INSTRUCTIONS_SIZE DWORD $ - start_vm_instructions
 ; *****************************
 ; arguments: vm context, var index, imm
 ; *****************************
-vm_local_var_set PROC
+vm_local_var_set PROC PUBLIC
 	push ebp
 	mov ebp, esp
 	pushad
@@ -39,7 +39,7 @@ vm_local_var_set ENDP
 ; *****************************
 ; arguments: vm context, var index
 ; *****************************
-vm_local_var_get PROC
+vm_local_var_get PROC PUBLIC
 	push ebp
 	mov ebp, esp
 	sub esp, 4
@@ -66,7 +66,7 @@ vm_local_var_get ENDP
 ; Initialize a new VM and return an handle to it
 ; arguments: vm_code, vm_code_size
 ; *****************************
-vm_init PROC
+vm_init PROC PUBLIC
 	vm_init_vm_context EQU local0
 	push ebp
 	mov ebp, esp
@@ -133,7 +133,7 @@ vm_init ENDP
 ; *****************************
 ; arguments: vm_context
 ; *****************************
-vm_free PROC
+vm_free PROC PUBLIC
 	push ebp
 	mov ebp, esp
 	pushad
@@ -158,12 +158,11 @@ vm_free PROC
 	ret 4h
 vm_free ENDP
 
-
 ; *****************************
 ; arguments: vm_context
 ; return: 0 on success, opcode index on error
 ; *****************************
-vm_run PROC
+vm_run PROC PUBLIC
 	vm_context = local1
 
 	push ebp
@@ -171,13 +170,19 @@ vm_run PROC
 	sub esp, 2 * TYPE DWORD
 	pushad
 
-vm_loop:		
-	check_debugger_via_trap_flag
-
 	; decode vm context
 	call get_vm_dll_base_address
 	xor eax, [ebp+arg0]
 	mov [ebp+vm_context], eax
+
+vm_loop:		
+	check_debugger_via_trap_flag
+	
+	; check if we executed all the code
+	mov eax, [ebp+vm_context]
+	mov ebx, (VmContext PTR [eax]).code_size
+	cmp ebx, (VmContext PTR [eax]).ip
+	je finish
 
 	; read the opcode to execute	
 	push 2
@@ -195,18 +200,77 @@ vm_loop:
 	call vm_execute
 	mov [ebp+local0], eax
 		
+	; check for generic errors
+	test eax, eax
+	jne finish
+
 	; check the finish flag in the context
 	mov ebx, [ebp+vm_context]
 	mov ebx, (VmContext PTR [ebx]).flags
 	test ebx, 80000000h
 	je vm_loop
 	
+finish:
 	popad
 	mov eax, [ebp+local0]
 	mov esp, ebp
 	pop ebp
 	ret 4h
 vm_run ENDP
+
+; *****************************
+; arguments: vm_context, error handler function pointer
+; *****************************
+vm_set_error_handler PROC PUBLIC
+	push ebp
+	mov ebp, esp
+	pushad 
+
+	; decode vm context
+	call get_vm_dll_base_address
+	xor eax, [ebp+arg0]
+
+	; set the error handler in the given VM context	
+	mov ebx, [ebp+arg1]
+	mov (VmContext PTR [eax]).error_handler, ebx
+
+	popad
+	mov esp, ebp
+	pop ebp
+	ret 8h
+vm_set_error_handler ENDP
+
+; *****************************
+; arguments: vm_context, state
+; *****************************
+vm_call_error_handler PROC
+	push ebp
+	mov ebp, esp
+
+	mov eax, [ebp+arg0]
+	cmp (VmContext PTR [eax]).error_handler, 0
+	je finish
+
+	; incoke the error handler by passing the state and the error code
+	push (VmContext PTR [eax]).error_code
+	push [ebp+arg1]
+	call (VmContext PTR [eax]).error_handler
+
+	; check if the execution needs to halted
+	cmp eax, 0
+	jne finish
+
+	mov ebx, [ebp+arg0]
+	mov eax, (VmContext PTR [ebx]).flags
+	or eax, 80000000h ; set halt flag
+	mov (VmContext PTR [ebx]).flags, eax
+	
+finish:
+	xor eax, eax
+	mov esp, ebp
+	pop ebp
+	ret 8h
+vm_call_error_handler ENDP
 
 ; *****************************
 ; arguments: vm_context
@@ -418,14 +482,14 @@ vm_execute PROC
 	jmp end_execution
 
 error:
-	; invalid opcode, set the halt flag and error flag
+	; handler not found
 	mov eax, [ebp+arg0]
-	mov ebx, (VmContext PTR [eax]).flags
-	or ebx, 0C0000000h
-	mov (VmContext PTR [eax]).flags, ebx
-
-	; set eax to the offset of the opcode that generated the error
-	mov eax, (VmContext PTR [eax]).ip
+	mov (VmContext PTR [eax]).error_code, VM_HANDLER_NOT_FOUND
+	
+	; invoke the error handler, passing the offset of the IP generating the errors
+	push (VmContext PTR [eax]).ip
+	push eax
+	call vm_call_error_handler
 
 end_execution:	
 	IF ENABLE_CODE_RELOCATION
@@ -473,7 +537,7 @@ check_opcode_flags:
 	xor eax, INIT_OPCODE_XOR_KEY
 
 	mov ebx, [ebp+arg0]
-	xor eax, (VmContext PTR [eax]).ip
+	xor eax, (VmContext PTR [ebx]).ip
 
 clear_flags:
 	; clear first 4 bits since they are flags and save the result
