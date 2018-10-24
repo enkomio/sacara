@@ -1,4 +1,9 @@
 # Sacara - A stack based intermediate language aimed at software protection by running in a software VM
+
+ <p align="center">
+    <a href="https://github.com/enkomio/sacara/releases/latest"><img alt="Release" src="https://img.shields.io/github/release/enkomio/sacara.svg?svg=true"></a>   
+    <a href="https://github.com/enkomio/sacara/blob/master/LICENSE.md"><img alt="Software License" src="https://img.shields.io/badge/License-CC%20BY%204.0-brightgreen.svg"></a>
+  </p>
  
 _Sacara_ is a programming language very similar to the most common intermediate representation language, like MSIL or the Java bytecode. 
 It is executed inside a VM and its main purpose is to make difficult to understand the original purpose of the program.
