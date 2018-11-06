@@ -42,7 +42,8 @@ type SacaraVm() =
     let mutable _vmRun : NativeMethods.VmRunFunc option = None
     let mutable _vmLocalVarSet : NativeMethods.VmLocalVarSetFunc option = None
     let mutable _vmLocalVarGet : NativeMethods.VmLocalVarGetFunc option = None
-
+    let mutable _localVars = List.empty<UInt32 * UInt32>
+    
     do
         let sacaraVmDll = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "SacaraVm.dll")
         if not(File.Exists(sacaraVmDll)) then
@@ -57,10 +58,11 @@ type SacaraVm() =
 
     member this.Run(code: Byte array) =
         _vmContext <- _vmInit.Value.Invoke(code, uint32 code.Length)
+        _localVars |> List.iter(fun (index, value) -> _vmLocalVarSet.Value.Invoke(_vmContext, index, value))
         _vmRun.Value.Invoke(_vmContext) |> ignore
 
     member this.LocalVarSet(index: Int32, value: Int32) =
-        _vmLocalVarSet.Value.Invoke(_vmContext, uint32 index, uint32 value)
+        _localVars <- (uint32 index, uint32 value)::_localVars        
 
     member this.LocalVarGet(index: Int32) =
         _vmLocalVarGet.Value.Invoke(_vmContext, uint32 index)
