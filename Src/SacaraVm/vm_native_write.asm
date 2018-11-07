@@ -15,7 +15,7 @@ vm_native_write PROC
 			
 	; write the byte
 	mov ecx, [ebp+local0]
-	mov [ebx], cl
+	mov [ecx], al
 	
 	mov esp, ebp
 	pop ebp

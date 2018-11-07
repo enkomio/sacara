@@ -15,7 +15,7 @@ vm_jump_if_less PROC
 
 	; modify the vm IP
 	mov ebx, [ebp+arg0]
-	mov (VmContext PTR [eax]).ip, eax
+	mov (VmContext PTR [ebx]).ip, eax
 
 finish:	
 	mov esp, ebp
