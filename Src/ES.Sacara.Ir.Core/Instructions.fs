@@ -98,19 +98,22 @@ module Instructions =
         member val OpCodes = new List<Int32>() with get, set
 
     let readVmOpCodeBinding() =
-        let currentDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
+        let currentDir = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location)
         let filename = Path.Combine(currentDir, "vm_opcodes.json")
-        let json = File.ReadAllText(filename)
-        JsonConvert.DeserializeObject<List<VmOpCodeItem>>(json)
-        |> Seq.map(fun item ->
-            let vmOpCode =
-                FSharpType.GetUnionCases typeof<VmOpCodes>
-                |> Array.find(fun case -> case.Name.Equals(item.Name, StringComparison.OrdinalIgnoreCase))
-                |> fun case -> FSharpValue.MakeUnion(case,[||]) :?> VmOpCodes
-            let bytes = item.OpCodes |> Seq.toList
-            (vmOpCode, bytes)
-        )
-        |> Map.ofSeq        
+        if File.Exists(filename) then
+            let json = File.ReadAllText(filename)
+            JsonConvert.DeserializeObject<List<VmOpCodeItem>>(json)
+            |> Seq.map(fun item ->
+                let vmOpCode =
+                    FSharpType.GetUnionCases typeof<VmOpCodes>
+                    |> Array.find(fun case -> case.Name.Equals(item.Name, StringComparison.OrdinalIgnoreCase))
+                    |> fun case -> FSharpValue.MakeUnion(case,[||]) :?> VmOpCodes
+                let bytes = item.OpCodes |> Seq.toList
+                (vmOpCode, bytes)
+            )
+            |> Map.ofSeq        
+        else
+            raise(new ApplicationException(String.Format("JSON file with opcodes '{0}' not found.", filename)))
 
     // each VM opcode can have different format. The file was generate with the GenerateVmOpCodes utility
     let bytes = readVmOpCodeBinding()
