@@ -35,6 +35,9 @@ For documentation related to how the SacaraVM can be used, please read the [ISA]
 
 If you are interested in using _Sacara_ in .NET take a look at <a href='https://github.com/enkomio/sacara/blob/master/Src/Examples/DotNetBinding/Program.fs'>this example</a>, which use the <a href='https://github.com/enkomio/sacara/tree/master/Src/ES.SacaraVm'>.NET Sacara Binding (ES.SacaraVm)</a>. In order to use the .NET binding the unmanaged _SacaraVm.dll_ file must be in the same directory as the _ES.SacaraVm.dll_ Assembly file.
 
+
+I have also published a blog post about using Sacara to hide code intent. You can read it <a href="http://antonioparata.blogspot.com/2018/11/sacara-vm-vs-antivirus-industry.html">here</a>.
+
 ## Build Sacara
 _Sacara_ is currently developed by using VisualStudio 2017 Community Edition. To build the source code you have to:
 * clone the repository
