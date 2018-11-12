@@ -1,5 +1,7 @@
-### 2.1.0 - XX/XX/2018
+### 2.1.0 - 11/11/2018
 * Implemented routine to handle error during code execution.
+* Fixed bug in .NET binding in order to ensure the context is always initialized
+* Added example on Assembly loading encrypted with a Sacara script (part of blog post)
 
 ### 2.0.0 - 12/10/2018
 * Added NOR usage obfuscation (thx to Solar Designer for the suggestion, based on his 1996 work hackme.com :O)
