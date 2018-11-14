@@ -41,6 +41,7 @@ I have also published a blog post about using Sacara to hide code intent. You ca
 ## Build Sacara
 _Sacara_ is currently developed by using VisualStudio 2017 Community Edition. To build the source code you have to:
 * have installed <a href="https://www.microsoft.com/net/download">.NET Core SDK</a>
+* have installed the <a href="https://blogs.msdn.microsoft.com/vcblog/2017/04/17/windows-desktop-development-with-c-in-visual-studio/">Windows desktop development with c++</a>. If you have installed Visual Studio 2017, by opening the solution (SacaraSln.sln) it should ask automatically if you want to install the missing component.
 * clone the repository
 * run ``build.bat``
 
