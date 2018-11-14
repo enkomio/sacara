@@ -40,6 +40,7 @@ I have also published a blog post about using Sacara to hide code intent. You ca
 
 ## Build Sacara
 _Sacara_ is currently developed by using VisualStudio 2017 Community Edition. To build the source code you have to:
+* have installed <a href="https://www.microsoft.com/net/download">.NET Core SDK</a>
 * clone the repository
 * run ``build.bat``
 
