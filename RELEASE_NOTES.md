@@ -1,3 +1,9 @@
+### 2.2.0 - 19/01/2019
+* Implemented virtual instruction INC
+* Implemented the .NET binding for vm_set_error_handler
+* Made the code more C# friendly (see the C# example DotNetBindingWithErrorHandler)
+* Refactored and cleaned code
+
 ### 2.1.0 - 11/11/2018
 * Implemented routine to handle error during code execution.
 * Fixed bug in .NET binding in order to ensure the context is always initialized
