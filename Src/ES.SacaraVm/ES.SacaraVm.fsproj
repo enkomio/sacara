@@ -42,9 +42,11 @@
   <Import Project="$(FSharpTargetsPath)" />
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
-    <Compile Include="SacaraVm.fs" />
     <Content Include="packages.config" />
     <None Include="paket.references" />
+    <Compile Include="NativeMethods.fs" />
+    <Compile Include="ErrorCode.fs" />
+    <Compile Include="SacaraVm.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Core">
@@ -58,6 +60,13 @@
       <HintPath>..\packages\System.ValueTuple.4.4.0\lib\net47\System.ValueTuple.dll</HintPath>
       <Private>True</Private>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ES.Sacara.Ir.Assembler\ES.Sacara.Ir.Assembler.fsproj">
+      <Name>ES.Sacara.Ir.Assembler</Name>
+      <Project>{03828e7e-c679-4aee-b670-e312ffc0c8a2}</Project>
+      <Private>True</Private>
+    </ProjectReference>
   </ItemGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

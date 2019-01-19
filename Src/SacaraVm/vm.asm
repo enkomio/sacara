@@ -251,7 +251,7 @@ vm_call_error_handler PROC
 	cmp (VmContext PTR [eax]).error_handler, 0
 	je finish
 
-	; incoke the error handler by passing the state and the error code
+	; invoke the error handler by passing the state and the error code
 	push (VmContext PTR [eax]).error_code
 	push [ebp+arg1]
 	call (VmContext PTR [eax]).error_handler

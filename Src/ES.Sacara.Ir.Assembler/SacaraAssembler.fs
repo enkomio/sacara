@@ -19,10 +19,15 @@ type IrAssemblyCode = {
         |> Array.concat
 
     override this.ToString() =
+        let mutable offset = 0
         this.Functions
         |> List.map(fun vmFunction -> vmFunction.Body)
         |> List.concat
-        |> List.map(fun vmOpCode -> vmOpCode.ToString())
+        |> List.map(fun vmOpCode ->             
+            let msg = String.Format("{0}: {1}", offset, vmOpCode.ToString())
+            offset <- offset + vmOpCode.Buffer.Length
+            msg
+        )
         |> fun l -> String.Join(Environment.NewLine, l)
 
 type SacaraAssembler(settings: AssemblerSettings) =
@@ -278,7 +283,7 @@ type SacaraAssembler(settings: AssemblerSettings) =
 
         vmFunctions 
 
-    member this.Assemble(instructions: (Ctx -> unit) list) = 
+    member this.Assemble(instructions: Action<Ctx> array) = 
         _functions.Clear()
         _currentIp <- 0
 
@@ -286,7 +291,7 @@ type SacaraAssembler(settings: AssemblerSettings) =
 
         // complete all instructions in the given context
         instructions
-        |> Seq.iter(fun irFunction -> irFunction(ctx))
+        |> Seq.iter(fun irFunction -> irFunction.Invoke(ctx))
 
         _functions <- 
             new List<IrFunction>(ctx.Functions

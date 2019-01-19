@@ -30,7 +30,10 @@ module Program =
                 add                 // add the two input numbers
                 ret                 // return the result
                 endp
-            ] |> assembler.Assemble
+            ] 
+            |> List.map(fun f -> Action<Ctx>(f))
+            |> List.toArray
+            |> assembler.Assemble
         
         Console.WriteLine("-= Generated VM Code =-")
         Console.WriteLine(irInstruction)

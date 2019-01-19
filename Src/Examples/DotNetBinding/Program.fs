@@ -20,7 +20,10 @@ module Program =
                 pop "result" // save the result in a local var to access it
                 halt
                 endp
-            ] |> assembler.Assemble
+            ] 
+            |> List.map(fun f -> Action<Ctx>(f))
+            |> List.toArray
+            |> assembler.Assemble
         
         irInstruction.GetBuffer()
 

@@ -103,6 +103,11 @@ and VmOpCode = {
                             inString <- true
                         sb.Append(char b) |> ignore
                 )
+
+                // add closing "
+                if inString 
+                then sb.Append("\"") |> ignore
+
                 let resultString = sb.ToString()
                 if resultString.StartsWith(",")
                 then resultString.Substring(1)
