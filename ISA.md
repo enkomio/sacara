@@ -567,3 +567,18 @@ This instruction modifies the value of the Instruction Pointer with the argument
 
 This instruction modifies the value of the Stack Base Pointer with the argument passed. It pops from the stack:
 * The new value to assign to the SP base
+
+### INCREMENT
+<hr/>
+
+*Mnemonic*: **inc**
+
+*Popped Arguments*: **0**
+
+*Pushed Arguments*: **0**
+
+This instruction is a *virtual instruction*, this means that it doesn't have a real representation as a VM opcode. It transalts to a sequence of instruction, more precisely to: 
+* PUSH 1
+* PUSH variable
+* ADD
+* POP variable
