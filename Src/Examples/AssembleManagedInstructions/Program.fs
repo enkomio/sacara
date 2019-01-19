@@ -15,8 +15,9 @@ module Program =
         let assembler = new SacaraAssembler()
         let irInstruction = 
             [
-                proc "main"         // define the main (entry point) function
-                push "num1"         // push the second value
+                proc "main"         // define the main (entry point) function                
+                inc "num1"          // increment by 1 the seconda value
+                push "num1"         // push the incremented second value
                 push "num2"         // push the first input value
                 push 2              // push the number of arguments accepted by the invopked functions
                 push "sum_numbers"  // push the function name to invoke

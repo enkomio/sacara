@@ -10,7 +10,7 @@ open ES.Sacara.Ir.Parser.IrParserUtility
 %token PROC ENDP PUSH POP ADD NOP CALL NCALL WRITE NWRITE READ NREAD 
 %token GETIP RET JUMP JUMPIFL JUMPIFLE JUMPIFG JUMPIFGE ALLOCA HALT 
 %token CMP GETSP SWRITE SREAD BYTE WORD DWORD NEWLINE COMMA SUB MUL 
-%token DIV AND SHIFTR SHIFTL OR NOT XOR NOR SETIP SETSP EOF
+%token DIV AND SHIFTR SHIFTL OR NOT XOR NOR SETIP SETSP INC EOF
 
 %token <string> STRING
 %token <string> IDENTIFIER
@@ -45,6 +45,7 @@ statementNoLabel:
 	| ADD																					{ add() }
 	| PUSH expression																		{ push($2) }
 	| POP IDENTIFIER																		{ pop($2) }	
+	| INC IDENTIFIER																		{ inc($2) }	
 	| JUMP																					{ jump() }
 	| JUMPIFL																				{ jumpIf(false, true) }
 	| JUMPIFLE																				{ jumpIf(true, true) }

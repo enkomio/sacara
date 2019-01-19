@@ -9,7 +9,7 @@ open Microsoft.FSharp.Reflection
 
 [<Struct>]
 // the operand direction is the same as the one specified in INTEL syntax, that is: <op> <dst>, <src>
-type IrOpCodes =
+type IrInstruction =
     | Ret
     | Nop
     | Add
@@ -50,7 +50,7 @@ type IrOpCodes =
     | SetSp
 
 // these are the op codes of the VM
-type VmOpCodes =    
+type VmInstruction =    
     | VmRet
     | VmNop
     | VmAdd
@@ -105,9 +105,9 @@ module Instructions =
             JsonConvert.DeserializeObject<List<VmOpCodeItem>>(json)
             |> Seq.map(fun item ->
                 let vmOpCode =
-                    FSharpType.GetUnionCases typeof<VmOpCodes>
+                    FSharpType.GetUnionCases typeof<VmInstruction>
                     |> Array.find(fun case -> case.Name.Equals(item.Name, StringComparison.OrdinalIgnoreCase))
-                    |> fun case -> FSharpValue.MakeUnion(case,[||]) :?> VmOpCodes
+                    |> fun case -> FSharpValue.MakeUnion(case,[||]) :?> VmInstruction
                 let bytes = item.OpCodes |> Seq.toList
                 (vmOpCode, bytes)
             )

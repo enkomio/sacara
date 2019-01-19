@@ -7,12 +7,12 @@ module NorRewriter =
     let private genOperand(name: String) = new Operand("TMP_" + name)
 
     let private push(operand: Operand, useMultipleOpcodeForSameInstruction: Boolean) =
-        let push = new IrOpCode(IrOpCodes.Push, useMultipleOpcodeForSameInstruction)
+        let push = new IrOpCode(IrInstruction.Push, useMultipleOpcodeForSameInstruction)
         push.Operands.Add(operand)  
         push
 
     let private pop(operand: Operand, useMultipleOpcodeForSameInstruction: Boolean) =
-        let pop = new IrOpCode(IrOpCodes.Pop, useMultipleOpcodeForSameInstruction)
+        let pop = new IrOpCode(IrInstruction.Pop, useMultipleOpcodeForSameInstruction)
         pop.Operands.Add(operand)
         pop
                 
@@ -22,12 +22,12 @@ module NorRewriter =
         yield pop(op, useMultipleOpcodeForSameInstruction)
         yield push(op, useMultipleOpcodeForSameInstruction)
         yield push(op, useMultipleOpcodeForSameInstruction)
-        yield new IrOpCode(IrOpCodes.Nor, useMultipleOpcodeForSameInstruction)
+        yield new IrOpCode(IrInstruction.Nor, useMultipleOpcodeForSameInstruction)
     ]
 
     let rewriteOr(useMultipleOpcodeForSameInstruction: Boolean) = [
         // OR(a, b) = NOT(NOR(a, b))
-        yield new IrOpCode(IrOpCodes.Nor, useMultipleOpcodeForSameInstruction)
+        yield new IrOpCode(IrInstruction.Nor, useMultipleOpcodeForSameInstruction)
         yield! rewriteNot(useMultipleOpcodeForSameInstruction) 
     ]
 

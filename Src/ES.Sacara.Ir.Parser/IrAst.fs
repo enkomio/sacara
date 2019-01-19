@@ -11,6 +11,7 @@ module IrAst =
     and Statement =
         | Push of PushType
         | Pop of PopType
+        | Inc of IncType
         | Procedure of ProcedureType
         | Label of LabelType
         | Call of CallType
@@ -70,6 +71,10 @@ module IrAst =
     }
 
     and PopType = {
+        Identifier: String
+    }
+
+    and IncType = {
         Identifier: String
     }
 

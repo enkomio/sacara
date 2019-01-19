@@ -28,6 +28,7 @@ type token =
   | NOR
   | SETIP
   | SETSP
+  | INC
   | EOF
   | CMP
   | GETSP
@@ -77,6 +78,7 @@ type tokenId =
     | TOKEN_NOR
     | TOKEN_SETIP
     | TOKEN_SETSP
+    | TOKEN_INC
     | TOKEN_EOF
     | TOKEN_CMP
     | TOKEN_GETSP
@@ -143,39 +145,40 @@ let tagOfToken (t:token) =
   | NOR  -> 11 
   | SETIP  -> 12 
   | SETSP  -> 13 
-  | EOF  -> 14 
-  | CMP  -> 15 
-  | GETSP  -> 16 
-  | SWRITE  -> 17 
-  | SREAD  -> 18 
-  | BYTE  -> 19 
-  | WORD  -> 20 
-  | DWORD  -> 21 
-  | NEWLINE  -> 22 
-  | COMMA  -> 23 
-  | SUB  -> 24 
-  | MUL  -> 25 
-  | GETIP  -> 26 
-  | RET  -> 27 
-  | JUMP  -> 28 
-  | JUMPIFL  -> 29 
-  | JUMPIFLE  -> 30 
-  | JUMPIFG  -> 31 
-  | JUMPIFGE  -> 32 
-  | ALLOCA  -> 33 
-  | HALT  -> 34 
-  | PROC  -> 35 
-  | ENDP  -> 36 
-  | PUSH  -> 37 
-  | POP  -> 38 
-  | ADD  -> 39 
-  | NOP  -> 40 
-  | CALL  -> 41 
-  | NCALL  -> 42 
-  | WRITE  -> 43 
-  | NWRITE  -> 44 
-  | READ  -> 45 
-  | NREAD  -> 46 
+  | INC  -> 14 
+  | EOF  -> 15 
+  | CMP  -> 16 
+  | GETSP  -> 17 
+  | SWRITE  -> 18 
+  | SREAD  -> 19 
+  | BYTE  -> 20 
+  | WORD  -> 21 
+  | DWORD  -> 22 
+  | NEWLINE  -> 23 
+  | COMMA  -> 24 
+  | SUB  -> 25 
+  | MUL  -> 26 
+  | GETIP  -> 27 
+  | RET  -> 28 
+  | JUMP  -> 29 
+  | JUMPIFL  -> 30 
+  | JUMPIFLE  -> 31 
+  | JUMPIFG  -> 32 
+  | JUMPIFGE  -> 33 
+  | ALLOCA  -> 34 
+  | HALT  -> 35 
+  | PROC  -> 36 
+  | ENDP  -> 37 
+  | PUSH  -> 38 
+  | POP  -> 39 
+  | ADD  -> 40 
+  | NOP  -> 41 
+  | CALL  -> 42 
+  | NCALL  -> 43 
+  | WRITE  -> 44 
+  | NWRITE  -> 45 
+  | READ  -> 46 
+  | NREAD  -> 47 
 
 // This function maps integer indexes to symbolic token ids
 let tokenTagToTokenId (tokenIdx:int) = 
@@ -194,41 +197,42 @@ let tokenTagToTokenId (tokenIdx:int) =
   | 11 -> TOKEN_NOR 
   | 12 -> TOKEN_SETIP 
   | 13 -> TOKEN_SETSP 
-  | 14 -> TOKEN_EOF 
-  | 15 -> TOKEN_CMP 
-  | 16 -> TOKEN_GETSP 
-  | 17 -> TOKEN_SWRITE 
-  | 18 -> TOKEN_SREAD 
-  | 19 -> TOKEN_BYTE 
-  | 20 -> TOKEN_WORD 
-  | 21 -> TOKEN_DWORD 
-  | 22 -> TOKEN_NEWLINE 
-  | 23 -> TOKEN_COMMA 
-  | 24 -> TOKEN_SUB 
-  | 25 -> TOKEN_MUL 
-  | 26 -> TOKEN_GETIP 
-  | 27 -> TOKEN_RET 
-  | 28 -> TOKEN_JUMP 
-  | 29 -> TOKEN_JUMPIFL 
-  | 30 -> TOKEN_JUMPIFLE 
-  | 31 -> TOKEN_JUMPIFG 
-  | 32 -> TOKEN_JUMPIFGE 
-  | 33 -> TOKEN_ALLOCA 
-  | 34 -> TOKEN_HALT 
-  | 35 -> TOKEN_PROC 
-  | 36 -> TOKEN_ENDP 
-  | 37 -> TOKEN_PUSH 
-  | 38 -> TOKEN_POP 
-  | 39 -> TOKEN_ADD 
-  | 40 -> TOKEN_NOP 
-  | 41 -> TOKEN_CALL 
-  | 42 -> TOKEN_NCALL 
-  | 43 -> TOKEN_WRITE 
-  | 44 -> TOKEN_NWRITE 
-  | 45 -> TOKEN_READ 
-  | 46 -> TOKEN_NREAD 
-  | 49 -> TOKEN_end_of_input
-  | 47 -> TOKEN_error
+  | 14 -> TOKEN_INC 
+  | 15 -> TOKEN_EOF 
+  | 16 -> TOKEN_CMP 
+  | 17 -> TOKEN_GETSP 
+  | 18 -> TOKEN_SWRITE 
+  | 19 -> TOKEN_SREAD 
+  | 20 -> TOKEN_BYTE 
+  | 21 -> TOKEN_WORD 
+  | 22 -> TOKEN_DWORD 
+  | 23 -> TOKEN_NEWLINE 
+  | 24 -> TOKEN_COMMA 
+  | 25 -> TOKEN_SUB 
+  | 26 -> TOKEN_MUL 
+  | 27 -> TOKEN_GETIP 
+  | 28 -> TOKEN_RET 
+  | 29 -> TOKEN_JUMP 
+  | 30 -> TOKEN_JUMPIFL 
+  | 31 -> TOKEN_JUMPIFLE 
+  | 32 -> TOKEN_JUMPIFG 
+  | 33 -> TOKEN_JUMPIFGE 
+  | 34 -> TOKEN_ALLOCA 
+  | 35 -> TOKEN_HALT 
+  | 36 -> TOKEN_PROC 
+  | 37 -> TOKEN_ENDP 
+  | 38 -> TOKEN_PUSH 
+  | 39 -> TOKEN_POP 
+  | 40 -> TOKEN_ADD 
+  | 41 -> TOKEN_NOP 
+  | 42 -> TOKEN_CALL 
+  | 43 -> TOKEN_NCALL 
+  | 44 -> TOKEN_WRITE 
+  | 45 -> TOKEN_NWRITE 
+  | 46 -> TOKEN_READ 
+  | 47 -> TOKEN_NREAD 
+  | 50 -> TOKEN_end_of_input
+  | 48 -> TOKEN_error
   | _ -> failwith "tokenTagToTokenId: bad token"
 
 /// This function maps production indexes returned in syntax errors to strings representing the non terminal that would be produced by that production
@@ -279,18 +283,19 @@ let prodIdxToNonTerminal (prodIdx:int) =
     | 42 -> NONTERM_statementNoLabel 
     | 43 -> NONTERM_statementNoLabel 
     | 44 -> NONTERM_statementNoLabel 
-    | 45 -> NONTERM_expression 
+    | 45 -> NONTERM_statementNoLabel 
     | 46 -> NONTERM_expression 
-    | 47 -> NONTERM_integerList 
+    | 47 -> NONTERM_expression 
     | 48 -> NONTERM_integerList 
-    | 49 -> NONTERM_dataList 
+    | 49 -> NONTERM_integerList 
     | 50 -> NONTERM_dataList 
-    | 51 -> NONTERM_data 
+    | 51 -> NONTERM_dataList 
     | 52 -> NONTERM_data 
+    | 53 -> NONTERM_data 
     | _ -> failwith "prodIdxToNonTerminal: bad production index"
 
-let _fsyacc_endOfInputTag = 49 
-let _fsyacc_tagOfErrorTerminal = 47
+let _fsyacc_endOfInputTag = 50 
+let _fsyacc_tagOfErrorTerminal = 48
 
 // This function gets the name of a token as a string
 let token_to_string (t:token) = 
@@ -309,6 +314,7 @@ let token_to_string (t:token) =
   | NOR  -> "NOR" 
   | SETIP  -> "SETIP" 
   | SETSP  -> "SETSP" 
+  | INC  -> "INC" 
   | EOF  -> "EOF" 
   | CMP  -> "CMP" 
   | GETSP  -> "GETSP" 
@@ -360,6 +366,7 @@ let _fsyacc_dataOfToken (t:token) =
   | NOR  -> (null : System.Object) 
   | SETIP  -> (null : System.Object) 
   | SETSP  -> (null : System.Object) 
+  | INC  -> (null : System.Object) 
   | EOF  -> (null : System.Object) 
   | CMP  -> (null : System.Object) 
   | GETSP  -> (null : System.Object) 
@@ -393,18 +400,18 @@ let _fsyacc_dataOfToken (t:token) =
   | NWRITE  -> (null : System.Object) 
   | READ  -> (null : System.Object) 
   | NREAD  -> (null : System.Object) 
-let _fsyacc_gotos = [| 0us; 65535us; 1us; 65535us; 0us; 1us; 1us; 65535us; 0us; 2us; 2us; 65535us; 0us; 4us; 2us; 5us; 1us; 65535us; 7us; 8us; 2us; 65535us; 7us; 10us; 8us; 11us; 3us; 65535us; 7us; 14us; 8us; 14us; 12us; 13us; 1us; 65535us; 18us; 19us; 2us; 65535us; 52us; 53us; 54us; 55us; 1us; 65535us; 50us; 51us; 2us; 65535us; 50us; 63us; 61us; 62us; |]
+let _fsyacc_gotos = [| 0us; 65535us; 1us; 65535us; 0us; 1us; 1us; 65535us; 0us; 2us; 2us; 65535us; 0us; 4us; 2us; 5us; 1us; 65535us; 7us; 8us; 2us; 65535us; 7us; 10us; 8us; 11us; 3us; 65535us; 7us; 14us; 8us; 14us; 12us; 13us; 1us; 65535us; 18us; 19us; 2us; 65535us; 54us; 55us; 56us; 57us; 1us; 65535us; 52us; 53us; 2us; 65535us; 52us; 65us; 63us; 64us; |]
 let _fsyacc_sparseGotoTableRowOffsets = [|0us; 1us; 3us; 5us; 8us; 10us; 13us; 17us; 19us; 22us; 24us; |]
-let _fsyacc_stateToProdIdxsTableElements = [| 1us; 0us; 1us; 0us; 2us; 1us; 3us; 1us; 1us; 1us; 2us; 1us; 3us; 1us; 4us; 1us; 4us; 2us; 4us; 6us; 1us; 4us; 1us; 5us; 1us; 6us; 1us; 7us; 1us; 7us; 1us; 8us; 1us; 9us; 1us; 10us; 1us; 11us; 1us; 12us; 1us; 12us; 1us; 13us; 1us; 13us; 1us; 14us; 1us; 15us; 1us; 16us; 1us; 17us; 1us; 18us; 1us; 19us; 1us; 20us; 1us; 21us; 1us; 22us; 1us; 23us; 1us; 24us; 1us; 25us; 1us; 26us; 1us; 27us; 1us; 28us; 1us; 29us; 1us; 30us; 1us; 31us; 1us; 32us; 1us; 33us; 1us; 34us; 1us; 35us; 1us; 36us; 1us; 37us; 1us; 38us; 1us; 39us; 1us; 40us; 1us; 41us; 1us; 42us; 2us; 42us; 49us; 1us; 43us; 2us; 43us; 47us; 1us; 44us; 2us; 44us; 47us; 1us; 45us; 1us; 46us; 1us; 47us; 1us; 47us; 1us; 48us; 1us; 49us; 1us; 49us; 1us; 50us; 1us; 51us; 1us; 52us; |]
-let _fsyacc_stateToProdIdxsTableRowOffsets = [|0us; 2us; 4us; 7us; 9us; 11us; 13us; 15us; 17us; 20us; 22us; 24us; 26us; 28us; 30us; 32us; 34us; 36us; 38us; 40us; 42us; 44us; 46us; 48us; 50us; 52us; 54us; 56us; 58us; 60us; 62us; 64us; 66us; 68us; 70us; 72us; 74us; 76us; 78us; 80us; 82us; 84us; 86us; 88us; 90us; 92us; 94us; 96us; 98us; 100us; 102us; 104us; 107us; 109us; 112us; 114us; 117us; 119us; 121us; 123us; 125us; 127us; 129us; 131us; 133us; 135us; |]
-let _fsyacc_action_rows = 66
-let _fsyacc_actionTableElements = [|1us; 32768us; 35us; 6us; 0us; 49152us; 2us; 32768us; 14us; 3us; 35us; 6us; 0us; 16385us; 0us; 16386us; 0us; 16387us; 1us; 32768us; 2us; 7us; 37us; 32768us; 1us; 12us; 4us; 42us; 5us; 43us; 6us; 48us; 7us; 49us; 8us; 44us; 9us; 45us; 10us; 46us; 11us; 47us; 15us; 32us; 16us; 37us; 17us; 38us; 18us; 39us; 19us; 50us; 20us; 52us; 21us; 54us; 24us; 40us; 25us; 41us; 26us; 33us; 27us; 15us; 28us; 22us; 29us; 23us; 30us; 24us; 31us; 25us; 32us; 26us; 33us; 31us; 34us; 34us; 37us; 18us; 38us; 20us; 39us; 17us; 40us; 16us; 41us; 35us; 42us; 36us; 43us; 29us; 44us; 30us; 45us; 27us; 46us; 28us; 38us; 32768us; 1us; 12us; 4us; 42us; 5us; 43us; 6us; 48us; 7us; 49us; 8us; 44us; 9us; 45us; 10us; 46us; 11us; 47us; 15us; 32us; 16us; 37us; 17us; 38us; 18us; 39us; 19us; 50us; 20us; 52us; 21us; 54us; 24us; 40us; 25us; 41us; 26us; 33us; 27us; 15us; 28us; 22us; 29us; 23us; 30us; 24us; 31us; 25us; 32us; 26us; 33us; 31us; 34us; 34us; 36us; 9us; 37us; 18us; 38us; 20us; 39us; 17us; 40us; 16us; 41us; 35us; 42us; 36us; 43us; 29us; 44us; 30us; 45us; 27us; 46us; 28us; 0us; 16388us; 0us; 16389us; 0us; 16390us; 36us; 32768us; 4us; 42us; 5us; 43us; 6us; 48us; 7us; 49us; 8us; 44us; 9us; 45us; 10us; 46us; 11us; 47us; 15us; 32us; 16us; 37us; 17us; 38us; 18us; 39us; 19us; 50us; 20us; 52us; 21us; 54us; 24us; 40us; 25us; 41us; 26us; 33us; 27us; 15us; 28us; 22us; 29us; 23us; 30us; 24us; 31us; 25us; 32us; 26us; 33us; 31us; 34us; 34us; 37us; 18us; 38us; 20us; 39us; 17us; 40us; 16us; 41us; 35us; 42us; 36us; 43us; 29us; 44us; 30us; 45us; 27us; 46us; 28us; 0us; 16391us; 0us; 16392us; 0us; 16393us; 0us; 16394us; 0us; 16395us; 2us; 32768us; 0us; 56us; 2us; 57us; 0us; 16396us; 1us; 32768us; 2us; 21us; 0us; 16397us; 0us; 16398us; 0us; 16399us; 0us; 16400us; 0us; 16401us; 0us; 16402us; 0us; 16403us; 0us; 16404us; 0us; 16405us; 0us; 16406us; 0us; 16407us; 0us; 16408us; 0us; 16409us; 0us; 16410us; 0us; 16411us; 0us; 16412us; 0us; 16413us; 0us; 16414us; 0us; 16415us; 0us; 16416us; 0us; 16417us; 0us; 16418us; 0us; 16419us; 0us; 16420us; 0us; 16421us; 0us; 16422us; 0us; 16423us; 0us; 16424us; 0us; 16425us; 2us; 32768us; 0us; 64us; 3us; 65us; 1us; 16426us; 23us; 61us; 1us; 32768us; 0us; 60us; 1us; 16427us; 23us; 58us; 1us; 32768us; 0us; 60us; 1us; 16428us; 23us; 58us; 0us; 16429us; 0us; 16430us; 1us; 32768us; 0us; 59us; 0us; 16431us; 0us; 16432us; 2us; 32768us; 0us; 64us; 3us; 65us; 0us; 16433us; 0us; 16434us; 0us; 16435us; 0us; 16436us; |]
-let _fsyacc_actionTableRowOffsets = [|0us; 2us; 3us; 6us; 7us; 8us; 9us; 11us; 49us; 88us; 89us; 90us; 91us; 128us; 129us; 130us; 131us; 132us; 133us; 136us; 137us; 139us; 140us; 141us; 142us; 143us; 144us; 145us; 146us; 147us; 148us; 149us; 150us; 151us; 152us; 153us; 154us; 155us; 156us; 157us; 158us; 159us; 160us; 161us; 162us; 163us; 164us; 165us; 166us; 167us; 168us; 171us; 173us; 175us; 177us; 179us; 181us; 182us; 183us; 185us; 186us; 187us; 190us; 191us; 192us; 193us; |]
-let _fsyacc_reductionSymbolCounts = [|1us; 2us; 1us; 2us; 4us; 1us; 2us; 2us; 1us; 1us; 1us; 1us; 2us; 2us; 1us; 1us; 1us; 1us; 1us; 1us; 1us; 1us; 1us; 1us; 1us; 1us; 1us; 1us; 1us; 1us; 1us; 1us; 1us; 1us; 1us; 1us; 1us; 1us; 1us; 1us; 1us; 1us; 2us; 2us; 2us; 1us; 1us; 3us; 1us; 3us; 1us; 1us; 1us; |]
-let _fsyacc_productionToNonTerminalTable = [|0us; 1us; 2us; 2us; 3us; 4us; 4us; 5us; 5us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 7us; 7us; 8us; 8us; 9us; 9us; 10us; 10us; |]
-let _fsyacc_immediateActions = [|65535us; 49152us; 65535us; 16385us; 16386us; 16387us; 65535us; 65535us; 65535us; 16388us; 16389us; 16390us; 65535us; 16391us; 16392us; 16393us; 16394us; 16395us; 65535us; 16396us; 65535us; 16397us; 16398us; 16399us; 16400us; 16401us; 16402us; 16403us; 16404us; 16405us; 16406us; 16407us; 16408us; 16409us; 16410us; 16411us; 16412us; 16413us; 16414us; 16415us; 16416us; 16417us; 16418us; 16419us; 16420us; 16421us; 16422us; 16423us; 16424us; 16425us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 16429us; 16430us; 65535us; 16431us; 16432us; 65535us; 16433us; 16434us; 16435us; 16436us; |]
+let _fsyacc_stateToProdIdxsTableElements = [| 1us; 0us; 1us; 0us; 2us; 1us; 3us; 1us; 1us; 1us; 2us; 1us; 3us; 1us; 4us; 1us; 4us; 2us; 4us; 6us; 1us; 4us; 1us; 5us; 1us; 6us; 1us; 7us; 1us; 7us; 1us; 8us; 1us; 9us; 1us; 10us; 1us; 11us; 1us; 12us; 1us; 12us; 1us; 13us; 1us; 13us; 1us; 14us; 1us; 14us; 1us; 15us; 1us; 16us; 1us; 17us; 1us; 18us; 1us; 19us; 1us; 20us; 1us; 21us; 1us; 22us; 1us; 23us; 1us; 24us; 1us; 25us; 1us; 26us; 1us; 27us; 1us; 28us; 1us; 29us; 1us; 30us; 1us; 31us; 1us; 32us; 1us; 33us; 1us; 34us; 1us; 35us; 1us; 36us; 1us; 37us; 1us; 38us; 1us; 39us; 1us; 40us; 1us; 41us; 1us; 42us; 1us; 43us; 2us; 43us; 50us; 1us; 44us; 2us; 44us; 48us; 1us; 45us; 2us; 45us; 48us; 1us; 46us; 1us; 47us; 1us; 48us; 1us; 48us; 1us; 49us; 1us; 50us; 1us; 50us; 1us; 51us; 1us; 52us; 1us; 53us; |]
+let _fsyacc_stateToProdIdxsTableRowOffsets = [|0us; 2us; 4us; 7us; 9us; 11us; 13us; 15us; 17us; 20us; 22us; 24us; 26us; 28us; 30us; 32us; 34us; 36us; 38us; 40us; 42us; 44us; 46us; 48us; 50us; 52us; 54us; 56us; 58us; 60us; 62us; 64us; 66us; 68us; 70us; 72us; 74us; 76us; 78us; 80us; 82us; 84us; 86us; 88us; 90us; 92us; 94us; 96us; 98us; 100us; 102us; 104us; 106us; 108us; 111us; 113us; 116us; 118us; 121us; 123us; 125us; 127us; 129us; 131us; 133us; 135us; 137us; 139us; |]
+let _fsyacc_action_rows = 68
+let _fsyacc_actionTableElements = [|1us; 32768us; 36us; 6us; 0us; 49152us; 2us; 32768us; 15us; 3us; 36us; 6us; 0us; 16385us; 0us; 16386us; 0us; 16387us; 1us; 32768us; 2us; 7us; 38us; 32768us; 1us; 12us; 4us; 44us; 5us; 45us; 6us; 50us; 7us; 51us; 8us; 46us; 9us; 47us; 10us; 48us; 11us; 49us; 14us; 22us; 16us; 34us; 17us; 39us; 18us; 40us; 19us; 41us; 20us; 52us; 21us; 54us; 22us; 56us; 25us; 42us; 26us; 43us; 27us; 35us; 28us; 15us; 29us; 24us; 30us; 25us; 31us; 26us; 32us; 27us; 33us; 28us; 34us; 33us; 35us; 36us; 38us; 18us; 39us; 20us; 40us; 17us; 41us; 16us; 42us; 37us; 43us; 38us; 44us; 31us; 45us; 32us; 46us; 29us; 47us; 30us; 39us; 32768us; 1us; 12us; 4us; 44us; 5us; 45us; 6us; 50us; 7us; 51us; 8us; 46us; 9us; 47us; 10us; 48us; 11us; 49us; 14us; 22us; 16us; 34us; 17us; 39us; 18us; 40us; 19us; 41us; 20us; 52us; 21us; 54us; 22us; 56us; 25us; 42us; 26us; 43us; 27us; 35us; 28us; 15us; 29us; 24us; 30us; 25us; 31us; 26us; 32us; 27us; 33us; 28us; 34us; 33us; 35us; 36us; 37us; 9us; 38us; 18us; 39us; 20us; 40us; 17us; 41us; 16us; 42us; 37us; 43us; 38us; 44us; 31us; 45us; 32us; 46us; 29us; 47us; 30us; 0us; 16388us; 0us; 16389us; 0us; 16390us; 37us; 32768us; 4us; 44us; 5us; 45us; 6us; 50us; 7us; 51us; 8us; 46us; 9us; 47us; 10us; 48us; 11us; 49us; 14us; 22us; 16us; 34us; 17us; 39us; 18us; 40us; 19us; 41us; 20us; 52us; 21us; 54us; 22us; 56us; 25us; 42us; 26us; 43us; 27us; 35us; 28us; 15us; 29us; 24us; 30us; 25us; 31us; 26us; 32us; 27us; 33us; 28us; 34us; 33us; 35us; 36us; 38us; 18us; 39us; 20us; 40us; 17us; 41us; 16us; 42us; 37us; 43us; 38us; 44us; 31us; 45us; 32us; 46us; 29us; 47us; 30us; 0us; 16391us; 0us; 16392us; 0us; 16393us; 0us; 16394us; 0us; 16395us; 2us; 32768us; 0us; 58us; 2us; 59us; 0us; 16396us; 1us; 32768us; 2us; 21us; 0us; 16397us; 1us; 32768us; 2us; 23us; 0us; 16398us; 0us; 16399us; 0us; 16400us; 0us; 16401us; 0us; 16402us; 0us; 16403us; 0us; 16404us; 0us; 16405us; 0us; 16406us; 0us; 16407us; 0us; 16408us; 0us; 16409us; 0us; 16410us; 0us; 16411us; 0us; 16412us; 0us; 16413us; 0us; 16414us; 0us; 16415us; 0us; 16416us; 0us; 16417us; 0us; 16418us; 0us; 16419us; 0us; 16420us; 0us; 16421us; 0us; 16422us; 0us; 16423us; 0us; 16424us; 0us; 16425us; 0us; 16426us; 2us; 32768us; 0us; 66us; 3us; 67us; 1us; 16427us; 24us; 63us; 1us; 32768us; 0us; 62us; 1us; 16428us; 24us; 60us; 1us; 32768us; 0us; 62us; 1us; 16429us; 24us; 60us; 0us; 16430us; 0us; 16431us; 1us; 32768us; 0us; 61us; 0us; 16432us; 0us; 16433us; 2us; 32768us; 0us; 66us; 3us; 67us; 0us; 16434us; 0us; 16435us; 0us; 16436us; 0us; 16437us; |]
+let _fsyacc_actionTableRowOffsets = [|0us; 2us; 3us; 6us; 7us; 8us; 9us; 11us; 50us; 90us; 91us; 92us; 93us; 131us; 132us; 133us; 134us; 135us; 136us; 139us; 140us; 142us; 143us; 145us; 146us; 147us; 148us; 149us; 150us; 151us; 152us; 153us; 154us; 155us; 156us; 157us; 158us; 159us; 160us; 161us; 162us; 163us; 164us; 165us; 166us; 167us; 168us; 169us; 170us; 171us; 172us; 173us; 174us; 177us; 179us; 181us; 183us; 185us; 187us; 188us; 189us; 191us; 192us; 193us; 196us; 197us; 198us; 199us; |]
+let _fsyacc_reductionSymbolCounts = [|1us; 2us; 1us; 2us; 4us; 1us; 2us; 2us; 1us; 1us; 1us; 1us; 2us; 2us; 2us; 1us; 1us; 1us; 1us; 1us; 1us; 1us; 1us; 1us; 1us; 1us; 1us; 1us; 1us; 1us; 1us; 1us; 1us; 1us; 1us; 1us; 1us; 1us; 1us; 1us; 1us; 1us; 1us; 2us; 2us; 2us; 1us; 1us; 3us; 1us; 3us; 1us; 1us; 1us; |]
+let _fsyacc_productionToNonTerminalTable = [|0us; 1us; 2us; 2us; 3us; 4us; 4us; 5us; 5us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 6us; 7us; 7us; 8us; 8us; 9us; 9us; 10us; 10us; |]
+let _fsyacc_immediateActions = [|65535us; 49152us; 65535us; 16385us; 16386us; 16387us; 65535us; 65535us; 65535us; 16388us; 16389us; 16390us; 65535us; 16391us; 16392us; 16393us; 16394us; 16395us; 65535us; 16396us; 65535us; 16397us; 65535us; 16398us; 16399us; 16400us; 16401us; 16402us; 16403us; 16404us; 16405us; 16406us; 16407us; 16408us; 16409us; 16410us; 16411us; 16412us; 16413us; 16414us; 16415us; 16416us; 16417us; 16418us; 16419us; 16420us; 16421us; 16422us; 16423us; 16424us; 16425us; 16426us; 65535us; 65535us; 65535us; 65535us; 65535us; 65535us; 16430us; 16431us; 65535us; 16432us; 16433us; 65535us; 16434us; 16435us; 16436us; 16437us; |]
 let _fsyacc_reductions ()  =    [| 
-# 407 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
+# 414 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
         (fun (parseState : Microsoft.FSharp.Text.Parsing.IParseState) ->
             let _1 = (let data = parseState.GetInput(1) in (Microsoft.FSharp.Core.Operators.unbox data :  Program )) in
             Microsoft.FSharp.Core.Operators.box
@@ -413,7 +420,7 @@ let _fsyacc_reductions ()  =    [|
                       raise (Microsoft.FSharp.Text.Parsing.Accept(Microsoft.FSharp.Core.Operators.box _1))
                    )
                  : '_startprogram));
-# 416 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
+# 423 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
         (fun (parseState : Microsoft.FSharp.Text.Parsing.IParseState) ->
             let _1 = (let data = parseState.GetInput(1) in (Microsoft.FSharp.Core.Operators.unbox data : 'sourceElementList)) in
             Microsoft.FSharp.Core.Operators.box
@@ -424,7 +431,7 @@ let _fsyacc_reductions ()  =    [|
                    )
 # 25 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                  :  Program ));
-# 427 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
+# 434 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
         (fun (parseState : Microsoft.FSharp.Text.Parsing.IParseState) ->
             let _1 = (let data = parseState.GetInput(1) in (Microsoft.FSharp.Core.Operators.unbox data : 'procDefinition)) in
             Microsoft.FSharp.Core.Operators.box
@@ -435,7 +442,7 @@ let _fsyacc_reductions ()  =    [|
                    )
 # 28 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                  : 'sourceElementList));
-# 438 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
+# 445 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
         (fun (parseState : Microsoft.FSharp.Text.Parsing.IParseState) ->
             let _1 = (let data = parseState.GetInput(1) in (Microsoft.FSharp.Core.Operators.unbox data : 'sourceElementList)) in
             let _2 = (let data = parseState.GetInput(2) in (Microsoft.FSharp.Core.Operators.unbox data : 'procDefinition)) in
@@ -447,7 +454,7 @@ let _fsyacc_reductions ()  =    [|
                    )
 # 29 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                  : 'sourceElementList));
-# 450 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
+# 457 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
         (fun (parseState : Microsoft.FSharp.Text.Parsing.IParseState) ->
             let _2 = (let data = parseState.GetInput(2) in (Microsoft.FSharp.Core.Operators.unbox data : string)) in
             let _3 = (let data = parseState.GetInput(3) in (Microsoft.FSharp.Core.Operators.unbox data : 'statementList)) in
@@ -459,7 +466,7 @@ let _fsyacc_reductions ()  =    [|
                    )
 # 32 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                  : 'procDefinition));
-# 462 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
+# 469 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
         (fun (parseState : Microsoft.FSharp.Text.Parsing.IParseState) ->
             let _1 = (let data = parseState.GetInput(1) in (Microsoft.FSharp.Core.Operators.unbox data : 'statement)) in
             Microsoft.FSharp.Core.Operators.box
@@ -470,7 +477,7 @@ let _fsyacc_reductions ()  =    [|
                    )
 # 35 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                  : 'statementList));
-# 473 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
+# 480 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
         (fun (parseState : Microsoft.FSharp.Text.Parsing.IParseState) ->
             let _1 = (let data = parseState.GetInput(1) in (Microsoft.FSharp.Core.Operators.unbox data : 'statementList)) in
             let _2 = (let data = parseState.GetInput(2) in (Microsoft.FSharp.Core.Operators.unbox data : 'statement)) in
@@ -482,7 +489,7 @@ let _fsyacc_reductions ()  =    [|
                    )
 # 36 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                  : 'statementList));
-# 485 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
+# 492 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
         (fun (parseState : Microsoft.FSharp.Text.Parsing.IParseState) ->
             let _1 = (let data = parseState.GetInput(1) in (Microsoft.FSharp.Core.Operators.unbox data : string)) in
             let _2 = (let data = parseState.GetInput(2) in (Microsoft.FSharp.Core.Operators.unbox data : 'statementNoLabel)) in
@@ -494,7 +501,7 @@ let _fsyacc_reductions ()  =    [|
                    )
 # 39 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                  : 'statement));
-# 497 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
+# 504 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
         (fun (parseState : Microsoft.FSharp.Text.Parsing.IParseState) ->
             let _1 = (let data = parseState.GetInput(1) in (Microsoft.FSharp.Core.Operators.unbox data : 'statementNoLabel)) in
             Microsoft.FSharp.Core.Operators.box
@@ -505,7 +512,7 @@ let _fsyacc_reductions ()  =    [|
                    )
 # 40 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                  : 'statement));
-# 508 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
+# 515 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
         (fun (parseState : Microsoft.FSharp.Text.Parsing.IParseState) ->
             Microsoft.FSharp.Core.Operators.box
                 (
@@ -515,7 +522,7 @@ let _fsyacc_reductions ()  =    [|
                    )
 # 43 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                  : 'statementNoLabel));
-# 518 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
+# 525 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
         (fun (parseState : Microsoft.FSharp.Text.Parsing.IParseState) ->
             Microsoft.FSharp.Core.Operators.box
                 (
@@ -525,7 +532,7 @@ let _fsyacc_reductions ()  =    [|
                    )
 # 44 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                  : 'statementNoLabel));
-# 528 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
+# 535 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
         (fun (parseState : Microsoft.FSharp.Text.Parsing.IParseState) ->
             Microsoft.FSharp.Core.Operators.box
                 (
@@ -535,7 +542,7 @@ let _fsyacc_reductions ()  =    [|
                    )
 # 45 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                  : 'statementNoLabel));
-# 538 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
+# 545 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
         (fun (parseState : Microsoft.FSharp.Text.Parsing.IParseState) ->
             let _2 = (let data = parseState.GetInput(2) in (Microsoft.FSharp.Core.Operators.unbox data : 'expression)) in
             Microsoft.FSharp.Core.Operators.box
@@ -546,7 +553,7 @@ let _fsyacc_reductions ()  =    [|
                    )
 # 46 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                  : 'statementNoLabel));
-# 549 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
+# 556 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
         (fun (parseState : Microsoft.FSharp.Text.Parsing.IParseState) ->
             let _2 = (let data = parseState.GetInput(2) in (Microsoft.FSharp.Core.Operators.unbox data : string)) in
             Microsoft.FSharp.Core.Operators.box
@@ -557,411 +564,422 @@ let _fsyacc_reductions ()  =    [|
                    )
 # 47 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                  : 'statementNoLabel));
-# 560 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
+# 567 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
         (fun (parseState : Microsoft.FSharp.Text.Parsing.IParseState) ->
+            let _2 = (let data = parseState.GetInput(2) in (Microsoft.FSharp.Core.Operators.unbox data : string)) in
             Microsoft.FSharp.Core.Operators.box
                 (
                    (
 # 48 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+                                                          inc(_2) 
+                   )
+# 48 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+                 : 'statementNoLabel));
+# 578 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
+        (fun (parseState : Microsoft.FSharp.Text.Parsing.IParseState) ->
+            Microsoft.FSharp.Core.Operators.box
+                (
+                   (
+# 49 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                                                    jump() 
                    )
-# 48 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 49 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                  : 'statementNoLabel));
-# 570 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
+# 588 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
         (fun (parseState : Microsoft.FSharp.Text.Parsing.IParseState) ->
             Microsoft.FSharp.Core.Operators.box
                 (
                    (
-# 49 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 50 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                                                      jumpIf(false, true) 
                    )
-# 49 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 50 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                  : 'statementNoLabel));
-# 580 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
+# 598 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
         (fun (parseState : Microsoft.FSharp.Text.Parsing.IParseState) ->
             Microsoft.FSharp.Core.Operators.box
                 (
                    (
-# 50 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 51 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                                                       jumpIf(true, true) 
                    )
-# 50 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 51 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                  : 'statementNoLabel));
-# 590 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
+# 608 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
         (fun (parseState : Microsoft.FSharp.Text.Parsing.IParseState) ->
             Microsoft.FSharp.Core.Operators.box
                 (
                    (
-# 51 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 52 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                                                      jumpIf(false, false) 
                    )
-# 51 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 52 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                  : 'statementNoLabel));
-# 600 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
+# 618 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
         (fun (parseState : Microsoft.FSharp.Text.Parsing.IParseState) ->
             Microsoft.FSharp.Core.Operators.box
                 (
                    (
-# 52 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 53 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                                                       jumpIf(true, false) 
                    )
-# 52 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 53 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                  : 'statementNoLabel));
-# 610 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
+# 628 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
         (fun (parseState : Microsoft.FSharp.Text.Parsing.IParseState) ->
             Microsoft.FSharp.Core.Operators.box
                 (
                    (
-# 53 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 54 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                                                    read() 
                    )
-# 53 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 54 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                  : 'statementNoLabel));
-# 620 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
+# 638 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
         (fun (parseState : Microsoft.FSharp.Text.Parsing.IParseState) ->
             Microsoft.FSharp.Core.Operators.box
                 (
                    (
-# 54 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 55 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                                                     readNative() 
                    )
-# 54 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 55 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                  : 'statementNoLabel));
-# 630 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
+# 648 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
         (fun (parseState : Microsoft.FSharp.Text.Parsing.IParseState) ->
             Microsoft.FSharp.Core.Operators.box
                 (
                    (
-# 55 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 56 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                                                     write() 
                    )
-# 55 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 56 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                  : 'statementNoLabel));
-# 640 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
+# 658 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
         (fun (parseState : Microsoft.FSharp.Text.Parsing.IParseState) ->
             Microsoft.FSharp.Core.Operators.box
                 (
                    (
-# 56 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 57 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                                                     writeNative() 
                    )
-# 56 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 57 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                  : 'statementNoLabel));
-# 650 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
+# 668 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
         (fun (parseState : Microsoft.FSharp.Text.Parsing.IParseState) ->
             Microsoft.FSharp.Core.Operators.box
                 (
                    (
-# 57 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 58 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                                                     alloca() 
                    )
-# 57 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 58 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                  : 'statementNoLabel));
-# 660 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
+# 678 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
         (fun (parseState : Microsoft.FSharp.Text.Parsing.IParseState) ->
             Microsoft.FSharp.Core.Operators.box
                 (
                    (
-# 58 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 59 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                                                   compare() 
                    )
-# 58 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 59 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                  : 'statementNoLabel));
-# 670 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
+# 688 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
         (fun (parseState : Microsoft.FSharp.Text.Parsing.IParseState) ->
             Microsoft.FSharp.Core.Operators.box
                 (
                    (
-# 59 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 60 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                                                     getIp() 
                    )
-# 59 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 60 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                  : 'statementNoLabel));
-# 680 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
+# 698 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
         (fun (parseState : Microsoft.FSharp.Text.Parsing.IParseState) ->
             Microsoft.FSharp.Core.Operators.box
                 (
                    (
-# 60 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 61 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                                                    halt() 
                    )
-# 60 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 61 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                  : 'statementNoLabel));
-# 690 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
+# 708 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
         (fun (parseState : Microsoft.FSharp.Text.Parsing.IParseState) ->
             Microsoft.FSharp.Core.Operators.box
                 (
                    (
-# 61 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 62 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                                                    call() 
                    )
-# 61 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 62 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                  : 'statementNoLabel));
-# 700 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
+# 718 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
         (fun (parseState : Microsoft.FSharp.Text.Parsing.IParseState) ->
             Microsoft.FSharp.Core.Operators.box
                 (
                    (
-# 62 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 63 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                                                     callNative() 
                    )
-# 62 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 63 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                  : 'statementNoLabel));
-# 710 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
+# 728 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
         (fun (parseState : Microsoft.FSharp.Text.Parsing.IParseState) ->
             Microsoft.FSharp.Core.Operators.box
                 (
                    (
-# 63 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 64 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                                                     getSp() 
                    )
-# 63 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 64 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                  : 'statementNoLabel));
-# 720 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
+# 738 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
         (fun (parseState : Microsoft.FSharp.Text.Parsing.IParseState) ->
             Microsoft.FSharp.Core.Operators.box
                 (
                    (
-# 64 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 65 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                                                     stackWrite() 
                    )
-# 64 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 65 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                  : 'statementNoLabel));
-# 730 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
+# 748 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
         (fun (parseState : Microsoft.FSharp.Text.Parsing.IParseState) ->
             Microsoft.FSharp.Core.Operators.box
                 (
                    (
-# 65 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 66 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                                                     stackRead() 
                    )
-# 65 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 66 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                  : 'statementNoLabel));
-# 740 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
+# 758 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
         (fun (parseState : Microsoft.FSharp.Text.Parsing.IParseState) ->
             Microsoft.FSharp.Core.Operators.box
                 (
                    (
-# 66 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 67 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                                                   sub() 
                    )
-# 66 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 67 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                  : 'statementNoLabel));
-# 750 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
+# 768 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
         (fun (parseState : Microsoft.FSharp.Text.Parsing.IParseState) ->
             Microsoft.FSharp.Core.Operators.box
                 (
                    (
-# 67 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 68 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                                                   mul() 
                    )
-# 67 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 68 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                  : 'statementNoLabel));
-# 760 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
+# 778 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
         (fun (parseState : Microsoft.FSharp.Text.Parsing.IParseState) ->
             Microsoft.FSharp.Core.Operators.box
                 (
                    (
-# 68 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 69 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                                                   div() 
                    )
-# 68 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 69 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                  : 'statementNoLabel));
-# 770 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
+# 788 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
         (fun (parseState : Microsoft.FSharp.Text.Parsing.IParseState) ->
             Microsoft.FSharp.Core.Operators.box
                 (
                    (
-# 69 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 70 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                                                   bitAnd() 
                    )
-# 69 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 70 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                  : 'statementNoLabel));
-# 780 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
+# 798 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
         (fun (parseState : Microsoft.FSharp.Text.Parsing.IParseState) ->
             Microsoft.FSharp.Core.Operators.box
                 (
                    (
-# 70 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 71 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                                                  bitOr() 
                    )
-# 70 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 71 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                  : 'statementNoLabel));
-# 790 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
+# 808 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
         (fun (parseState : Microsoft.FSharp.Text.Parsing.IParseState) ->
             Microsoft.FSharp.Core.Operators.box
                 (
                    (
-# 71 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 72 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                                                   bitNot() 
                    )
-# 71 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 72 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                  : 'statementNoLabel));
-# 800 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
+# 818 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
         (fun (parseState : Microsoft.FSharp.Text.Parsing.IParseState) ->
             Microsoft.FSharp.Core.Operators.box
                 (
                    (
-# 72 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 73 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                                                   xor() 
                    )
-# 72 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 73 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                  : 'statementNoLabel));
-# 810 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
+# 828 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
         (fun (parseState : Microsoft.FSharp.Text.Parsing.IParseState) ->
             Microsoft.FSharp.Core.Operators.box
                 (
                    (
-# 73 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 74 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                                                   nor() 
                    )
-# 73 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 74 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                  : 'statementNoLabel));
-# 820 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
+# 838 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
         (fun (parseState : Microsoft.FSharp.Text.Parsing.IParseState) ->
             Microsoft.FSharp.Core.Operators.box
                 (
                    (
-# 74 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 75 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                                                     shiftRight() 
                    )
-# 74 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 75 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                  : 'statementNoLabel));
-# 830 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
+# 848 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
         (fun (parseState : Microsoft.FSharp.Text.Parsing.IParseState) ->
             Microsoft.FSharp.Core.Operators.box
                 (
                    (
-# 75 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 76 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                                                     shiftLeft() 
                    )
-# 75 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 76 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                  : 'statementNoLabel));
-# 840 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
+# 858 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
         (fun (parseState : Microsoft.FSharp.Text.Parsing.IParseState) ->
             let _2 = (let data = parseState.GetInput(2) in (Microsoft.FSharp.Core.Operators.unbox data : 'dataList)) in
             Microsoft.FSharp.Core.Operators.box
                 (
                    (
-# 76 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 77 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                                                           memoryByte(List.rev _2) 
                    )
-# 76 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 77 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                  : 'statementNoLabel));
-# 851 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
+# 869 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
         (fun (parseState : Microsoft.FSharp.Text.Parsing.IParseState) ->
             let _2 = (let data = parseState.GetInput(2) in (Microsoft.FSharp.Core.Operators.unbox data : 'integerList)) in
             Microsoft.FSharp.Core.Operators.box
                 (
                    (
-# 77 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 78 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                                                             memoryWord(List.rev _2) 
                    )
-# 77 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 78 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                  : 'statementNoLabel));
-# 862 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
+# 880 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
         (fun (parseState : Microsoft.FSharp.Text.Parsing.IParseState) ->
             let _2 = (let data = parseState.GetInput(2) in (Microsoft.FSharp.Core.Operators.unbox data : 'integerList)) in
             Microsoft.FSharp.Core.Operators.box
                 (
                    (
-# 78 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 79 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                                                              memoryDword(List.rev _2) 
                    )
-# 78 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 79 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                  : 'statementNoLabel));
-# 873 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
+# 891 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
         (fun (parseState : Microsoft.FSharp.Text.Parsing.IParseState) ->
             let _1 = (let data = parseState.GetInput(1) in (Microsoft.FSharp.Core.Operators.unbox data : int32)) in
             Microsoft.FSharp.Core.Operators.box
                 (
                    (
-# 81 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 82 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                                                      number(_1) 
                    )
-# 81 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 82 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                  : 'expression));
-# 884 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
+# 902 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
         (fun (parseState : Microsoft.FSharp.Text.Parsing.IParseState) ->
             let _1 = (let data = parseState.GetInput(1) in (Microsoft.FSharp.Core.Operators.unbox data : string)) in
             Microsoft.FSharp.Core.Operators.box
                 (
                    (
-# 82 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 83 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                                                        identifier(_1) 
                    )
-# 82 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 83 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                  : 'expression));
-# 895 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
+# 913 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
         (fun (parseState : Microsoft.FSharp.Text.Parsing.IParseState) ->
             let _1 = (let data = parseState.GetInput(1) in (Microsoft.FSharp.Core.Operators.unbox data : 'integerList)) in
             let _3 = (let data = parseState.GetInput(3) in (Microsoft.FSharp.Core.Operators.unbox data : int32)) in
             Microsoft.FSharp.Core.Operators.box
                 (
                    (
-# 85 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 86 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                                                                    _3::_1 
                    )
-# 85 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 86 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                  : 'integerList));
-# 907 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
+# 925 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
         (fun (parseState : Microsoft.FSharp.Text.Parsing.IParseState) ->
             let _1 = (let data = parseState.GetInput(1) in (Microsoft.FSharp.Core.Operators.unbox data : int32)) in
             Microsoft.FSharp.Core.Operators.box
                 (
                    (
-# 86 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 87 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                                                      [_1] 
                    )
-# 86 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 87 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                  : 'integerList));
-# 918 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
+# 936 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
         (fun (parseState : Microsoft.FSharp.Text.Parsing.IParseState) ->
             let _1 = (let data = parseState.GetInput(1) in (Microsoft.FSharp.Core.Operators.unbox data : 'dataList)) in
             let _3 = (let data = parseState.GetInput(3) in (Microsoft.FSharp.Core.Operators.unbox data : 'data)) in
             Microsoft.FSharp.Core.Operators.box
                 (
                    (
-# 89 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 90 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                                                               _3::_1 
                    )
-# 89 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 90 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                  : 'dataList));
-# 930 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
+# 948 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
         (fun (parseState : Microsoft.FSharp.Text.Parsing.IParseState) ->
             let _1 = (let data = parseState.GetInput(1) in (Microsoft.FSharp.Core.Operators.unbox data : 'data)) in
             Microsoft.FSharp.Core.Operators.box
                 (
                    (
-# 90 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 91 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                                                    [_1] 
                    )
-# 90 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 91 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                  : 'dataList));
-# 941 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
+# 959 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
         (fun (parseState : Microsoft.FSharp.Text.Parsing.IParseState) ->
             let _1 = (let data = parseState.GetInput(1) in (Microsoft.FSharp.Core.Operators.unbox data : int32)) in
             Microsoft.FSharp.Core.Operators.box
                 (
                    (
-# 93 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 94 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                                                      [_1] 
                    )
-# 93 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 94 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                  : 'data));
-# 952 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
+# 970 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
         (fun (parseState : Microsoft.FSharp.Text.Parsing.IParseState) ->
             let _1 = (let data = parseState.GetInput(1) in (Microsoft.FSharp.Core.Operators.unbox data : string)) in
             Microsoft.FSharp.Core.Operators.box
                 (
                    (
-# 94 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 95 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                                                     getStringBytes(_1) 
                    )
-# 94 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
+# 95 "ES.Sacara.Ir.Parser\SacaraIrParser.fsy"
                  : 'data));
 |]
-# 964 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
+# 982 "ES.Sacara.Ir.Parser\SacaraIrParser.fs"
 let tables () : Microsoft.FSharp.Text.Parsing.Tables<_> = 
   { reductions= _fsyacc_reductions ();
     endOfInputTag = _fsyacc_endOfInputTag;
@@ -980,7 +998,7 @@ let tables () : Microsoft.FSharp.Text.Parsing.Tables<_> =
                               match parse_error_rich with 
                               | Some f -> f ctxt
                               | None -> parse_error ctxt.Message);
-    numTerminals = 50;
+    numTerminals = 51;
     productionToNonTerminalTable = _fsyacc_productionToNonTerminalTable  }
 let engine lexer lexbuf startState = (tables ()).Interpret(lexer, lexbuf, startState)
 let program lexer lexbuf :  Program  =

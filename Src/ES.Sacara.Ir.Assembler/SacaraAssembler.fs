@@ -31,7 +31,7 @@ type SacaraAssembler(settings: AssemblerSettings) =
     let mutable _currentLabel: String option = None
     let mutable _currentIp = 0    
 
-    let addOperand(opCode: IrOpCode) =
+    let addOperation(opCode: IrOpCode) =
         if _currentLabel.IsSome then
             opCode.Label <- _currentLabel
             _currentLabel <- None
@@ -49,90 +49,105 @@ type SacaraAssembler(settings: AssemblerSettings) =
             _functions.Add(_currentFunction)
             procType.Body |> List.iter(parseStatement)
         | Statement.Push pushType ->
-            let push = new IrOpCode(IrOpCodes.Push, settings.UseMultipleOpcodeForSameInstruction)
+            let push = new IrOpCode(IrInstruction.Push, settings.UseMultipleOpcodeForSameInstruction)
             push.Operands.Add(parseExpression(pushType.Operand))
-            addOperand(push)
+            addOperation(push)
         | Statement.Pop popType ->
-            let pop = new IrOpCode(IrOpCodes.Pop, settings.UseMultipleOpcodeForSameInstruction)
+            let pop = new IrOpCode(IrInstruction.Pop, settings.UseMultipleOpcodeForSameInstruction)
             pop.Operands.Add(new Operand(popType.Identifier))
-            addOperand(pop)
+            addOperation(pop)
         | Statement.Label labelType -> 
             _currentLabel <- Some labelType.Name
             parseStatement(labelType.Statement)
         | Statement.Call callType -> 
-            addOperand(new IrOpCode((if callType.Native then IrOpCodes.NativeCall else IrOpCodes.Call), settings.UseMultipleOpcodeForSameInstruction))
+            addOperation(new IrOpCode((if callType.Native then IrInstruction.NativeCall else IrInstruction.Call), settings.UseMultipleOpcodeForSameInstruction))
         | Statement.Read readType ->
-            addOperand(new IrOpCode((if readType.Native then IrOpCodes.NativeRead else IrOpCodes.Read), settings.UseMultipleOpcodeForSameInstruction))
+            addOperation(new IrOpCode((if readType.Native then IrInstruction.NativeRead else IrInstruction.Read), settings.UseMultipleOpcodeForSameInstruction))
         | Statement.Write writeType ->
-            addOperand(new IrOpCode((if writeType.Native then IrOpCodes.NativeWrite else IrOpCodes.Write), settings.UseMultipleOpcodeForSameInstruction))
+            addOperation(new IrOpCode((if writeType.Native then IrInstruction.NativeWrite else IrInstruction.Write), settings.UseMultipleOpcodeForSameInstruction))
         | Statement.Nop -> 
-            addOperand(new IrOpCode(IrOpCodes.Nop, settings.UseMultipleOpcodeForSameInstruction))
+            addOperation(new IrOpCode(IrInstruction.Nop, settings.UseMultipleOpcodeForSameInstruction))
         | Statement.GetIp ->
-            addOperand(new IrOpCode(IrOpCodes.GetIp, settings.UseMultipleOpcodeForSameInstruction))        
+            addOperation(new IrOpCode(IrInstruction.GetIp, settings.UseMultipleOpcodeForSameInstruction))        
         | Statement.Add ->
-            addOperand(new IrOpCode(IrOpCodes.Add, settings.UseMultipleOpcodeForSameInstruction))
+            addOperation(new IrOpCode(IrInstruction.Add, settings.UseMultipleOpcodeForSameInstruction))
         | Statement.Ret ->
-            addOperand(new IrOpCode(IrOpCodes.Ret, settings.UseMultipleOpcodeForSameInstruction))
+            addOperation(new IrOpCode(IrInstruction.Ret, settings.UseMultipleOpcodeForSameInstruction))
         | Statement.JumpIf jumpIfType -> 
             let opCode =
                 match (jumpIfType.JumpIfEquals, jumpIfType.JumpIfLess) with
-                | (true, true) -> IrOpCodes.JumpIfLessEquals
-                | (true, false) -> IrOpCodes.JumpIfGreaterEquals
-                | (false, true) -> IrOpCodes.JumpIfLess
-                | (false, false) -> IrOpCodes.JumpIfGreater
+                | (true, true) -> IrInstruction.JumpIfLessEquals
+                | (true, false) -> IrInstruction.JumpIfGreaterEquals
+                | (false, true) -> IrInstruction.JumpIfLess
+                | (false, false) -> IrInstruction.JumpIfGreater
 
-            addOperand(new IrOpCode(opCode, settings.UseMultipleOpcodeForSameInstruction))
+            addOperation(new IrOpCode(opCode, settings.UseMultipleOpcodeForSameInstruction))
         | Statement.Jump ->
-            addOperand(new IrOpCode(IrOpCodes.Jump, settings.UseMultipleOpcodeForSameInstruction))
+            addOperation(new IrOpCode(IrInstruction.Jump, settings.UseMultipleOpcodeForSameInstruction))
         | Statement.Empty -> ()
         | Statement.Alloca ->
-            addOperand(new IrOpCode(IrOpCodes.Alloca, settings.UseMultipleOpcodeForSameInstruction))
+            addOperation(new IrOpCode(IrInstruction.Alloca, settings.UseMultipleOpcodeForSameInstruction))
         | Statement.Byte b ->
-            let byte = new IrOpCode(IrOpCodes.Byte, settings.UseMultipleOpcodeForSameInstruction)
+            let byte = new IrOpCode(IrInstruction.Byte, settings.UseMultipleOpcodeForSameInstruction)
             byte.Operands.Add(new Operand(b))
-            addOperand(byte)
+            addOperation(byte)
         | Statement.Word w ->
-            let word = new IrOpCode(IrOpCodes.Word, settings.UseMultipleOpcodeForSameInstruction)
+            let word = new IrOpCode(IrInstruction.Word, settings.UseMultipleOpcodeForSameInstruction)
             word.Operands.Add(new Operand(w))
-            addOperand(word)
+            addOperation(word)
         | Statement.DoubleWord dw ->
-            let dword = new IrOpCode(IrOpCodes.DoubleWord, settings.UseMultipleOpcodeForSameInstruction)
+            let dword = new IrOpCode(IrInstruction.DoubleWord, settings.UseMultipleOpcodeForSameInstruction)
             dword.Operands.Add(new Operand(dw))
-            addOperand(dword)
+            addOperation(dword)
         | Statement.Halt ->
-            addOperand(new IrOpCode(IrOpCodes.Halt, settings.UseMultipleOpcodeForSameInstruction))
+            addOperation(new IrOpCode(IrInstruction.Halt, settings.UseMultipleOpcodeForSameInstruction))
         | Statement.Cmp ->
-            addOperand(new IrOpCode(IrOpCodes.Cmp, settings.UseMultipleOpcodeForSameInstruction))
+            addOperation(new IrOpCode(IrInstruction.Cmp, settings.UseMultipleOpcodeForSameInstruction))
         | Statement.GetSp ->
-            addOperand(new IrOpCode(IrOpCodes.GetSp, settings.UseMultipleOpcodeForSameInstruction))
+            addOperation(new IrOpCode(IrInstruction.GetSp, settings.UseMultipleOpcodeForSameInstruction))
         | Statement.StackRead ->
-            addOperand(new IrOpCode(IrOpCodes.StackRead, settings.UseMultipleOpcodeForSameInstruction))
+            addOperation(new IrOpCode(IrInstruction.StackRead, settings.UseMultipleOpcodeForSameInstruction))
         | Statement.StackWrite ->
-            addOperand(new IrOpCode(IrOpCodes.StackWrite, settings.UseMultipleOpcodeForSameInstruction))
+            addOperation(new IrOpCode(IrInstruction.StackWrite, settings.UseMultipleOpcodeForSameInstruction))
         | Statement.Sub ->
-            addOperand(new IrOpCode(IrOpCodes.Sub, settings.UseMultipleOpcodeForSameInstruction))
+            addOperation(new IrOpCode(IrInstruction.Sub, settings.UseMultipleOpcodeForSameInstruction))
         | Statement.Mul ->
-            addOperand(new IrOpCode(IrOpCodes.Mul, settings.UseMultipleOpcodeForSameInstruction))
+            addOperation(new IrOpCode(IrInstruction.Mul, settings.UseMultipleOpcodeForSameInstruction))
         | Statement.Div ->
-            addOperand(new IrOpCode(IrOpCodes.Div, settings.UseMultipleOpcodeForSameInstruction))
+            addOperation(new IrOpCode(IrInstruction.Div, settings.UseMultipleOpcodeForSameInstruction))
         | Statement.And ->
-            addOperand(new IrOpCode(IrOpCodes.And, settings.UseMultipleOpcodeForSameInstruction))
+            addOperation(new IrOpCode(IrInstruction.And, settings.UseMultipleOpcodeForSameInstruction))
         | Statement.Or ->
-            addOperand(new IrOpCode(IrOpCodes.Or, settings.UseMultipleOpcodeForSameInstruction))
+            addOperation(new IrOpCode(IrInstruction.Or, settings.UseMultipleOpcodeForSameInstruction))
         | Statement.Not ->
-            addOperand(new IrOpCode(IrOpCodes.Not, settings.UseMultipleOpcodeForSameInstruction))
+            addOperation(new IrOpCode(IrInstruction.Not, settings.UseMultipleOpcodeForSameInstruction))
         | Statement.Xor ->
-            addOperand(new IrOpCode(IrOpCodes.Xor, settings.UseMultipleOpcodeForSameInstruction))
+            addOperation(new IrOpCode(IrInstruction.Xor, settings.UseMultipleOpcodeForSameInstruction))
         | Statement.Nor ->
-            addOperand(new IrOpCode(IrOpCodes.Nor, settings.UseMultipleOpcodeForSameInstruction))
+            addOperation(new IrOpCode(IrInstruction.Nor, settings.UseMultipleOpcodeForSameInstruction))
         | Statement.ShiftLeft ->
-            addOperand(new IrOpCode(IrOpCodes.ShiftLeft, settings.UseMultipleOpcodeForSameInstruction))
+            addOperation(new IrOpCode(IrInstruction.ShiftLeft, settings.UseMultipleOpcodeForSameInstruction))
         | Statement.ShiftRight ->
-            addOperand(new IrOpCode(IrOpCodes.ShiftRight, settings.UseMultipleOpcodeForSameInstruction))
+            addOperation(new IrOpCode(IrInstruction.ShiftRight, settings.UseMultipleOpcodeForSameInstruction))
         | Statement.SetIp ->
-            addOperand(new IrOpCode(IrOpCodes.SetIp, settings.UseMultipleOpcodeForSameInstruction))
+            addOperation(new IrOpCode(IrInstruction.SetIp, settings.UseMultipleOpcodeForSameInstruction))
         | Statement.SetSp ->
-            addOperand(new IrOpCode(IrOpCodes.SetSp, settings.UseMultipleOpcodeForSameInstruction))
+            addOperation(new IrOpCode(IrInstruction.SetSp, settings.UseMultipleOpcodeForSameInstruction))
+        | Statement.Inc incType ->
+            // this is a virtual instruction and is necessary to generate the effective sequence
+            let pushOne = new IrOpCode(IrInstruction.Push, settings.UseMultipleOpcodeForSameInstruction)
+            pushOne.Operands.Add(new Operand(1))
+            addOperation(pushOne)
+
+            let pushVariable = new IrOpCode(IrInstruction.Push, settings.UseMultipleOpcodeForSameInstruction)
+            pushVariable.Operands.Add(new Operand(incType.Identifier))
+            addOperation(pushVariable)
+                        
+            addOperation(new IrOpCode(IrInstruction.Add, settings.UseMultipleOpcodeForSameInstruction))
+
+            let popVariable = new IrOpCode(IrInstruction.Pop, settings.UseMultipleOpcodeForSameInstruction)
+            popVariable.Operands.Add(new Operand(incType.Identifier))
+            addOperation(popVariable)
 
     let parseAst(ast: Program) =
         match ast with
@@ -171,8 +186,8 @@ type SacaraAssembler(settings: AssemblerSettings) =
 
         // extract all local variables
         let opCodeAcceptingVariables = [
-            IrOpCodes.Push
-            IrOpCodes.Pop
+            IrInstruction.Push
+            IrInstruction.Pop
         ]
         opCodes
         |> Seq.filter(fun opCode -> opCodeAcceptingVariables |> List.contains opCode.Type)
@@ -189,10 +204,10 @@ type SacaraAssembler(settings: AssemblerSettings) =
         
         // create alloca instruction
         if allVariables.Count > 0 then
-            let pushInstr = new IrOpCode(IrOpCodes.Push, settings.UseMultipleOpcodeForSameInstruction)
+            let pushInstr = new IrOpCode(IrInstruction.Push, settings.UseMultipleOpcodeForSameInstruction)
             pushInstr.Operands.Add(new Operand(allVariables.Count))
 
-            let allocaInstr = new IrOpCode(IrOpCodes.Alloca, settings.UseMultipleOpcodeForSameInstruction)
+            let allocaInstr = new IrOpCode(IrInstruction.Alloca, settings.UseMultipleOpcodeForSameInstruction)
             [pushInstr;allocaInstr]@opCodes
         else    
             opCodes

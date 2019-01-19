@@ -13,7 +13,7 @@ open ES.Sacara.Ir.Core
 open ES.Sacara.Ir.Core.Instructions
 
 module Program =
-    let private wrtieFile(filename: String, content: String) =
+    let private writeFile(filename: String, content: String) =
         File.WriteAllText(filename, content)
 
     let generateClearOpCodes() =
@@ -21,7 +21,7 @@ module Program =
         let opCodes = new Dictionary<String, VmOpCodeItem>()
         let rnd = new Random()
         
-        FSharpType.GetUnionCases(typeof<VmOpCodes>)
+        FSharpType.GetUnionCases(typeof<VmInstruction>)
         |> Array.iter(fun case ->            
             opCodes.Add(case.Name, new VmOpCodeItem(Name=case.Name))
             let numberOfCases = rnd.Next(2, 6)
@@ -56,7 +56,7 @@ module Program =
         // copy file
         let curDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
         let assemblerSrcFile = Path.Combine(curDir, "..", "..", "..", "ES.Sacara.Ir.Core", "vm_opcodes.json")
-        wrtieFile(assemblerSrcFile, opCodeJson)
+        writeFile(assemblerSrcFile, opCodeJson)
         Console.WriteLine("Files copied to: " + assemblerSrcFile)
 
     let private convertBytesToDword(wordBytes: Byte array) =
@@ -103,7 +103,7 @@ module Program =
         let fileContent = sb.ToString()
         let curDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
         let vmSrcFile = Path.Combine(curDir, "..", "..", "..", "SacaraVm", "instructions_headers.inc")
-        wrtieFile(vmSrcFile, fileContent)
+        writeFile(vmSrcFile, fileContent)
         Console.WriteLine("Files copied to: " + vmSrcFile)
 
     let private ror(operand: UInt32) =
@@ -163,7 +163,7 @@ module Program =
         let fileContent = sb.ToString()
         let curDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
         let vmSrcFile = Path.Combine(curDir, "..", "..", "..", "SacaraVm", "strings.inc")
-        wrtieFile(vmSrcFile, fileContent)
+        writeFile(vmSrcFile, fileContent)
         Console.WriteLine("Files copied to: " + vmSrcFile)
 
     [<EntryPoint>]

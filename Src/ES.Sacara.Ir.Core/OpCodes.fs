@@ -15,20 +15,20 @@ type Symbol = {
 }
 
 type Operand(value: Object) =
-    let encodeRawData(bytes: Int32 list, vmOpCodeType: VmOpCodes) =
+    let encodeRawData(bytes: Int32 list, vmOpCodeType: VmInstruction) =
         match vmOpCodeType with
-        | VmOpCodes.VmByte ->
+        | VmInstruction.VmByte ->
             bytes          
             |> Seq.map(fun b -> byte b)
             |> Seq.toArray
 
-        | VmOpCodes.VmWord ->
+        | VmInstruction.VmWord ->
             bytes            
             |> Seq.map(fun b -> BitConverter.GetBytes(uint16 b))
             |> Seq.concat
             |> Seq.toArray
 
-        | VmOpCodes.VmDoubleWord ->
+        | VmInstruction.VmDoubleWord ->
             bytes            
             |> Seq.map(BitConverter.GetBytes)
             |> Seq.concat
@@ -38,7 +38,7 @@ type Operand(value: Object) =
 
     member val Value = value with get, set
 
-    member this.Encode(symbolTable: SymbolTable, offset: Int32, vmOpCodeType: VmOpCodes) =
+    member this.Encode(symbolTable: SymbolTable, offset: Int32, vmOpCodeType: VmInstruction) =
         match this.Value with
         | :? list<Int32> -> encodeRawData(this.Value :?> list<Int32>, vmOpCodeType)
         | :? Int32 -> BitConverter.GetBytes(this.Value :?> Int32)
@@ -72,7 +72,7 @@ type Operand(value: Object) =
 and VmOpCode = {
     IrOp: IrOpCode
     VmOp: Byte array
-    Type: VmOpCodes
+    Type: VmInstruction
     Operands: List<Byte array>
     Buffer: Byte array
     Offset: Int32
@@ -87,7 +87,7 @@ and VmOpCode = {
 
         let operands =
             match this.Type with
-            | VmOpCodes.VmByte ->
+            | VmInstruction.VmByte ->
                 let sb = new StringBuilder()
                 let mutable inString = false
                 this.Operands.[0]
@@ -107,12 +107,12 @@ and VmOpCode = {
                 if resultString.StartsWith(",")
                 then resultString.Substring(1)
                 else resultString
-            | VmOpCodes.VmWord ->
+            | VmInstruction.VmWord ->
                 this.Operands.[0]
                 |> Seq.chunkBySize 2
                 |> Seq.map(fun b -> "0x" + BitConverter.ToUInt16(b, 0).ToString("X"))
                 |> fun s -> String.Join(", ", s)
-            | VmOpCodes.VmDoubleWord ->
+            | VmInstruction.VmDoubleWord ->
                 this.Operands.[0]
                 |> Seq.chunkBySize 4
                 |> Seq.map(fun b -> "0x" + BitConverter.ToUInt32(b, 0).ToString("X"))
@@ -129,7 +129,7 @@ and VmOpCode = {
 
         String.Format("/* {0} */ loc_{1}: {2} {3}", bytes, offset, this.Type, operands)
     
-    static member Assemble(vmType: VmOpCodes, vmOp: Byte array, operands: List<Byte array>, offset: Int32, irOp: IrOpCode) =
+    static member Assemble(vmType: VmInstruction, vmOp: Byte array, operands: List<Byte array>, offset: Int32, irOp: IrOpCode) =
         let totalSize = vmOp.Length + (operands |> Seq.sumBy(fun op -> op.Length))
 
         let buffer = Array.zeroCreate<Byte>(totalSize)
@@ -169,7 +169,7 @@ and VmOpCode = {
         )
 
 
-and IrOpCode(opType: IrOpCodes, useMultipleOpcodeForSameInstruction: Boolean) =
+and IrOpCode(opType: IrInstruction, useMultipleOpcodeForSameInstruction: Boolean) =
     let rnd = new Random()
 
     let chooseRepresentation(opCodes: Int32 list) =
@@ -179,11 +179,11 @@ and IrOpCode(opType: IrOpCodes, useMultipleOpcodeForSameInstruction: Boolean) =
         |> uint16
         |> BitConverter.GetBytes
     
-    let getVmOpCode(opCode: VmOpCodes) =
+    let getVmOpCode(opCode: VmInstruction) =
         let opCodes = Instructions.bytes.[opCode]
         (chooseRepresentation(opCodes), opCode)
     
-    let getNotPureStackBasedVmOpCode(operands: Operand seq, symbolTable: SymbolTable, indexes: VmOpCodes list) =                
+    let getNotPureStackBasedVmOpCode(operands: Operand seq, symbolTable: SymbolTable, indexes: VmInstruction list) =                
         let firstOperand = operands |> Seq.head
         let vmOpCode = 
             match firstOperand.Value with
@@ -199,7 +199,7 @@ and IrOpCode(opType: IrOpCodes, useMultipleOpcodeForSameInstruction: Boolean) =
         let opCodes = Instructions.bytes.[vmOpCode]
         (chooseRepresentation(opCodes), vmOpCode)
 
-    let getMacroOpCodeBytes(vmOpCode: VmOpCodes) =
+    let getMacroOpCodeBytes(vmOpCode: VmInstruction) =
         // macro doesn't have any bytes as opCode, I have just to encode the operands
         (Array.empty<Byte>, vmOpCode)
                 
@@ -247,10 +247,11 @@ and IrOpCode(opType: IrOpCodes, useMultipleOpcodeForSameInstruction: Boolean) =
             | ShiftLeft -> getVmOpCode(VmShiftLeft)
             | ShiftRight -> getVmOpCode(VmShiftRight)
             | SetIp -> getVmOpCode(VmSetIp)
-            | SetSp -> getVmOpCode(VmSetSp)
+            | SetSp -> getVmOpCode(VmSetSp)            
             | Byte -> getMacroOpCodeBytes(VmByte)
             | Word -> getMacroOpCodeBytes(VmWord)
             | DoubleWord -> getMacroOpCodeBytes(VmDoubleWord)           
+            | _ -> failwith "Ir instruction type not supported"
             
         // encode the operands
         this.Operands

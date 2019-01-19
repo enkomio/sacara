@@ -54,6 +54,7 @@ module internal IrLexerUtility =
             ("nor", NOR)
             ("setip", SETIP)
             ("setsp", SETSP)
+            ("inc", INC)
         ] |> Map.ofList
 
     let getString (lexbuf : LexBuffer<_>) = 
