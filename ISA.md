@@ -23,7 +23,7 @@ You can create **SIL** code also programmatically. For an example of usage take 
 ### Exported VM methods
 The *SacaraVM* DLL exports four methods that can be invoked programmatically. You can find an <a href="https://github.com/enkomio/sacara/blob/master/Src/Examples/InvokeNativeFunction/main.c#L42">example of usage in the <strong>Examples</strong> directory</a>.
 
-# Functions, status flags, labels and comments
+# Functions, status flags, labels, variables and comments
 *Sacara* allows to define functions, to reference labels and to add comments to your code.
 
 ### Functions
@@ -55,8 +55,19 @@ my_label:
 endp
 ```
 
+### Variables
+*Sacara VM* supports the definition of variables. It is not necessary to pre-declare them, sacara assembler will scan your code and will allocates the necessary space in the stack. All variables are local. A valid variable name start with a letter and then can contains any numbers of letters, numbers or the _ character. Find below an example of variable usage:
+
+```
+proc main
+    inc my_variable
+    push my_variable
+    halt
+endp
+```
+
 ### Comments
-You can insert comments in your code to make it more understandable. *Sacara* support multi lines comment which starts with the string **/*** and ends with the string ***/** (this is the same exact pattern used in the C programming language). Find below an example of comment usages:
+You can insert comments in your code to make it more understandable. *Sacara* support multi lines comment which starts with the string **/\*** and ends with the string **\*/** (this is the same exact pattern used in the C programming language). Find below an example of comment usages:
 
 ```
 proc main
@@ -556,3 +567,18 @@ This instruction modifies the value of the Instruction Pointer with the argument
 
 This instruction modifies the value of the Stack Base Pointer with the argument passed. It pops from the stack:
 * The new value to assign to the SP base
+
+### INCREMENT
+<hr/>
+
+*Mnemonic*: **inc**
+
+*Popped Arguments*: **0**
+
+*Pushed Arguments*: **0**
+
+This instruction is a *virtual instruction*, this means that it doesn't have a real representation as a VM opcode. It transalts to a sequence of instruction, more precisely to: 
+* PUSH 1
+* PUSH variable
+* ADD
+* POP variable
