@@ -16,41 +16,50 @@ module Program =
     let private writeFile(filename: String, content: String) =
         File.WriteAllText(filename, content)
 
-    let generateClearOpCodes() =
-        let opCodesBytes = new HashSet<Int32>()
-        let opCodes = new Dictionary<String, VmOpCodeItem>()
-        let rnd = new Random()
+    let getSavedOpcodes() =
+        let curDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
+        let assemblerSrcFile = Path.Combine(curDir, "..", "..", "..", "ES.Sacara.Ir.Core", "vm_opcodes.json")
+        let fileContent = File.ReadAllText(assemblerSrcFile)
         
-        FSharpType.GetUnionCases(typeof<VmInstruction>)
-        |> Array.iter(fun case ->            
-            opCodes.Add(case.Name, new VmOpCodeItem(Name=case.Name))
-            let numberOfCases = rnd.Next(2, 6)
-            for j=1 to numberOfCases do
-                let mutable opCode = rnd.Next(10, 65534)
+        JsonConvert.DeserializeObject<List<VmOpCodeItem>>(fileContent)
+        |> Seq.map(fun opCode -> (opCode.Name, opCode))
+        |> dict
 
-                // clear initial 4 bits since they are flags
-                opCode <- opCode &&& 0x0FFF
-
-                if opCodesBytes.Add(opCode) then                                        
-                    opCodes.[case.Name].OpCodes.Add(opCode)
+    let encryptOpCode(opCode: VmOpCodeItem) =
+        opCode.OpCodes
+        |> Seq.iteri(fun i opCodeValue ->
+            opCode.Bytes.Add(BitConverter.GetBytes(uint16((opCodeValue ^^^ 0xB5) + opCode.OpCodes.Count)))
         )
-        opCodes
-
-    let encryptOpCodes(opCodes: Dictionary<String, VmOpCodeItem>) =
-        opCodes.Values
-        |> Seq.iter(fun opCode ->
-            opCode.OpCodes
-            |> Seq.iteri(fun i opCodeValue ->
-                opCode.Bytes.Add(BitConverter.GetBytes(uint16((opCodeValue ^^^ 0xB5) + opCode.OpCodes.Count)))
-            )
-        )
+        opCode
 
     let generateOpCodes() =
-        let opCodes = generateClearOpCodes()
-        encryptOpCodes(opCodes)
-        opCodes
+        let opCodes = getSavedOpcodes()
+        let opCodesBytes = new HashSet<Int32>(opCodes.Values |> Seq.collect(fun opCode -> opCode.OpCodes))
+        let rnd = new Random()
 
-    let saveOpCodeInAssemblerDir(opCodes: Dictionary<String, VmOpCodeItem>) =
+        FSharpType.GetUnionCases(typeof<VmInstruction>)
+        |> Array.map(fun case ->   
+            if opCodes.Keys |> Seq.contains case.Name then
+                opCodes.[case.Name]
+            else
+                let numberOfCases = rnd.Next(2, 6)
+                let mutable iteration = 0
+                let newOpCode =  new VmOpCodeItem(Name = case.Name)
+
+                while iteration < numberOfCases do
+                    // clear initial 4 bits since they are flags
+                    let opCodeBytes = rnd.Next(10, 65534) &&& 0x0FFF
+
+                    if opCodesBytes.Add(opCodeBytes) then    
+                        newOpCode.OpCodes.Add(opCodeBytes)
+                        iteration <- iteration + 1
+
+                encryptOpCode(newOpCode)
+        )
+        |> Array.map(fun opCode -> (opCode.Name, opCode))
+        |> dict
+
+    let saveOpCodeInAssemblerDir(opCodes: IDictionary<String, VmOpCodeItem>) =
         let opCodeJson = JsonConvert.SerializeObject(opCodes.Values, Formatting.Indented)
         
         // copy file
@@ -68,7 +77,7 @@ module Program =
         let wordBytes = BitConverter.GetBytes(word16)
         convertBytesToDword(wordBytes)    
 
-    let saveOpCodeInVmDir(opCodes: Dictionary<String, VmOpCodeItem>) =
+    let saveOpCodeInVmDir(opCodes: IDictionary<String, VmOpCodeItem>) =
         let sb = new StringBuilder()
         sb.AppendLine("; This file is auto generated, don't modify it") |> ignore
 
