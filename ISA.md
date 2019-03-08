@@ -573,12 +573,8 @@ This instruction modifies the value of the Stack Base Pointer with the argument 
 
 *Mnemonic*: **inc**
 
-*Popped Arguments*: **0**
+*Popped Arguments*: **1**
 
-*Pushed Arguments*: **0**
+*Pushed Arguments*: **1**
 
-This instruction is a *virtual instruction*, this means that it doesn't have a real representation as a VM opcode. It transalts to a sequence of instruction, more precisely to: 
-* PUSH 1
-* PUSH variable
-* ADD
-* POP variable
+This instruction pop the value from the stack, increments its value by 1 and push back the result in the stack.
