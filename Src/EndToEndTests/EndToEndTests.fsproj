@@ -5,14 +5,14 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>23a1d5d4-e9a0-41e8-a3e4-974ff36ffc88</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <RootNamespace>ES.SacaraVm</RootNamespace>
-    <AssemblyName>ES.SacaraVm</AssemblyName>
-    <UseStandardResourceNames>true</UseStandardResourceNames>
+    <ProjectGuid>0c155cbb-9699-4671-abf7-8f0f30d7e9d5</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>EndToEndTests</RootNamespace>
+    <AssemblyName>EndToEndTests</AssemblyName>
     <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <Name>ES.SacaraVm</Name>
+    <UseStandardResourceNames>true</UseStandardResourceNames>
+    <Name>EndToEndTests</Name>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -22,7 +22,9 @@
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DocumentationFile>bin\$(Configuration)\$(AssemblyName).XML</DocumentationFile>
+    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -31,7 +33,9 @@
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DocumentationFile>bin\$(Configuration)\$(AssemblyName).XML</DocumentationFile>
+    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
@@ -41,12 +45,12 @@
   </PropertyGroup>
   <Import Project="$(FSharpTargetsPath)" />
   <ItemGroup>
-    <Compile Include="AssemblyInfo.fs" />
+    <None Include="App.config" />
     <Content Include="packages.config" />
+    <Compile Include="AssemblyInfo.fs" />
     <None Include="paket.references" />
-    <Compile Include="NativeMethods.fs" />
-    <Compile Include="ErrorCode.fs" />
-    <Compile Include="SacaraVm.fs" />
+    <Compile Include="AssemblerTests.fs" />
+    <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Core">
@@ -70,6 +74,16 @@
     <ProjectReference Include="..\ES.Sacara.Ir.Core\ES.Sacara.Ir.Core.fsproj">
       <Name>ES.Sacara.Ir.Core</Name>
       <Project>{c8d0627b-7512-4bad-9018-56c8753f9c81}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\ES.Sacara.Ir.Obfuscator\ES.Sacara.Ir.Obfuscator.fsproj">
+      <Name>ES.Sacara.Ir.Obfuscator</Name>
+      <Project>{6e9a577d-e4fa-43cf-83fe-4fc03eb367a2}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\ES.SacaraVm\ES.SacaraVm.fsproj">
+      <Name>ES.SacaraVm</Name>
+      <Project>{23a1d5d4-e9a0-41e8-a3e4-974ff36ffc88}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
