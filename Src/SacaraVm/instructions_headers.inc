@@ -1,6 +1,6 @@
 ; This file is auto generated, don't modify it
-marker1 EQU 0069C7E0Dh
-marker2 EQU 064C84F77h
+marker1 EQU 0A998A302h
+marker2 EQU 0AE307CA9h
 
 ; real opcodes: 0099Ah, 00117h
 header_VmRet EQU <DWORD marker1, marker2, 2h, 00931h, 001A4h>
@@ -118,5 +118,8 @@ header_VmSetIp EQU <DWORD marker1, marker2, 4h, 004B4h, 00B15h, 00B9Fh, 00D87h>
 
 ; real opcodes: 0088Ah, 006ADh, 006D5h
 header_VmSetSp EQU <DWORD marker1, marker2, 3h, 00842h, 0061Bh, 00663h>
+
+; real opcodes: 00958h, 00682h, 001C7h, 0071Dh, 00860h
+header_VmInc EQU <DWORD marker1, marker2, 5h, 009F2h, 0063Ch, 00177h, 007ADh, 008DAh>
 
 header_marker EQU <DWORD marker2, marker1>
