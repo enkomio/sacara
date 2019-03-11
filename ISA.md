@@ -180,7 +180,7 @@ This instruction allows to call a user defined method. It pops from the stack:
 This instruction allows to call a *native* method outside of the VM. It pops from the stack:
 * the address of the method to call
 * the number of argument to push in the stack
-* the number of DOUBLE WORD to remove from the stack, after that the method returns
+* a flag that indicates if the native stack must be cleaned after return from native function. True if not 0.
 * the arguments to the method
 
 When the native method returns, the value of the native *EAX* register is pushed on top of the stack.
