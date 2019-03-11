@@ -4,6 +4,7 @@ open System
 open Microsoft.FSharp.Text.Lexing
 open System.Text.RegularExpressions
 open ES.Sacara.Ir.Parser.SacaraIrParser
+open ES.Sacara.Ir.Core
 
 [<AutoOpen>]
 module internal IrLexerUtility =
@@ -14,48 +15,53 @@ module internal IrLexerUtility =
 
     let keywords = 
         [
-            ("push", PUSH)
-            ("pop", POP)
-            ("add", ADD)
-            ("call", CALL)
-            ("ncall", NCALL)
-            ("write", WRITE)
-            ("nwrite", NWRITE)
-            ("read", READ)
-            ("nread", NREAD)
+            (IrInstruction.Push, PUSH)
+            (IrInstruction.Pop, POP)
+            (IrInstruction.Add, ADD)
+            (IrInstruction.Call, CALL)
+            (IrInstruction.NativeCall, NCALL)
+            (IrInstruction.Write, WRITE)
+            (IrInstruction.NativeWrite, NWRITE)
+            (IrInstruction.Read, READ)
+            (IrInstruction.NativeRead, NREAD)            
+            (IrInstruction.Nop, NOP)
+            (IrInstruction.GetIp, GETIP)
+            (IrInstruction.Ret, RET)
+            (IrInstruction.Jump, JUMP)
+            (IrInstruction.JumpIfLess, JUMPIFL)
+            (IrInstruction.JumpIfLessEquals, JUMPIFLE)
+            (IrInstruction.JumpIfGreater, JUMPIFG)
+            (IrInstruction.JumpIfGreaterEquals, JUMPIFGE)
+            (IrInstruction.Alloca, ALLOCA)
+            (IrInstruction.Byte, BYTE)
+            (IrInstruction.Word, WORD)
+            (IrInstruction.DoubleWord, DWORD)
+            (IrInstruction.Halt, HALT)
+            (IrInstruction.Cmp, CMP)
+            (IrInstruction.GetSp, GETSP)
+            (IrInstruction.StackWrite, SWRITE)
+            (IrInstruction.StackRead, SREAD)
+            (IrInstruction.Sub, SUB)
+            (IrInstruction.Mul, MUL)
+            (IrInstruction.Div, DIV)
+            (IrInstruction.And, AND)
+            (IrInstruction.ShiftLeft, SHIFTL)
+            (IrInstruction.ShiftRight, SHIFTR)
+            (IrInstruction.Or, OR)
+            (IrInstruction.Not, NOT)
+            (IrInstruction.Xor, XOR)
+            (IrInstruction.Nor, NOR)
+            (IrInstruction.SetIp, SETIP)
+            (IrInstruction.SetSp, SETSP)            
+            (IrInstruction.Inc, INC)
+        ] 
+        |> List.map(fun (irInstruction, token) -> (string irInstruction, token))
+        |> fun bindingList -> ([
+            // these instruction doesn't have a corrispetive in the instructions definition            
             ("proc", PROC)
             ("endp", ENDP)
-            ("nop", NOP)
-            ("getip", GETIP)
-            ("ret", RET)
-            ("jump", JUMP)
-            ("jumpifl", JUMPIFL)
-            ("jumpifle", JUMPIFLE)
-            ("jumpifg", JUMPIFG)
-            ("jumpifge", JUMPIFGE)
-            ("alloca", ALLOCA)
-            ("byte", BYTE)
-            ("word", WORD)
-            ("dword", DWORD)
-            ("halt", HALT)
-            ("cmp", CMP)
-            ("getsp", GETSP)
-            ("swrite", SWRITE)
-            ("sread", SREAD)
-            ("sub", SUB)
-            ("mul", MUL)
-            ("div", DIV)
-            ("and", AND)
-            ("shiftl", SHIFTL)
-            ("shiftr", SHIFTR)
-            ("or", OR)
-            ("not", NOT)
-            ("xor", XOR)
-            ("nor", NOR)
-            ("setip", SETIP)
-            ("setsp", SETSP)
-            ("inc", INC)
-        ] |> Map.ofList
+        ] @ bindingList)
+        |> Map.ofList
 
     let getString (lexbuf : LexBuffer<_>) = 
         LexBuffer<_>.LexemeString lexbuf

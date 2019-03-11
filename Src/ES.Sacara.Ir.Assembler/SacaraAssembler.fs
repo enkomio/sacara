@@ -19,15 +19,10 @@ type IrAssemblyCode = {
         |> Array.concat
 
     override this.ToString() =
-        let mutable offset = 0
         this.Functions
         |> List.map(fun vmFunction -> vmFunction.Body)
         |> List.concat
-        |> List.map(fun vmOpCode ->             
-            let msg = String.Format("{0}: {1}", offset, vmOpCode.ToString())
-            offset <- offset + vmOpCode.Buffer.Length
-            msg
-        )
+        |> List.map(string)
         |> fun l -> String.Join(Environment.NewLine, l)
 
 type SacaraAssembler(settings: AssemblerSettings) =
@@ -138,21 +133,8 @@ type SacaraAssembler(settings: AssemblerSettings) =
             addOperation(new IrOpCode(IrInstruction.SetIp, settings.UseMultipleOpcodeForSameInstruction))
         | Statement.SetSp ->
             addOperation(new IrOpCode(IrInstruction.SetSp, settings.UseMultipleOpcodeForSameInstruction))
-        | Statement.Inc incType ->
-            // this is a virtual instruction and is necessary to generate the effective sequence
-            let pushOne = new IrOpCode(IrInstruction.Push, settings.UseMultipleOpcodeForSameInstruction)
-            pushOne.Operands.Add(new Operand(1))
-            addOperation(pushOne)
-
-            let pushVariable = new IrOpCode(IrInstruction.Push, settings.UseMultipleOpcodeForSameInstruction)
-            pushVariable.Operands.Add(new Operand(incType.Identifier))
-            addOperation(pushVariable)
-                        
-            addOperation(new IrOpCode(IrInstruction.Add, settings.UseMultipleOpcodeForSameInstruction))
-
-            let popVariable = new IrOpCode(IrInstruction.Pop, settings.UseMultipleOpcodeForSameInstruction)
-            popVariable.Operands.Add(new Operand(incType.Identifier))
-            addOperation(popVariable)
+        | Statement.Inc ->
+            addOperation(new IrOpCode(IrInstruction.Inc, settings.UseMultipleOpcodeForSameInstruction))
 
     let parseAst(ast: Program) =
         match ast with

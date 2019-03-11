@@ -45,7 +45,7 @@ type SacaraAstBuilder() =
         _tokenIndex <- _tokenIndex + 1
         tokenInfo.Token
 
-    let tokenize(irCode: String, lexbuf: LexBuffer<_>) =
+    let tokenize(lexbuf: LexBuffer<_>) =
         try
             // tokenize the code
             _tokens <- tokenizeLexBuffer(lexbuf)
@@ -67,7 +67,7 @@ type SacaraAstBuilder() =
         let startPos = lexbuf.StartPos
         let endPos = lexbuf.EndPos
 
-        tokenize(irCode, lexbuf)
+        tokenize(lexbuf)
 
         // reset the lexer
         lexbuf.StartPos <- startPos

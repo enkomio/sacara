@@ -21,8 +21,8 @@ module internal IrParserUtility =
     let pop(identifier: String) =
         Pop {Identifier=identifier}
 
-    let inc(identifier: String) =
-        Inc {Identifier=identifier}
+    let inc() =
+        Inc
 
     let procedureDefinition(name: String, statements: Statement list) =
         Procedure {Name=name; Body=statements}

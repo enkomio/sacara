@@ -45,7 +45,7 @@ statementNoLabel:
 	| ADD																					{ add() }
 	| PUSH expression																		{ push($2) }
 	| POP IDENTIFIER																		{ pop($2) }	
-	| INC IDENTIFIER																		{ inc($2) }	
+	| INC																					{ inc() }	
 	| JUMP																					{ jump() }
 	| JUMPIFL																				{ jumpIf(false, true) }
 	| JUMPIFLE																				{ jumpIf(true, true) }
@@ -74,6 +74,8 @@ statementNoLabel:
 	| NOR																					{ nor() }
 	| SHIFTR																				{ shiftRight() }
 	| SHIFTL																				{ shiftLeft() }
+	| SETIP																					{ setIp() }
+	| SETSP																					{ setSp() }
 	| BYTE dataList																			{ memoryByte(List.rev $2) }
 	| WORD integerList																		{ memoryWord(List.rev $2) }
 	| DWORD integerList																		{ memoryDword(List.rev $2) }

@@ -2,8 +2,10 @@
 
 open System
 
-module Program =
+module Program =    
+
     [<EntryPoint>]
     let main argv = 
-        AssemblerTests.``Assemble text - default settings``()
+        // instructions assembling
+        AssemblerTests.run()
         0

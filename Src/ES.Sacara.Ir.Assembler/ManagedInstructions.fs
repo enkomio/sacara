@@ -74,11 +74,4 @@ module ManagedInstructions =
     let nor: Ctx -> unit = createInstruction(IrInstruction.Nor)
     let setip: Ctx -> unit = createInstruction(IrInstruction.SetIp)
     let setsp: Ctx -> unit = createInstruction(IrInstruction.SetSp)
-
-    // this is a virtual instruction, need abit more work
-    let inc(var: String) =
-        fun (ctx: Ctx) ->
-            push 1 ctx
-            push var ctx
-            add ctx
-            pop var ctx
+    let inc: Ctx -> unit = createInstruction(IrInstruction.Inc)

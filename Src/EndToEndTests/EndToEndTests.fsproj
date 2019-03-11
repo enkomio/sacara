@@ -49,6 +49,7 @@
     <Content Include="packages.config" />
     <Compile Include="AssemblyInfo.fs" />
     <None Include="paket.references" />
+    <Compile Include="Utility.fs" />
     <Compile Include="AssemblerTests.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>

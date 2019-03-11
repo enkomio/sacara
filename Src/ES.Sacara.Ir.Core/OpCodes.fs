@@ -132,7 +132,7 @@ and VmOpCode = {
                 |> Seq.map(fun num -> String.Format("0x{0}", num))
                 |> fun nums -> String.Join(", ", nums)
 
-        String.Format("/* {0} */ loc_{1}: {2} {3}", bytes, offset, this.Type, operands)
+        String.Format("loc_{0}: {1} {2} /* 0x{3} */", offset, this.Type, operands, bytes)
     
     static member Assemble(vmType: VmInstruction, vmOp: Byte array, operands: List<Byte array>, offset: Int32, irOp: IrOpCode) =
         let totalSize = vmOp.Length + (operands |> Seq.sumBy(fun op -> op.Length))
@@ -255,8 +255,8 @@ and IrOpCode(opType: IrInstruction, useMultipleOpcodeForSameInstruction: Boolean
             | SetSp -> getVmOpCode(VmSetSp)            
             | Byte -> getMacroOpCodeBytes(VmByte)
             | Word -> getMacroOpCodeBytes(VmWord)
-            | DoubleWord -> getMacroOpCodeBytes(VmDoubleWord)           
-            | _ -> failwith "Ir instruction type not supported"
+            | DoubleWord -> getMacroOpCodeBytes(VmDoubleWord)    
+            | Inc -> getVmOpCode(VmInc)
             
         // encode the operands
         this.Operands

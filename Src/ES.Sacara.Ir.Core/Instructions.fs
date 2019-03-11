@@ -48,6 +48,49 @@ type IrInstruction =
     | Nor
     | SetIp
     | SetSp
+    | Inc
+
+    override this.ToString() =
+        match this with
+        | Ret -> "ret"
+        | Nop -> "nop"
+        | Add -> "add"
+        | Push -> "push"
+        | Pop -> "pop"
+        | Call -> "call"
+        | NativeCall -> "ncall"
+        | Read -> "read"
+        | NativeRead -> "nread"
+        | Write -> "write"
+        | NativeWrite -> "nwrite"
+        | GetIp -> "getip"
+        | Jump -> "jump"
+        | JumpIfLess -> "jumpifl"
+        | JumpIfLessEquals -> "jumpifle"
+        | JumpIfGreater -> "jumpifg"
+        | JumpIfGreaterEquals -> "jumpifge"
+        | Alloca -> "alloca"
+        | Byte -> "byte"
+        | Word -> "word"
+        | DoubleWord -> "dword"
+        | Halt -> "halt"
+        | Cmp -> "cmp"
+        | GetSp -> "getsp"
+        | StackWrite -> "swrite"
+        | StackRead -> "sread"
+        | Sub -> "sub"
+        | Mul -> "mul"
+        | Div -> "div"
+        | And -> "and"
+        | ShiftRight -> "shiftr"
+        | ShiftLeft -> "shiftl"
+        | Or -> "or"
+        | Not -> "not"
+        | Xor -> "xor"
+        | Nor -> "nor"
+        | SetIp -> "setip"
+        | SetSp -> "setsp"
+        | Inc -> "inc"
 
 // these are the op codes of the VM
 type VmInstruction =    
@@ -90,6 +133,7 @@ type VmInstruction =
     | VmNor
     | VmSetIp
     | VmSetSp
+    | VmInc
 
 module Instructions =
     type VmOpCodeItem() =
