@@ -34,3 +34,4 @@ include vm_not.asm
 include vm_add.asm
 include vm_set_ip.asm
 include vm_set_sp.asm
+include vm_inc.asm

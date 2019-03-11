@@ -140,6 +140,7 @@
     <None Include="build_options.inc" />
     <None Include="const.inc" />
     <None Include="typedef.inc" />
+    <None Include="vm_inc.asm" />
     <None Include="vm_macro.inc" />
     <None Include="sacara.def" />
     <None Include="vm_add.asm" />
