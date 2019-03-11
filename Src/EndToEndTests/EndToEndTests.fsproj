@@ -61,6 +61,9 @@
     <None Include="TestSources\test_call.sacara">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="TestSources\test_ncall.sacara">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Utility.fs" />
     <Compile Include="AssemblerTests.fs" />

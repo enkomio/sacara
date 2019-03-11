@@ -27,18 +27,27 @@ module internal Utility =
         let vmCode = assembler.Assemble(code)
         vmCode.Functions.[0].Body
 
-    let executeScript(scriptFile: String) =
+    let executeScriptWithArg(scriptFile: String, args: Int32 array) =
         Console.WriteLine("Execute script: {0}", scriptFile)
+        let sacaraVm = new SacaraVm(getSacaraVmDll())
 
         // assembly source
         let script = getScriptSrc(scriptFile)
         let assembler = new SacaraAssembler(assemblerSettings)
         let vmCode = assembler.Assemble(script)
 
-        // run code
-        let sacaraVm = new SacaraVm(getSacaraVmDll())
+        // set arguments
+        args
+        |> Array.iteri(fun i arg ->
+            sacaraVm.LocalVarSet(i, arg)
+        )
+
+        // run code and get result
         sacaraVm.Run(vmCode)
-        int32 <| sacaraVm.LocalVarGet(0)
+        int32 <| sacaraVm.LocalVarGet(args.Length)
+
+    let executeScript(scriptFile: String) =
+        executeScriptWithArg(scriptFile, Array.empty<Int32>)
 
     let assembleInstructionWithArg(irInstruction: IrInstruction, vmInstruction: VmInstruction, arg: String) =
         Console.WriteLine("Assemble instruction: {0} {1}, VM: {2}", irInstruction, arg, vmInstruction)

@@ -1,0 +1,10 @@
+﻿proc main
+	push 34
+	push 66
+	push 0
+	push 2	
+	push native_function
+	ncall	
+	pop result
+	halt	 	   
+endp
