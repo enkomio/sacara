@@ -1,0 +1,6 @@
+﻿proc main
+	push 41
+	inc
+	pop result
+	halt
+endp

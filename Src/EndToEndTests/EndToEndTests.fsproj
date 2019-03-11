@@ -25,6 +25,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DocumentationFile>bin\$(Configuration)\$(AssemblyName).XML</DocumentationFile>
     <Prefer32Bit>true</Prefer32Bit>
+    <EnableUnmanagedDebugging>true</EnableUnmanagedDebugging>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -47,10 +48,23 @@
   <ItemGroup>
     <None Include="App.config" />
     <Content Include="packages.config" />
-    <Compile Include="AssemblyInfo.fs" />
     <None Include="paket.references" />
+    <None Include="TestSources\test_inc.sacara">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="TestSources\test_add.sacara">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="TestSources\test_push_and_pop.sacara">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="TestSources\test_call.sacara">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Utility.fs" />
     <Compile Include="AssemblerTests.fs" />
+    <Compile Include="RuntimeTests.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>
@@ -85,6 +99,11 @@
     <ProjectReference Include="..\ES.SacaraVm\ES.SacaraVm.fsproj">
       <Name>ES.SacaraVm</Name>
       <Project>{23a1d5d4-e9a0-41e8-a3e4-974ff36ffc88}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\SacaraVm\SacaraVm.vcxproj">
+      <Name>SacaraVm</Name>
+      <Project>{2724956c-b73e-4f0f-a394-574900e8cd02}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>

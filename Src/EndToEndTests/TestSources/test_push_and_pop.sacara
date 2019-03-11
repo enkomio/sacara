@@ -1,0 +1,5 @@
+﻿proc main
+	push 31337
+	pop result
+	halt
+endp

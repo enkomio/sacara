@@ -1,0 +1,14 @@
+﻿proc main			
+	push 3
+	push 10
+	push 2
+	push add_numbers
+	call
+	pop result
+	halt	 	   
+endp
+
+proc add_numbers
+	add
+	ret
+endp
