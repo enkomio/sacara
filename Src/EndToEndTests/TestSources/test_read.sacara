@@ -1,0 +1,11 @@
+﻿proc main
+	push start
+	jump
+fake_code:
+	byte "A"
+start:
+	push fake_code
+	read	
+	pop result
+	halt	 	   
+endp

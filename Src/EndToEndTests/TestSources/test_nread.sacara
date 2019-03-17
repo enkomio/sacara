@@ -1,0 +1,6 @@
+﻿proc main	
+	push native_address
+	nread	
+	pop result
+	halt	 	   
+endp
