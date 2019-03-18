@@ -39,6 +39,15 @@ module RuntimeTests =
         assert(Utility.executeScriptWithArg("test_nread.sacara", [|mem.ToInt32()|]) = 0x41)
         Marshal.FreeHGlobal(mem)
 
+    let ``Test WRITE instruction``() =
+        assert(Utility.executeScript("test_write.sacara") = int32 'B')
+
+    let ``Test NWRITE instruction``() =
+        let mem = Marshal.AllocHGlobal(1)
+        Marshal.WriteByte(mem, byte 0x00)
+        assert(Utility.executeScriptWithArg("test_nwrite.sacara", [|mem.ToInt32()|]) = 0x66)
+        Marshal.FreeHGlobal(mem)
+
     let run() =
         ``Test INC instruction``()
         ``Test ADD instruction``()
@@ -46,3 +55,5 @@ module RuntimeTests =
         ``Test NCALL instruction``()
         ``Test READ instruction``()
         ``Test NREAD instruction``()
+        ``Test WRITE instruction``()
+        ``Test NWRITE instruction``()

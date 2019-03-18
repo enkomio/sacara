@@ -70,6 +70,12 @@
     <None Include="TestSources\test_nread.sacara">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="TestSources\test_write.sacara">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="TestSources\test_nwrite.sacara">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Utility.fs" />
     <Compile Include="AssemblerTests.fs" />
