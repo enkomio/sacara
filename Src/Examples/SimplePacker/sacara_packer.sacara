@@ -1,0 +1,120 @@
+/* 
+	this code implements a simple routine the decode an input buffer 
+	by computing the XOR of the content with the given password. When the code
+	finish to run, the input buffer is in a decrypted form and can be invoked.
+
+	Use the sacara assembler to assemble it with command:
+		SacaraAsm.exe --gen-clang sacara_packer.sacara
+
+	If you want to use sacara advanced features, compile with:
+		N/A
+
+	Script Input parameters:
+		1 - buffer to decode
+		2 - buffer size
+		3 - password 
+		4 - password size
+
+	Return:
+*/
+
+proc main
+	/* push the argument 1 and 2 */
+    push buffer     
+    push buffer_length
+    
+	/* push the argument 3 and 4 */
+	push key        
+    push key_length
+
+	/* invoke the decryption routine specifying that there are 4 parameters */
+    push 4          
+    push de_encrypt 
+    call
+    halt
+endp
+
+/*
+	This method will compute the XOR operation of the input buffer 
+	with the specified string password.
+
+	Input parameters:
+	1 - the length of the password
+	2 - a pointer to the password to use
+	3 - the lengh of the buffer
+	4 - a pointer to the buffer
+*/
+proc de_encrypt
+	/* read all input parameters in local vars */
+    pop key_length
+    pop key
+    pop buffer_length
+    pop buffer
+
+	/* initialize to 0 all local vars */
+    push 0
+    pop buffer_index
+    push 0
+    pop key_index
+    push 0
+    pop buffer_char
+    push 0
+    pop key_char
+
+encryption_loop:
+    /* read the character from the buffer */
+    push buffer_index
+    push buffer
+    add
+    nread
+    pop buffer_char
+
+    /* read the character from the key buffer */
+    push key_index
+    push key
+    add
+    nread
+    pop key_char
+
+    /* do XOR and save the result on the stack */
+    push key_char
+    push buffer_char
+    xor
+
+    /* write back the result */
+    push buffer_index
+    push buffer
+    add
+    nwrite
+
+    /* increase counter */
+    push 1
+    push key_index
+    add
+    pop key_index
+
+    push 1
+    push buffer_index
+    add
+    pop buffer_index
+
+    /* check if I have to round the password index */    
+    push key_length
+    push key_index
+    cmp
+    push check_for_completation
+    jumpifl
+
+round_key:
+    push 0
+    pop key_index
+    
+check_for_completation: 
+    push buffer_length 
+    push buffer_index   
+    cmp
+    push encryption_loop
+    jumpifl
+
+    ret
+endp
