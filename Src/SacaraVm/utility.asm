@@ -35,6 +35,7 @@ find_module_loop:
 	mov esi, edi
 	repnz scasb
 	cld
+	jnz module_not_found
 
 compute_length:
 	add edi, 3
@@ -50,22 +51,26 @@ compute_length:
 	cmp eax, hash_SacaraVm_dll
 	je module_found
 	
+module_not_found:
 	mov eax, [ebp+current_entry] ; cur entry
 	mov eax, [eax] ; go to next entry
 	mov [ebp+current_entry], eax
 	cmp [ebp+head], eax
 	jne find_module_loop
+	xor eax, eax
+	jmp exit
 
 module_found:
 	; return the string pointing to the module name
 	mov eax, [ebp+string_buffer]
+exit:
 	mov esp, ebp
 	pop ebp
 	ret
 get_vm_dll_module_name ENDP
 
 ; *****************************
-; Get the VM DLL base address
+; Get the VM DLL/module base address
 ; arguments:
 ; *****************************
 get_vm_dll_base_address PROC
