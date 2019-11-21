@@ -66,6 +66,8 @@ proc main
 endp
 ```
 
+When you want to retrieve the value of a local variable you have to specify it via its numeric index. This value is computed according to the order in which the variable appears in the code, starting from the top of the code and parsing each statement.
+
 ### Comments
 You can insert comments in your code to make it more understandable. *Sacara* support multi lines comment which starts with the string **/\*** and ends with the string **\*/** (this is the same exact pattern used in the C programming language). Find below an example of comment usages:
 
