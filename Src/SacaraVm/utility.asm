@@ -35,7 +35,7 @@ find_module_loop:
 	mov esi, edi
 	repnz scasb
 	cld
-	jnz module_not_found
+	jecxz module_not_found
 
 compute_length:
 	add edi, 3
