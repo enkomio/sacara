@@ -15,31 +15,55 @@ vm_cmp PROC
 	; do comparison and save result
 	cmp edx, eax
 	pushfd
+	pop edx
 
 	; read the current flags
 	mov ebx, [ebp+arg0]
 	mov ecx, (VmContext PTR [ebx]).flags
 
-	; check zero flag
-	jz set_zero_flag
-	and ecx, 0DFFFFFFFh
-	jmp check_carry_flag
-
-set_zero_flag:
-	or ecx, 020000000h
-
-check_carry_flag:
-	; restore flags
+	; set overflow flag
+	push edx
 	popfd
+	jno clear_overflow_flag
+	or ecx, SET_VM_OVERFLOW_FLAG
+	jmp check_zero_flag
+clear_overflow_flag:
+	and ecx, CLEAR_VM_OVERFLOW_FLAG	
 
-	jc set_carry_flag
-	and ecx, 0EFFFFFFFh
-	jmp finish
+	; set zero flag
+check_zero_flag:
+	push edx
+	popfd
+	jnz clear_zero_flag
+	or ecx, SET_VM_ZERO_FLAG
+	jmp check_carry
+clear_zero_flag:
+	and ecx, CLEAR_VM_ZERO_FLAG	
 
-set_carry_flag:
-	or ecx, 010000000h
+	; set carry flag
+check_carry:
+	push edx
+	popfd
+	jnc clear_carry_flag
+	or ecx, SET_VM_CARRY_FLAG
+	jmp check_sign_flag
+clear_carry_flag:
+	and ecx, CLEAR_VM_CARRY_FLAG
+	
+	; set sign flag
+check_sign_flag:
+	push edx
+	popfd
+	jns clear_sign_flag
+	or ecx, SET_VM_SIGN_FLAG
+	jmp set_vm_flags
+clear_sign_flag:
+	and ecx, CLEAR_VM_SIGN_FLAG
 
-finish:
+set_vm_flags:
+	; restore flags
+	push edx
+	popfd	
 	mov (VmContext PTR [ebx]).flags, ecx
 
 	mov esp, ebp
