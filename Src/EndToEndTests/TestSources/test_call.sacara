@@ -1,4 +1,5 @@
-﻿proc main			
+﻿// result: 13
+proc main			
 	push 3
 	push 10
 	push 2
