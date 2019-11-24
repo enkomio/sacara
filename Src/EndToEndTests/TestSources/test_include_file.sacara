@@ -1,0 +1,9 @@
+﻿// result: 10
+include "TestSources/included_file.sacara"
+
+proc main()
+	// this external function will add 7 and push the result back to the stack
+	.add_seven(3)
+	pop result
+	halt	 	   
+endp

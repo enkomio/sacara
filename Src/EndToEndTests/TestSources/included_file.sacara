@@ -1,0 +1,5 @@
+﻿proc add_seven(input_number)
+	.set result (input_number + 7)
+	push result
+	ret
+endp
