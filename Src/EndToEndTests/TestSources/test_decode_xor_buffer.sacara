@@ -1,0 +1,68 @@
+﻿proc main(buffer, buffer_size)
+	.jump start
+	// define the password to decrypt the input buffer
+	// I'll reference it via label. In sacara all label are global, so main
+	// it is a nice place to specify all the needed global data.
+password_label:
+	BYTE "password for test"
+start:
+	// get the current IP to know how long is the password
+	getip	
+	pop password_length
+
+	/*
+	Compute the password length, this is done by subtracting the current VMIP to 
+	the offset label. I have also to subtract 2 since it is the length 
+	of the GETIP instruction.
+	*/
+	.set password_length, (password_length - password_label - 2)
+
+	// I have all the needed information to decrypt the buffer
+    .decrypt(buffer, buffer_size, password_label, password_length)
+    halt
+endp
+
+proc decrypt(buffer, buffer_size, password, password_length)
+	/* initialize to 0 all local vars */
+	.set buffer_index 0
+	.set password_index 0
+	.set buffer_char 0
+	.set password_char 0
+
+encryption_loop:
+    // read the character from the buffer stored in native memory
+    .add buffer, buffer_index
+    nread
+    pop buffer_char
+
+    // read the character from the password
+    .add password, password_index	
+    read
+    pop key_char
+
+    // do XOR and save the result on the stack
+    .xor buffer_char, key_char
+
+    // write back the result, the xored char is already in the stack
+    .add buffer, buffer_index
+    nwrite
+
+    // increase counter using two differenc approaches
+	.set password_index (password_index + 1)
+	.inc buffer_index
+
+    // check if I have to round the password index
+    .cmp password_index, password_length
+    push check_for_completation
+    jumpifl
+
+round_key:
+	.set password_index 0
+    
+check_for_completation:
+    .cmp buffer_index, buffer_size
+    push encryption_loop
+    jumpifl
+
+    ret
+endp
