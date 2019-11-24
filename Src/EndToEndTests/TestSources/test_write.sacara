@@ -1,4 +1,5 @@
-﻿proc main
+﻿// result: 66
+proc main
 	push start
 	jump
 fake_code:
