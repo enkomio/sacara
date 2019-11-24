@@ -9,19 +9,23 @@ open ES.Sacara.Ir.Parser.SacaraIrParser
 }
 
 // atom
-let digit = ['0' - '9']
+let digit = ['0'-'9']
 let hexDigit = ['0'-'9' 'a'-'f' 'A'-'F']
 let character = ['a'-'z' 'A'-'Z']
 
 // identifier
 let identifier = character (character | digit | '_')*
 let label = identifier ':'
+let directive = '.' identifier
 
 // strings items
 let hexChar = "\\x" hexDigit hexDigit
 
 // number types
 let integer = ("+"|"-") digit+ | digit+ | "0x" hexDigit+
+
+// global statements
+let globalKeywords = "include"
 
 // formatting
 let linuxLineTerminator = "\n"
@@ -30,11 +34,20 @@ let lineTerminator = windowsLineTerminator | linuxLineTerminator
 let whitespace = [' ' '\t' ]
 
 rule irCode = parse	
-	| integer															{ integer lexbuf }
+	| globalKeywords													{ globalStatement lexbuf }
+	| integer															{ integer lexbuf }	
 	| label																{ label lexbuf }
-	| identifier														{ identifier lexbuf }	
+	| directive															{ directive lexbuf }
+	| identifier														{ identifier lexbuf }		
+	| '+'																{ newToken PLUS_OP lexbuf }
+	| '-'																{ newToken MINUS_OP lexbuf }
+	| '*'																{ newToken MUL_OP lexbuf }
+	| "//" [^ '\n' '\r']* lineTerminator								{ newToken NEWLINE (nextLine lexbuf) }
+	| '/'																{ newToken DIV_OP lexbuf }
 	| ','																{ newToken COMMA lexbuf }
 	| '"'																{ doubleQuoteString String.Empty false lexbuf }
+	| '('																{ newToken LPAREN lexbuf }
+	| ')'																{ newToken RPAREN lexbuf }
 	| lineTerminator													{ newToken NEWLINE (nextLine lexbuf) }
 	| whitespace														{ irCode(noToken lexbuf) }
 	| "/*" 																{ multilineComment lexbuf; irCode lexbuf }
