@@ -11,11 +11,18 @@ open ES.Sacara.Ir.Parser.IrParserUtility
 %token GETIP RET JUMP JUMPIFL JUMPIFLE JUMPIFG JUMPIFGE ALLOCA HALT 
 %token CMP GETSP SWRITE SREAD BYTE WORD DWORD NEWLINE COMMA SUB MUL 
 %token DIV AND SHIFTR SHIFTL OR NOT XOR NOR SETIP SETSP INC EOF
+%token LPAREN RPAREN JUMP_DIRECTIVE SET_DIRECTIVE PLUS_OP MINUS_OP MUL_OP DIV_OP
+%token ADD_DIRECTIVE SUB_DIRECTIVE MUL_DIRECTIVE DIV_DIRECTIVE CMP_DIRECTIVE AND_DIRECTIVE OR_DIRECTIVE 
+%token SHIFTR_DIRECTIVE SHIFTL_DIRECTIVE XOR_DIRECTIVE NOR_DIRECTIVE INC_DIRECTIVE
+%token INCLUDE
 
+%token <string> INVOKE_DIRECTIVE
 %token <string> STRING
 %token <string> IDENTIFIER
 %token <string> LABEL
 %token <int32> INTEGER
+
+%left PLUS_OP MINUS_OP MUL_OP DIV_OP
 
 %type < Program > program
 
@@ -25,11 +32,28 @@ program:
     | sourceElementList EOF																	{ Program (List.rev $1) }
 
 sourceElementList:
+	| sourceSelement																		{ $1 }
+	| sourceElementList sourceSelement														{ $2@$1 }
+
+sourceSelement:
 	| procDefinition																		{ [$1] }
-	| sourceElementList procDefinition														{ $2::$1 }
+	| globalStatementList																	{ List.rev $1 }
+
+globalStatementList:
+	| globalStatement																		{ [$1] }
+	| globalStatementList globalStatement													{ $2::$1 }
+
+globalStatement:
+	| INCLUDE STRING																		{ includeFile($2) }
 
 procDefinition:
 	| PROC IDENTIFIER statementList ENDP													{ procedureDefinition($2, List.rev $3) }
+	| PROC IDENTIFIER LPAREN parameterList RPAREN statementList ENDP						{ procedureDefinitionWithArguments($2, List.rev $4, List.rev $6) }
+
+parameterList:
+	|																						{ List.empty }
+	| IDENTIFIER																			{ [$1] } 
+	| parameterList COMMA IDENTIFIER														{ $3::$1 }
 
 statementList:
 	| statement																				{ [$1] }
@@ -43,7 +67,7 @@ statementNoLabel:
 	| RET																					{ ret() }
 	| NOP																					{ nop() }
 	| ADD																					{ add() }
-	| PUSH expression																		{ push($2) }
+	| PUSH primaryExpression																{ push($2) }
 	| POP IDENTIFIER																		{ pop($2) }	
 	| INC																					{ inc() }	
 	| JUMP																					{ jump() }
@@ -79,10 +103,47 @@ statementNoLabel:
 	| BYTE dataList																			{ memoryByte(List.rev $2) }
 	| WORD integerList																		{ memoryWord(List.rev $2) }
 	| DWORD integerList																		{ memoryDword(List.rev $2) }
-	
-expression:
+	| directives																			{ $1 }
+
+directives:
+	| JUMP_DIRECTIVE primaryExpression														{ jumpDirective($2) }
+	| INVOKE_DIRECTIVE LPAREN argumentList RPAREN											{ invoke($1, List.rev $3) }
+	| SET_DIRECTIVE IDENTIFIER expression													{ setLocalVariable($2, $3) }
+	| ADD_DIRECTIVE primaryExpression COMMA primaryExpression								{ addDirective($2, $4) }
+	| SUB_DIRECTIVE primaryExpression COMMA primaryExpression								{ subDirective($2, $4) }
+	| MUL_DIRECTIVE primaryExpression COMMA primaryExpression								{ mulDirective($2, $4) }
+	| DIV_DIRECTIVE primaryExpression COMMA primaryExpression								{ divDirective($2, $4) }
+	| CMP_DIRECTIVE primaryExpression COMMA primaryExpression								{ cmpDirective($2, $4) }
+	| AND_DIRECTIVE primaryExpression COMMA primaryExpression								{ andDirective($2, $4) }
+	| OR_DIRECTIVE primaryExpression COMMA primaryExpression								{ orDirective($2, $4) }
+	| SHIFTR_DIRECTIVE primaryExpression COMMA primaryExpression							{ shiftrDirective($2, $4) }
+	| SHIFTL_DIRECTIVE primaryExpression COMMA primaryExpression							{ shiftlDirective($2, $4) }
+	| XOR_DIRECTIVE primaryExpression COMMA primaryExpression								{ xorDirective($2, $4) }
+	| NOR_DIRECTIVE primaryExpression COMMA primaryExpression								{ norDirective($2, $4) }
+	| INC_DIRECTIVE IDENTIFIER																{ incDirective($2) }
+
+argumentList:
+	|																						{ List.empty }
+	| primaryExpression																		{ [$1] }
+	| argumentList COMMA primaryExpression													{ $3::$1 }
+
+primaryExpression:
 	| INTEGER																				{ number($1) }
 	| IDENTIFIER																			{ identifier($1) }
+
+expression:
+	| additiveExpression																	{ $1 }	
+
+additiveExpression:
+    | multiplicativeExpression																{ $1 }
+    | additiveExpression PLUS_OP multiplicativeExpression									{ addDirectiveExpression($1, $3) }
+    | additiveExpression MINUS_OP multiplicativeExpression									{ subDirectiveExpression($1, $3) }
+
+multiplicativeExpression:
+    | primaryExpression																		{ $1 }
+    | multiplicativeExpression MUL_OP primaryExpression										{ mulDirectiveExpression($1, $3) }
+    | multiplicativeExpression DIV_OP primaryExpression										{ divDirectiveExpression($1, $3) }
+	| LPAREN expression RPAREN																{ $2 }
 
 integerList:
 	| integerList COMMA INTEGER																{ $3::$1 }
