@@ -3,8 +3,8 @@ This is the implementation of the SacaraVM.
 2018 (C) Antonio 's4tan' Parata
 !
 
-.386
-.model flat,stdcall
+.686
+.model flat, stdcall
 .stack 4096
 
 .DATA
@@ -15,7 +15,6 @@ VERSION BYTE '2.0',0
 
 include build_options.inc
 include anti_macro.inc
-
 include vm.asm
 
 main PROC
