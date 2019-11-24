@@ -1,4 +1,5 @@
-﻿proc main
+﻿// result: 42
+proc main
 	push 41
 	inc
 	pop result
