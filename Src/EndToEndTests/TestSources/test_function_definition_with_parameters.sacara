@@ -1,0 +1,13 @@
+﻿// result: 49153
+proc main			
+	.compute_number(24500, 175, 2)
+	pop result
+	halt	 	   
+endp
+
+proc compute_number(num1, num2, num3)
+	// I'll use a directive to do the calculation ;)
+	.set num_sum (((num1 + num2) * num3) - 197)
+	push num_sum
+	ret
+endp
