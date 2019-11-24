@@ -7,8 +7,10 @@ module IrAst =
     type Expression =
         | Number of Int32
         | Identifier of String
+        | StatementExpression of Statement
 
     and Statement =
+        | IncludeFile of String
         | Push of PushType
         | Pop of PopType
         | Inc
@@ -45,7 +47,8 @@ module IrAst =
         | Byte of Int32 list
         | Word of Int32 list
         | DoubleWord of Int32 list
-
+        | Block of Statement list  
+        
     and Program = 
         | Program of Statement list  
         
