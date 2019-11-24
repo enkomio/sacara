@@ -1,0 +1,8 @@
+LIBRARY SacaraVmDll
+EXPORTS 
+	vm_init
+	vm_run
+	vm_free
+	vm_local_var_set
+	vm_local_var_get
+	vm_set_error_handler
