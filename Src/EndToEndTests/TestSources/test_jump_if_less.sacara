@@ -1,0 +1,50 @@
+﻿// result: 6
+
+proc main
+	.test1()
+	.test2()
+	.test3()
+	add
+	add
+	pop result
+	halt	 	   
+endp
+
+proc test1
+	.cmp 3, 4
+	push ok1
+	jumpifl
+
+error1:
+	push 20
+	ret
+ok1:
+	push 2
+	ret
+endp
+
+proc test2
+	.cmp 13, 12
+	push error2
+	jumpifl
+
+ok2:
+	push 2
+	ret
+error2:
+	push 20
+	ret
+endp
+
+proc test3
+	.cmp 44, 44
+	push error3
+	jumpifl
+
+ok3:
+	push 2
+	ret
+error3:
+	push 20
+	ret
+endp
