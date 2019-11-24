@@ -1,0 +1,9 @@
+﻿// result: 23
+proc main	
+	// if local variables are used in test, result must be the firsr one
+	.set result 0
+	.set num1 4
+	.set same_as_num1 num1
+	.set result (3 - num1 + (same_as_num1 * 6))
+	halt	 	   
+endp
