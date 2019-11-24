@@ -7,17 +7,18 @@ vm_jump_if_greater_equals PROC
 	push [ebp+arg0]
 	call_vm_stack_pop_enc
 
-	; test the carry flag
+	; read the flags
 	mov ebx, [ebp+arg0]
 	mov ebx, (VmContext PTR [ebx]).flags
-	test ebx, VM_CARRY_FLAG
-	jz modify_ip
-
-	; test the zero flag
-	mov ebx, [ebp+arg0]
-	mov ebx, (VmContext PTR [ebx]).flags
-	test ebx, VM_ZERO_FLAG
-	jz finish
+	
+	; test relevant flags, see: http://faydoc.tripod.com/cpu/jge.htm	
+	xor edx, edx
+	or edx, SET_VM_SIGN_FLAG
+	or edx, SET_VM_OVERFLOW_FLAG
+	and edx, ebx
+	popcnt edx, edx
+	cmp edx, 2
+	jnz finish
 
 modify_ip:
 	; modify the vm IP
