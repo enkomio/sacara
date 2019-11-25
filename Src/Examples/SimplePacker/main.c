@@ -1,3 +1,22 @@
+/*
+This is a simple test to validate some AV engine. This file load a resource and decrypt it 
+by using the sacara VM.
+
+In order to use it, you have to:
+
+1 - Assemble the sacara source code file: sacara_packer.sacara. You can do this with:
+	SacaraAsm.exe sacara_packer.sacara
+	
+2 - Add the VM code to execute as a resource. You can do this with the command:
+	AddResource.exe --name sacara --resource sacara_packer.sac SimplePacker.exe
+
+3 - Add the code that will be decrypted with the harcoded password "sacara_test_password".
+	You can do this with the command (replace data.bin with the shellcode that you want to execute):
+	AddResource.exe --name data --resource data.bin --password sacara_test_password SimplePacker.exe
+
+You can now run SimplePacker.exe and test your AV :)
+*/
+
 #include <stdint.h>
 #include <Windows.h>
 
@@ -5,16 +24,15 @@
 #include "debug.h"
 #endif
 
-extern __declspec(dllimport) uint32_t __stdcall vm_init(uint8_t[], uint32_t);
-extern __declspec(dllimport) uint32_t __stdcall vm_run(uint32_t);
-extern __declspec(dllimport) void __stdcall vm_set_error_handler(uint32_t, uint32_t);
-extern __declspec(dllimport) void __stdcall vm_local_var_set(uint32_t, uint32_t, uint32_t);
-extern __declspec(dllimport) void __stdcall vm_local_var_get(uint32_t, uint32_t);
-extern __declspec(dllimport) void __stdcall vm_free(uint32_t);
+extern uint32_t __stdcall vm_init(uint8_t[], uint32_t);
+extern uint32_t __stdcall vm_run(uint32_t);
+extern void __stdcall vm_set_error_handler(uint32_t, uint32_t);
+extern void __stdcall vm_local_var_set(uint32_t, uint32_t, uint32_t);
+extern void __stdcall vm_local_var_get(uint32_t, uint32_t);
+extern void __stdcall vm_free(uint32_t);
 
 static char resource_name[] = "data";
 static char code_name[] = "sacara";
-static char password[] = "sacara_test_password";
 
 static void *read_resource(char *name, uint32_t *res_size) 
 {
@@ -29,21 +47,20 @@ static void *read_resource(char *name, uint32_t *res_size)
 
 	*res_size = SizeofResource(NULL, res_info);
 	void *buffer = VirtualAlloc(NULL, *res_size, MEM_COMMIT, PAGE_READWRITE);	
-	if (!FreeResource(hres)) return NULL;
+	memcpy(buffer, res, *res_size);
+	if (FreeResource(hres)) return NULL;
 
 	return buffer;
 }
 
 static uint32_t exec_vm_code(uint8_t *data, uint32_t data_size, uint8_t *vm_code, uint32_t vm_code_size)
 {
-	uint32_t vm_context, result;
+	uint32_t vm_context, result = 0;	
 	vm_context = vm_init(vm_code, vm_code_size);
 	vm_local_var_set(vm_context, 0, (uint32_t)data);
 	vm_local_var_set(vm_context, 1, data_size);
-	vm_local_var_set(vm_context, 2, (uint32_t)password);
-	vm_local_var_set(vm_context, 3, sizeof(password));
 	result = vm_run(vm_context);
-	vm_free(vm_context);
+	vm_free(vm_context);	
 	return result;
 }
 

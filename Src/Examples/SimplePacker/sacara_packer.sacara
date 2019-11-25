@@ -1,118 +1,66 @@
-/* 
-	this code implements a simple routine the decode an input buffer 
-	by computing the XOR of the content with the given password. When the code
-	finish to run, the input buffer is in a decrypted form and can be invoked.
+proc main(buffer, buffer_size)
+	.jump start
+	// define the password to decrypt the input buffer
+	// I'll reference it via label. In sacara all label are global, so main
+	// it is a nice place to specify all the needed global data.
+password_label:
+	BYTE "sacara_test_password"
+start:
+	// get the current IP to know how long is the password
+	getip	
+	pop password_length
 
-	Use the sacara assembler to assemble it with command:
-		SacaraAsm.exe --gen-clang sacara_packer.sacara
+	/*
+	Compute the password length, this is done by subtracting the current VMIP to 
+	the offset label. I have also to subtract 2 since it is the length 
+	of the GETIP instruction.
+	*/
+	.set password_length, (password_length - password_label - 2)
 
-	If you want to use sacara advanced features, compile with:
-		N/A
-
-	Script Input parameters:
-		1 - buffer to decode
-		2 - buffer size
-		3 - password 
-		4 - password size
-
-	Return:
-*/
-
-proc main
-	/* push the argument 1 and 2 */
-    push buffer     
-    push buffer_length
-    
-	/* push the argument 3 and 4 */
-	push key        
-    push key_length
-
-	/* invoke the decryption routine specifying that there are 4 parameters */
-    push 4          
-    push de_encrypt 
-    call
+	// I have all the needed information to decrypt the buffer
+    .decrypt(buffer, buffer_size, password_label, password_length)
     halt
 endp
 
-/*
-	This method will compute the XOR operation of the input buffer 
-	with the specified string password.
-
-	Input parameters:
-	1 - the length of the password
-	2 - a pointer to the password to use
-	3 - the lengh of the buffer
-	4 - a pointer to the buffer
-*/
-proc de_encrypt
-	/* read all input parameters in local vars */
-    pop key_length
-    pop key
-    pop buffer_length
-    pop buffer
-
+proc decrypt(buffer, buffer_size, password, password_length)
 	/* initialize to 0 all local vars */
-    push 0
-    pop buffer_index
-    push 0
-    pop key_index
-    push 0
-    pop buffer_char
-    push 0
-    pop key_char
+	.set buffer_index 0
+	.set password_index 0
+	.set buffer_char 0
+	.set password_char 0
 
 encryption_loop:
-    /* read the character from the buffer */
-    push buffer_index
-    push buffer
-    add
+    // read the character from the buffer stored in native memory
+    .add buffer, buffer_index
     nread
     pop buffer_char
 
-    /* read the character from the key buffer */
-    push key_index
-    push key
-    add
-    nread
+    // read the character from the password
+    .add password, password_index	
+    read
     pop key_char
 
-    /* do XOR and save the result on the stack */
-    push key_char
-    push buffer_char
-    xor
+    // do XOR and save the result on the stack
+    .xor buffer_char, key_char
 
-    /* write back the result */
-    push buffer_index
-    push buffer
-    add
+    // write back the result, the xored char is already in the stack
+    .add buffer, buffer_index
     nwrite
 
-    /* increase counter */
-    push 1
-    push key_index
-    add
-    pop key_index
+    // increase counter using two differenc approaches
+	.set password_index (password_index + 1)
+	.inc buffer_index
 
-    push 1
-    push buffer_index
-    add
-    pop buffer_index
-
-    /* check if I have to round the password index */    
-    push key_length
-    push key_index
-    cmp
+    // check if I have to round the password index
+    .cmp password_index, password_length
     push check_for_completation
     jumpifl
 
 round_key:
-    push 0
-    pop key_index
+	.set password_index 0
     
-check_for_completation: 
-    push buffer_length 
-    push buffer_index   
-    cmp
+check_for_completation:
+    .cmp buffer_index, buffer_size
     push encryption_loop
     jumpifl
 
