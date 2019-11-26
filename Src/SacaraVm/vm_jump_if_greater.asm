@@ -15,12 +15,13 @@ vm_jump_if_greater PROC
 	test ebx, SET_VM_ZERO_FLAG
 	jz finish
 	
-	xor edx, edx
-	or edx, SET_VM_SIGN_FLAG
-	or edx, SET_VM_OVERFLOW_FLAG
-	and edx, ebx
-	popcnt edx, edx
-	cmp edx, 2
+	mov edx, ebx
+	mov edi, ebx	
+	and edx, SET_VM_SIGN_FLAG
+	shr edx, 30
+	and edi, SET_VM_OVERFLOW_FLAG
+	shr edi, 27
+	cmp edi, edx
 	jnz finish
 	
 modify_ip:
