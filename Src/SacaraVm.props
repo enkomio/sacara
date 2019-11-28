@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<Project DefaultTargets="ReBuild" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">  
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>../build/SacaraVm/</OutDir>
+    <TargetExt>.lib</TargetExt>
+    <TargetName>SacaraVm</TargetName>
+    <IntDir>../build/SacaraVm/</IntDir>
+  </PropertyGroup>
+</Project>
