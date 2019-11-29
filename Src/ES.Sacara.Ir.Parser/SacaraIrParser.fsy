@@ -15,6 +15,7 @@ open ES.Sacara.Ir.Parser.IrParserUtility
 %token ADD_DIRECTIVE SUB_DIRECTIVE MUL_DIRECTIVE DIV_DIRECTIVE CMP_DIRECTIVE AND_DIRECTIVE OR_DIRECTIVE 
 %token READB_DIRECTIVE READW_DIRECTIVE READDW_DIRECTIVE
 %token WRITEB_DIRECTIVE WRITEW_DIRECTIVE WRITEDW_DIRECTIVE
+%token NREADB_DIRECTIVE NREADW_DIRECTIVE NREADDW_DIRECTIVE
 %token SHIFTR_DIRECTIVE SHIFTL_DIRECTIVE XOR_DIRECTIVE NOR_DIRECTIVE INC_DIRECTIVE
 %token INCLUDE
 
@@ -119,6 +120,9 @@ directives:
 	| READB_DIRECTIVE primaryExpression														{ readByteDirective($2) }
 	| READW_DIRECTIVE primaryExpression														{ readWordDirective($2) }
 	| READDW_DIRECTIVE primaryExpression													{ readDoubleWordDirective($2) }
+	| NREADB_DIRECTIVE primaryExpression													{ nativeReadByteDirective($2) }
+	| NREADW_DIRECTIVE primaryExpression													{ nativeReadWordDirective($2) }
+	| NREADDW_DIRECTIVE primaryExpression													{ nativeReadDoubleWordDirective($2) }
 	| WRITEB_DIRECTIVE primaryExpression COMMA primaryExpression							{ writeByteDirective($4, $2) }
 	| WRITEW_DIRECTIVE primaryExpression COMMA primaryExpression							{ writeWordDirective($4, $2) }
 	| WRITEDW_DIRECTIVE primaryExpression COMMA primaryExpression							{ writeDoubleWordDirective($4, $2) }

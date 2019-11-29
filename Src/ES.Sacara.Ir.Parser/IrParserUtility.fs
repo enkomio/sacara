@@ -348,3 +348,20 @@ module internal IrParserUtility =
 
     let writeDoubleWordDirective(value: Expression, address: Expression) =
         writeDirective(3, value, address)
+
+    let private nativeReadDirective(typeSize: Int32, address: Expression) =
+        [
+            push(number(typeSize))
+            push(address)
+            readNative()
+        ] 
+        |> Block
+
+    let nativeReadByteDirective(address: Expression) =
+        nativeReadDirective(1, address)
+
+    let nativeReadWordDirective(address: Expression) =
+        nativeReadDirective(2, address)
+
+    let nativeReadDoubleWordDirective(address: Expression) =
+        nativeReadDirective(3, address)

@@ -35,6 +35,9 @@ module internal IrLexerUtility =
             (".write.b", WRITEB_DIRECTIVE)
             (".write.w", WRITEW_DIRECTIVE)
             (".write.dw", WRITEDW_DIRECTIVE)
+            (".nread.b", NREADB_DIRECTIVE)
+            (".nread.w", NREADW_DIRECTIVE)
+            (".nread.dw", NREADDW_DIRECTIVE)
         ]
         |> Map.ofList
 
