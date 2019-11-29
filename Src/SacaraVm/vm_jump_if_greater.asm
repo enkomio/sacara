@@ -13,7 +13,7 @@ vm_jump_if_greater PROC
 	
 	; test relevant flags, see: http://faydoc.tripod.com/cpu/jg.htm
 	test ebx, SET_VM_ZERO_FLAG
-	jz finish
+	jnz finish
 	
 	mov edx, ebx
 	mov edi, ebx	
