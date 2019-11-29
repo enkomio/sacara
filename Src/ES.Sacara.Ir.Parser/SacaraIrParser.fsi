@@ -5,6 +5,31 @@ type token =
   | LABEL of (string)
   | IDENTIFIER of (string)
   | STRING of (string)
+  | INVOKE_DIRECTIVE of (string)
+  | INCLUDE
+  | SHIFTR_DIRECTIVE
+  | SHIFTL_DIRECTIVE
+  | XOR_DIRECTIVE
+  | NOR_DIRECTIVE
+  | INC_DIRECTIVE
+  | READB_DIRECTIVE
+  | READW_DIRECTIVE
+  | READDW_DIRECTIVE
+  | ADD_DIRECTIVE
+  | SUB_DIRECTIVE
+  | MUL_DIRECTIVE
+  | DIV_DIRECTIVE
+  | CMP_DIRECTIVE
+  | AND_DIRECTIVE
+  | OR_DIRECTIVE
+  | LPAREN
+  | RPAREN
+  | JUMP_DIRECTIVE
+  | SET_DIRECTIVE
+  | PLUS_OP
+  | MINUS_OP
+  | MUL_OP
+  | DIV_OP
   | DIV
   | AND
   | SHIFTR
@@ -54,6 +79,31 @@ type tokenId =
     | TOKEN_LABEL
     | TOKEN_IDENTIFIER
     | TOKEN_STRING
+    | TOKEN_INVOKE_DIRECTIVE
+    | TOKEN_INCLUDE
+    | TOKEN_SHIFTR_DIRECTIVE
+    | TOKEN_SHIFTL_DIRECTIVE
+    | TOKEN_XOR_DIRECTIVE
+    | TOKEN_NOR_DIRECTIVE
+    | TOKEN_INC_DIRECTIVE
+    | TOKEN_READB_DIRECTIVE
+    | TOKEN_READW_DIRECTIVE
+    | TOKEN_READDW_DIRECTIVE
+    | TOKEN_ADD_DIRECTIVE
+    | TOKEN_SUB_DIRECTIVE
+    | TOKEN_MUL_DIRECTIVE
+    | TOKEN_DIV_DIRECTIVE
+    | TOKEN_CMP_DIRECTIVE
+    | TOKEN_AND_DIRECTIVE
+    | TOKEN_OR_DIRECTIVE
+    | TOKEN_LPAREN
+    | TOKEN_RPAREN
+    | TOKEN_JUMP_DIRECTIVE
+    | TOKEN_SET_DIRECTIVE
+    | TOKEN_PLUS_OP
+    | TOKEN_MINUS_OP
+    | TOKEN_MUL_OP
+    | TOKEN_DIV_OP
     | TOKEN_DIV
     | TOKEN_AND
     | TOKEN_SHIFTR
@@ -104,11 +154,18 @@ type nonTerminalId =
     | NONTERM__startprogram
     | NONTERM_program
     | NONTERM_sourceElementList
+    | NONTERM_globalStatement
     | NONTERM_procDefinition
+    | NONTERM_parameterList
     | NONTERM_statementList
     | NONTERM_statement
     | NONTERM_statementNoLabel
+    | NONTERM_directives
+    | NONTERM_argumentList
+    | NONTERM_primaryExpression
     | NONTERM_expression
+    | NONTERM_additiveExpression
+    | NONTERM_multiplicativeExpression
     | NONTERM_integerList
     | NONTERM_dataList
     | NONTERM_data

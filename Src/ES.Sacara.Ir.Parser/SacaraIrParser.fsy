@@ -13,6 +13,7 @@ open ES.Sacara.Ir.Parser.IrParserUtility
 %token DIV AND SHIFTR SHIFTL OR NOT XOR NOR SETIP SETSP INC EOF
 %token LPAREN RPAREN JUMP_DIRECTIVE SET_DIRECTIVE PLUS_OP MINUS_OP MUL_OP DIV_OP
 %token ADD_DIRECTIVE SUB_DIRECTIVE MUL_DIRECTIVE DIV_DIRECTIVE CMP_DIRECTIVE AND_DIRECTIVE OR_DIRECTIVE 
+%token READB_DIRECTIVE READW_DIRECTIVE READDW_DIRECTIVE
 %token SHIFTR_DIRECTIVE SHIFTL_DIRECTIVE XOR_DIRECTIVE NOR_DIRECTIVE INC_DIRECTIVE
 %token INCLUDE
 
@@ -114,6 +115,9 @@ directives:
 	| SHIFTL_DIRECTIVE primaryExpression COMMA primaryExpression							{ shiftlDirective($2, $4) }
 	| XOR_DIRECTIVE primaryExpression COMMA primaryExpression								{ xorDirective($2, $4) }
 	| NOR_DIRECTIVE primaryExpression COMMA primaryExpression								{ norDirective($2, $4) }
+	| READB_DIRECTIVE primaryExpression														{ readByteDirective($2) }
+	| READW_DIRECTIVE primaryExpression														{ readWordDirective($2) }
+	| READDW_DIRECTIVE primaryExpression													{ readDoubleWordDirective($2) }
 	| INC_DIRECTIVE IDENTIFIER																{ incDirective($2) }
 
 argumentList:

@@ -13,6 +13,34 @@ module internal IrLexerUtility =
         lexbuf.StartPos <- lexbuf.StartPos.NextLine
         lexbuf.EndPos <- lexbuf.EndPos.NextLine
 
+    let directives =
+        [
+            (".jump", JUMP_DIRECTIVE)
+            (".set", SET_DIRECTIVE)
+            (".add", ADD_DIRECTIVE)
+            (".sub", SUB_DIRECTIVE)
+            (".mul", MUL_DIRECTIVE)
+            (".div", DIV_DIRECTIVE)
+            (".cmp", CMP_DIRECTIVE)
+            (".and", AND_DIRECTIVE)
+            (".or", OR_DIRECTIVE)
+            (".shiftr", SHIFTR_DIRECTIVE)
+            (".shiftl", SHIFTL_DIRECTIVE)
+            (".xor", XOR_DIRECTIVE)
+            (".nor", NOR_DIRECTIVE)
+            (".inc", INC_DIRECTIVE)
+            (".read.b", READB_DIRECTIVE)
+            (".read.w", READW_DIRECTIVE)
+            (".read.dw", READDW_DIRECTIVE)
+        ]
+        |> Map.ofList
+
+    let globalStatements =
+        [
+            ("include", INCLUDE)
+        ] 
+        |> Map.ofList
+
     let keywords = 
         [
             (IrInstruction.Push, PUSH)
@@ -85,11 +113,22 @@ module internal IrLexerUtility =
         let identifier = Regex.Unescape(getString lexbuf)
         newToken (LABEL identifier) lexbuf
 
+    let directive(lexbuf: LexBuffer<_>) =
+        let directive = Regex.Unescape(getString lexbuf)
+        match directives |> Map.tryFind directive with
+        | Some directiveToken -> newToken directiveToken lexbuf
+        | None -> newToken (INVOKE_DIRECTIVE directive) lexbuf
+
     let identifier(lexbuf: LexBuffer<_>) =
         let identifier = Regex.Unescape(getString lexbuf).ToLower()
         match keywords |> Map.tryFind identifier with
         | Some identifierToken -> newToken identifierToken lexbuf
         | None -> newToken (IDENTIFIER identifier) lexbuf
+
+    let globalStatement(lexbuf: LexBuffer<_>) =
+        let keyword = Regex.Unescape(getString lexbuf).ToLower()
+        let keywordToken = globalStatements |> Map.find keyword
+        newToken keywordToken lexbuf
 
     let integer(lexbuf: LexBuffer<_>) =
         let number = Regex.Unescape(getString lexbuf)
