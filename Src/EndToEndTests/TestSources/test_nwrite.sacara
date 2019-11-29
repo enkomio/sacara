@@ -1,9 +1,0 @@
-﻿proc main	
-	push 0x66
-	push native_address
-	nwrite
-	push native_address
-	nread	
-	pop result
-	halt	 	   
-endp

@@ -1,5 +1,0 @@
-﻿proc main(num1, num2, num3)
-	// I'll use a directive to do the calculation ;)
-	.set result (((num1 + num2) * num3) - 197)
-	halt
-endp

@@ -1,8 +1,0 @@
-﻿// result: 12
-proc main	
-	push 3
-	push 4
-	mul	
-	pop result
-	halt	 	   
-endp
