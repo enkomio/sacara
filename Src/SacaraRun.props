@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<Project DefaultTargets="ReBuild" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Link>
+      <OutputFile>../build/SacaraRun/SacaraRun.exe</OutputFile>
+    </Link>
+  </ItemDefinitionGroup>
+</Project>
