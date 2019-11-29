@@ -1,15 +1,40 @@
-﻿// result: 66
+﻿// result: 1128498630
 proc main
-	push start
-	jump
-fake_code:
-	byte 0x00
-start:
-	push 0x42
-	push fake_code
-	write	
-	push fake_code
-	read	
+	.write_byte()
+	.write_word()
+	.write_dword()
+	add
+	add
 	pop result
 	halt	 	   
+endp
+
+proc write_byte
+	.jump start1
+fake_code1:
+	byte 0x00
+start1:
+	.write.b fake_code1, 0x41
+	.read.b fake_code1
+	ret
+endp
+
+proc write_word
+	.jump start2
+fake_code2:
+	word 0x00
+start2:
+	.write.w fake_code2, 0x4242
+	.read.w fake_code2
+	ret
+endp
+
+proc write_dword
+	.jump start3
+fake_code3:
+	dword 0x00
+start3:
+	.write.dw fake_code3, 0x43434343
+	.read.dw fake_code3
+	ret
 endp

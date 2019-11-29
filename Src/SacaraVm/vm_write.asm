@@ -2,27 +2,40 @@ header_VmWrite
 vm_write PROC
 	push ebp
 	mov ebp, esp	
-	sub esp, 8
 	
 	; read the offset
 	push [ebp+arg0]
 	call_vm_stack_pop_enc
-	mov [ebp+local0], eax
+
+	; to go the offset
+	mov edi, [ebp+arg0]
+	mov edi, (VmContext PTR [edi]).code
+	add edi, eax
 
 	; read opcode to write
 	push [ebp+arg0]
 	call_vm_stack_pop_enc
-	mov [ebp+local1], eax
+	push eax
 
-	; to go the offset
-	mov ebx, [ebp+arg0]
-	mov ebx, (VmContext PTR [ebx]).code
-	add ebx, [ebp+local0]
+	; read type
+	push [ebp+arg0]
+	call_vm_stack_pop_enc
+	pop ecx
 	
-	; write the byte
-	mov ecx, [ebp+local1]
-	mov [ebx], cl
+	; write the value according to type
+	cmp eax, 3
+	jz dword_type
+	cmp eax, 2	
+	jz word_type
+	mov byte ptr [edi], cl
+	jmp exit
+word_type:
+	mov word ptr [edi], cx
+	jmp exit
+dword_type:
+	mov dword ptr [edi], ecx	
 	
+exit:
 	mov esp, ebp
 	pop ebp
 	ret

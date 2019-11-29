@@ -314,26 +314,37 @@ module internal IrParserUtility =
     let includeFile(filePath: String) =
         IncludeFile filePath
 
-    let readByteDirective(address: Expression) =
+    let private readDirective(typeSize: Int32, address: Expression) =
         [
-            push(number(1))
+            push(number(typeSize))
             push(address)
             read()
         ] 
         |> Block
+
+    let readByteDirective(address: Expression) =
+        readDirective(1, address)
 
     let readWordDirective(address: Expression) =
+        readDirective(2, address)
+
+    let readDoubleWordDirective(address: Expression) =
+        readDirective(3, address)
+
+    let private writeDirective(typeSize: Int32, value: Expression, address: Expression) =
         [
-            push(number(2))
+            push(number(typeSize))
+            push(value)
             push(address)
-            read()
+            write()
         ] 
         |> Block
 
-    let readDoubleWordDirective(address: Expression) =
-        [
-            push(number(3))
-            push(address)
-            read()
-        ] 
-        |> Block
+    let writeByteDirective(value: Expression, address: Expression) =
+        writeDirective(1, value, address)
+
+    let writeWordDirective(value: Expression, address: Expression) =
+        writeDirective(2, value, address)
+
+    let writeDoubleWordDirective(value: Expression, address: Expression) =
+        writeDirective(3, value, address)
