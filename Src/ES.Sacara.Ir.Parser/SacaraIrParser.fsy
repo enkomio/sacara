@@ -32,16 +32,10 @@ program:
     | sourceElementList EOF																	{ Program (List.rev $1) }
 
 sourceElementList:
-	| sourceSelement																		{ $1 }
-	| sourceElementList sourceSelement														{ $2@$1 }
-
-sourceSelement:
 	| procDefinition																		{ [$1] }
-	| globalStatementList																	{ List.rev $1 }
-
-globalStatementList:
+	| sourceElementList procDefinition														{ $2::$1 }
 	| globalStatement																		{ [$1] }
-	| globalStatementList globalStatement													{ $2::$1 }
+	| sourceElementList globalStatement														{ $2::$1 }
 
 globalStatement:
 	| INCLUDE STRING																		{ includeFile($2) }

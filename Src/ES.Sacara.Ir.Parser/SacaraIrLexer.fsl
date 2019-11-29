@@ -15,7 +15,7 @@ let character = ['a'-'z' 'A'-'Z']
 
 // identifier
 let identifier = character (character | digit | '_')*
-let label = identifier ':'
+let label = '_'* identifier ':'
 let directive = '.' identifier
 
 // strings items
