@@ -3,37 +3,13 @@
 #include <Windows.h>
 #include "argparse.h"
 
-typedef struct _vm_context {
-	uint32_t *ip;
-	uint32_t *stack;
-	uint32_t status_flag;
-	uint32_t *code;
-	uint32_t code_size;
-} vm_context;
-
-typedef void(__stdcall *vm_init_func)(vm_context*, uint8_t[], uint32_t);
-typedef uint32_t(__stdcall *vm_run_func)(vm_context*);
-typedef void(__stdcall *vm_free_func)(vm_context*);
-typedef void(__stdcall *vm_local_var_set_func)(vm_context*, uint32_t, uint32_t);
-typedef uint32_t(__stdcall *vm_local_var_get_func)(vm_context*, uint32_t);
-
 // VM functions
-vm_init_func vm_init = NULL;
-vm_run_func vm_run = NULL;
-vm_free_func vm_free = NULL;
-vm_local_var_set_func vm_local_var_set = NULL;
-vm_local_var_get_func vm_local_var_get = NULL;
-
-void resolve_vm_functions()
-{
-	HMODULE hModule = NULL;
-	hModule = LoadLibrary("SacaraVm.dll");
-	vm_init = (vm_init_func)GetProcAddress(hModule, "vm_init");
-	vm_run = (vm_run_func)GetProcAddress(hModule, "vm_run");
-	vm_free = (vm_free_func)GetProcAddress(hModule, "vm_free");
-	vm_local_var_set = (vm_local_var_set_func)GetProcAddress(hModule, "vm_local_var_set");
-	vm_local_var_get = (vm_local_var_get_func)GetProcAddress(hModule, "vm_local_var_get");
-}
+extern uint32_t __stdcall vm_init(uint8_t[], uint32_t);
+extern uint32_t __stdcall vm_run(uint32_t);
+extern void __stdcall vm_set_error_handler(uint32_t, uint32_t);
+extern void __stdcall vm_local_var_set(uint32_t, uint32_t, uint32_t);
+extern uint32_t __stdcall vm_local_var_get(uint32_t, uint32_t);
+extern void __stdcall vm_free(uint32_t);
 
 static const char *const usage[] = {
 	"SacaraRun.exe <file>",
@@ -57,32 +33,27 @@ uint32_t run_code(char* filename, int argc, const char** argv)
 		{
 			if (ReadFile(hFile, file_content, file_size, &count, NULL))
 			{
-				vm_context ctx = { 0 };
-				uint32_t execution_result;
-
-				resolve_vm_functions();
-
-				// initialize the VM context structure
-				vm_init(&ctx, file_content, file_size);
-
+				uint32_t vm_context, result = 0;
+				vm_context = vm_init(file_content, file_size);
+				
 				// set the arguments
 				for (uint32_t i = 0; i < argc; i++)
 				{
 					uint32_t num = (uint32_t)strtol(argv[i], NULL, 10);
-					vm_local_var_set(&ctx, i, num);
+					vm_local_var_set(vm_context, i, num);
 				}
 
-				// run the code
-				result = vm_run(&ctx);
-
+				// this code will never return, since the VM will run the code
+				result = vm_run(vm_context);				
+								
 				if (result == 0)
 				{
-					execution_result = vm_local_var_get(&ctx, 0);
+					uint32_t execution_result = vm_local_var_get(vm_context, 0);
 					printf("Code execution result: %d", execution_result);
 				}
 
 				// free the VM
-				vm_free(&ctx);
+				vm_free(vm_context);
 			}
 
 			HeapFree(GetProcessHeap(), NULL, file_content);
