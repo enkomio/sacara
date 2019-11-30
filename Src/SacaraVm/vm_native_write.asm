@@ -1,22 +1,38 @@
 header_VmNativeWrite
 vm_native_write PROC
 	push ebp
-	mov ebp, esp	
-	sub esp, 4
-	
+	mov ebp, esp
+		
 	; read the native address
 	push [ebp+arg0]
 	call_vm_stack_pop_enc
-	mov [ebp+local0], eax
+	push eax
 
-	; read byte to write
+	; read value to write
 	push [ebp+arg0]
 	call_vm_stack_pop_enc
-			
-	; write the byte
-	mov ecx, [ebp+local0]
-	mov [ecx], al
+	push eax
+
+	; read type
+	push [ebp+arg0]
+	call_vm_stack_pop_enc
+	pop ecx
+	pop edi
 	
+	; write the value according to type
+	cmp eax, 3
+	jz dword_type
+	cmp eax, 2	
+	jz word_type
+	mov byte ptr [edi], cl
+	jmp exit
+word_type:
+	mov word ptr [edi], cx
+	jmp exit
+dword_type:
+	mov dword ptr [edi], ecx
+
+exit:
 	mov esp, ebp
 	pop ebp
 	ret
