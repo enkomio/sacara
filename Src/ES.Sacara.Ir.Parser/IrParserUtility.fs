@@ -365,3 +365,21 @@ module internal IrParserUtility =
 
     let nativeReadDoubleWordDirective(address: Expression) =
         nativeReadDirective(3, address)
+
+    let private nativeWriteDirective(typeSize: Int32, value: Expression, address: Expression) =
+        [
+            push(number(typeSize))
+            push(value)
+            push(address)
+            writeNative()
+        ] 
+        |> Block
+
+    let nativeWriteByteDirective(value: Expression, address: Expression) =
+        nativeWriteDirective(1, value, address)
+
+    let nativeWriteWordDirective(value: Expression, address: Expression) =
+        nativeWriteDirective(2, value, address)
+
+    let nativeWriteDoubleWordDirective(value: Expression, address: Expression) =
+        nativeWriteDirective(3, value, address)
