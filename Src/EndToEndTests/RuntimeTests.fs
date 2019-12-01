@@ -1,59 +1,132 @@
 ﻿namespace Sacara.EndToEndTests
 
 open System
+open System.Text
+open System.Collections.Generic
+open System.IO
+open System.Text.RegularExpressions
 open System.Reflection
-open System.Runtime.CompilerServices
 open System.Runtime.InteropServices
-
-type MockType() =
-    static member AddNumbers(_: UInt32, _: UInt32, a: UInt32, b: UInt32) =
-        // no idea what are the first two parameters, need to dig deeper
-        a + b
-
+        
 module RuntimeTests =
-    let ``Test INC instruction``() =
-        assert(Utility.executeScript("test_inc.sacara") = 42)
+    let private _executedScripts = new HashSet<String>()
 
-    let ``Test ADD instruction``() =
-        assert(Utility.executeScript("test_add.sacara") = 96)
+    [<DllImport("kernel32.dll", SetLastError = true)>]
+    extern void VirtualProtect(IntPtr lpAddress, UInt32 dwSize, UInt32 flNewProtect, IntPtr lpflOldProtect)
+    
+    let private checkExecuteScriptWithArg(scriptFilename: String, args: Int32 array) =
+        _executedScripts.Add(scriptFilename) |> ignore
+        executeScriptWithArg(scriptFilename, args)
 
-    let ``Test PUSH and POP instructions``() =
-        assert(Utility.executeScript("test_push_and_pop.sacara") = 31337)
+    let private runScriptWithArgs(scriptFile: String, args: Int32 array) =
+        let scriptContent = File.ReadAllText(scriptFile).Trim()
+        let m = Regex.Match(scriptContent, "// result: ([0-9]+)")
+        if m.Success then
+            let expectedValue = Int32.Parse(m.Groups.[1].Value)
+            let scriptFilename = Path.GetFileName(scriptFile)
+            assertTest(checkExecuteScriptWithArg(scriptFilename, args), expectedValue)
 
-    let ``Test CALL instruction``() =
-        assert(Utility.executeScript("test_call.sacara") = 13)
+    let private runScript(scriptFile: String) =
+        runScriptWithArgs(scriptFile, Array.empty)
+        
+    let private runLocalScriptWithArgs(scriptFile: String, args: Int32 array) =
+        runScriptWithArgs(getScriptFullPath(scriptFile), args)
 
-    let ``Test NCALL instruction``() =
-        let addNumbersMethod = typeof<MockType>.GetMethod("AddNumbers")
-        let methodHandle = addNumbersMethod.MethodHandle
-        let functionPointer = methodHandle.GetFunctionPointer().ToInt32()
+    let private runLocalScript(scriptFile: String) =
+        runScriptWithArgs(getScriptFullPath(scriptFile), Array.empty)
 
-        assert(Utility.executeScriptWithArg("test_ncall.sacara", [|functionPointer|]) = 100)
+    let private verifyAllTestsScriptWereExecuted() =
+        let scriptDir = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "TestSources")
+        let totalScripts = Directory.GetFiles(scriptDir, "test_*.sacara", SearchOption.AllDirectories)
+        if totalScripts.Length <> _executedScripts.Count then
+            let executedScripts = _executedScripts |> Seq.map(Path.GetFileName) |> Set.ofSeq
+            let createdScripts = totalScripts |> Seq.map(Path.GetFileName) |> Set.ofSeq
+            let commondScripts = Set.difference createdScripts executedScripts
+            Console.WriteLine("Script not executed during tests")
+            commondScripts |> Seq.iter(Console.WriteLine)
+            failwith "Not all tests script were executed"
+            
+    let ``Test XOR decode a buffer``() =
+        let buffer = Encoding.UTF8.GetBytes("this is the text that I'll use to verify if it correctly decrypted during the execution")
+        let key = Encoding.UTF8.GetBytes("password for test")
+        let inputBuffer = buffer |> Array.mapi(fun i b -> b ^^^ key.[i % key.Length])
+        let resultBuffer = Array.zeroCreate<Byte>(inputBuffer.Length)
 
-    let ``Test READ instruction``() =
-        assert(Utility.executeScript("test_read.sacara") = int32 'A')
+        // compute args
+        let memBuffer = Marshal.AllocHGlobal(inputBuffer.Length)        
+        Marshal.Copy(inputBuffer, 0, memBuffer, inputBuffer.Length)
+        let args = [|memBuffer.ToInt32(); inputBuffer.Length|]
 
+        // run the test
+        checkExecuteScriptWithArg("test_decode_xor_buffer.sacara", args) |> ignore
+        Marshal.Copy(memBuffer, resultBuffer, 0, resultBuffer.Length)
+        Marshal.FreeHGlobal(memBuffer)
+        
+        let resultBufferString = Encoding.UTF8.GetString(resultBuffer)
+        let bufferString = Encoding.UTF8.GetString(buffer)
+
+        assertTest(resultBufferString.CompareTo(bufferString), 0)
+        
+    let ``Test main proc with explicit parameters``() =
+        assertTest(checkExecuteScriptWithArg("test_main_proc_with_explicit_parameters.sacara", [|24500; 175; 2|]), 0xC001) 
+                
+    let ``Test NCALL instruction with CDECL calling convention``() =
+        let code = [|
+            0x55uy;                     // push ebp       
+            0x8Buy; 0xECuy;             // mov ebp,esp    
+            0x33uy; 0xD2uy;             // xor edx, edx
+            0x8Buy; 0x5Duy; 0x0Cuy      // mov ebx, dword ptr [ebp+Ch] 
+            0x8Buy; 0x45uy; 0x08uy      // mov eax, dword ptr [ebp+8h]  
+            0xF7uy; 0xF3uy              // div eax, ebx
+            0x8Buy; 0xE5uy;             // mov esp, ebp  
+            0x5Duy;                     // pop ebp  
+            0xc3uy                      // ret
+        |]
+
+        let oldProtection = GCHandle.Alloc(0, GCHandleType.Pinned).AddrOfPinnedObject()                
+        let codeMem = GCHandle.Alloc(code, GCHandleType.Pinned)
+        let codePtr = codeMem.AddrOfPinnedObject()        
+        VirtualProtect(codePtr, uint32 code.Length, uint32 0x40, oldProtection)
+        runLocalScriptWithArgs("test_ncall.sacara", [|codePtr.ToInt32(); 27; 3|])
+
+    let ``Test NCALL instruction with STDECL calling convention``() =
+        let code = [|
+            0x55uy;                     // push ebp       
+            0x8Buy; 0xECuy;             // mov ebp,esp    
+            0x33uy; 0xD2uy;             // xor edx, edx
+            0x8Buy; 0x5Duy; 0x0Cuy      // mov ebx, dword ptr [ebp+Ch] 
+            0x8Buy; 0x45uy; 0x08uy      // mov eax, dword ptr [ebp+8h]  
+            0xF7uy; 0xF3uy              // div eax, ebx
+            0x8Buy; 0xE5uy;             // mov esp, ebp  
+            0x5Duy;                     // pop ebp  
+            0xC2uy; 0x04uy; 0x00uy      // ret 4
+        |]
+
+        let oldProtection = GCHandle.Alloc(0, GCHandleType.Pinned).AddrOfPinnedObject()                
+        let codeMem = GCHandle.Alloc(code, GCHandleType.Pinned)
+        let codePtr = codeMem.AddrOfPinnedObject()        
+        VirtualProtect(codePtr, uint32 code.Length, uint32 0x40, oldProtection)
+        runLocalScriptWithArgs("test_ncall.sacara", [|codePtr.ToInt32(); 81; 9|])        
+                
     let ``Test NREAD instruction``() =
-        let mem = Marshal.AllocHGlobal(1)
-        Marshal.WriteByte(mem, byte 0x41)
-        assert(Utility.executeScriptWithArg("test_nread.sacara", [|mem.ToInt32()|]) = 0x41)
+        let mem = Marshal.AllocHGlobal(8)        
+        Marshal.WriteInt64(mem, 0x0043434343424241L)
+        runLocalScriptWithArgs("test_nread.sacara", [|mem.ToInt32()|])
         Marshal.FreeHGlobal(mem)
-
-    let ``Test WRITE instruction``() =
-        assert(Utility.executeScript("test_write.sacara") = int32 'B')
-
+        
     let ``Test NWRITE instruction``() =
-        let mem = Marshal.AllocHGlobal(1)
-        Marshal.WriteByte(mem, byte 0x00)
-        assert(Utility.executeScriptWithArg("test_nwrite.sacara", [|mem.ToInt32()|]) = 0x66)
+        let mem = Marshal.AllocHGlobal(8)
+        Marshal.WriteInt64(mem, 0x00L)
+        runLocalScriptWithArgs("test_nwrite.sacara", [|mem.ToInt32()|])
         Marshal.FreeHGlobal(mem)
 
-    let run() =
-        ``Test INC instruction``()
-        ``Test ADD instruction``()
-        ``Test PUSH and POP instructions``()
-        ``Test NCALL instruction``()
-        ``Test READ instruction``()
-        ``Test NREAD instruction``()
-        ``Test WRITE instruction``()
-        ``Test NWRITE instruction``()
+    let private runSelfContainedTests() =
+        let selfContainedScript = Path.Combine(scriptDir, "SelfContained")
+        Directory.GetFiles(selfContainedScript, "test_*.sacara")
+        |> Array.iter(runScript)
+                
+    let run() =        
+        _executedScripts.Clear()
+        runSelfContainedTests()
+        runTests("RuntimeTests")
+        verifyAllTestsScriptWereExecuted()
