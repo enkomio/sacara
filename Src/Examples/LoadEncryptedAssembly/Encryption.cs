@@ -134,10 +134,10 @@ endp
             using (var vm = new SacaraVm())
             {
                 var index = 0;
-                vm.LocalVarSet(index++, bufferPtr.AddrOfPinnedObject().ToInt32());
+                /*vm.LocalVarSet(index++, bufferPtr.AddrOfPinnedObject().ToInt32());
                 vm.LocalVarSet(index++, buffer.Length);
                 vm.LocalVarSet(index++, keyPtr.AddrOfPinnedObject().ToInt32());
-                vm.LocalVarSet(index++, key.Length);
+                vm.LocalVarSet(index++, key.Length);*/
                 vm.Run(_deEncryptionCode);
             }
         }
