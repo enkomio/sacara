@@ -2,7 +2,7 @@ header_VmNativeCall
 vm_native_call PROC
 	push ebp
 	mov ebp, esp
-	sub esp, 0Ch
+	sub esp, 08h
 	
 	; save native address
 	push [ebp+arg0]
@@ -13,36 +13,35 @@ vm_native_call PROC
 	push [ebp+arg0]
 	call_vm_stack_pop_enc
 	mov [ebp+local1], eax
-	
-	; get flag to see if we have to clean the stack
-	push [ebp+arg0]
-	call_vm_stack_pop_enc
-	mov [ebp+local2], eax
-
+		
 	; push the managed value into the native stack
 	mov ecx, [ebp+local1]
 	test ecx, ecx
 	jz invoke_native_code
 
+	; compute new stack pointer
+	lea esi, [ecx * type dword]
+	sub esp, esi
+	mov edi, esp
+
 arguments_push:
-	push ecx; save loop counter
+	; get argument to copy
+	push edi
+	push ecx
 	push [ebp+arg0]
 	call_vm_stack_pop_enc
-	pop ecx ; restore counter
-	push eax ; push argument into the native stack
-	loop arguments_push	
+	pop ecx
+	pop edi
+
+	; copy argument to native stack
+	mov dword ptr [edi], eax
+	add edi, 4
+	loop arguments_push
 	
 	; invoke native code
 invoke_native_code:
 	call dword ptr [ebp+local0]
-
-	; check if we have to clean the stack
-	cmp dword ptr [ebp+local2], 0h
-	jz save_return_value
-	mov ecx, [ebp+local1]
-	lea ecx, [ecx*TYPE DWORD]
-	add esp, ecx
-
+	
 save_return_value:
 	push eax ; push return value
 	push [ebp+arg0]
