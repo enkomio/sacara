@@ -2,6 +2,7 @@
 
 open System
 open System.Collections.Generic
+open System.Text.RegularExpressions
 open System.Text
 
 type SymbolType =
@@ -36,14 +37,31 @@ type Operand(value: Object) =
 
         | _ -> failwith "Wrong Raw data opcode"
 
+    let parseIdentifierName(rawName: Object) =
+        let rawName = rawName.ToString()
+        let m = Regex.Match(rawName.ToString(), "^([0-9]+)#(.+)")
+        if m.Success then
+            let index = Int32.Parse(m.Groups.[1].Value)
+            let name = m.Groups.[2].Value
+            (name, index)
+        else
+            failwith(String.Format( "Local variable '{0}' doesn't contain an offset", rawName))
+
     member val Value = value with get, set
+
+    member this.IsIdentifier 
+        with get() = this.Value :? String
 
     member this.Encode(symbolTable: SymbolTable, offset: Int32, vmOpCodeType: VmInstruction) =
         match this.Value with
         | :? list<Int32> -> encodeRawData(this.Value :?> list<Int32>, vmOpCodeType)
         | :? Int32 -> BitConverter.GetBytes(this.Value :?> Int32)
         | :? String ->
-            let identifier = this.Value.ToString()
+            let stringValue = this.Value.ToString()
+            let (identifier, index) = 
+                if symbolTable.IsLabel(stringValue) then (stringValue, -1)
+                else parseIdentifierName(this.Value)
+
             match vmOpCodeType with
             | VmPushVariable ->
                 if symbolTable.IsLabel(identifier) then
@@ -51,11 +69,11 @@ type Operand(value: Object) =
                     |> uint32
                     |> BitConverter.GetBytes
                 else
-                    symbolTable.GetVariable(identifier).Offset
+                    symbolTable.GetVariable(identifier, index).Offset
                     |> uint16
                     |> BitConverter.GetBytes
             | VmPop ->
-                symbolTable.GetVariable(identifier).Offset
+                symbolTable.GetVariable(identifier, index).Offset
                 |> uint16
                 |> BitConverter.GetBytes
             | _ ->
@@ -285,10 +303,14 @@ and SymbolTable() =
     member this.StartFunction() =
         _variables.Clear()
 
-    member this.AddLocalVariable(name: String) =
+    member this.AddLocalVariable(name: String, position: Int32) =
         if _labelNames.Contains(name)
         then failwith("Unable to add the local variable '" + name + "', since already exists a function/label with the same name")
-        _variables.[name] <- {Name=name; Offset=_variables.Count; Type=LocalVar}
+        _variables.[name] <- {
+            Name = name
+            Offset = position
+            Type = LocalVar
+        }
 
     member this.AddLabel(name: String, offset: Int32) =
         if _labels.ContainsKey(name)
@@ -303,11 +325,11 @@ and SymbolTable() =
     member this.IsLabel(funcName: String) =
         _labelNames.Contains(funcName)
 
-    member this.GetVariable(name: String) : Symbol =
+    member this.GetVariable(name: String, position: Int32) : Symbol =
         if _variables.ContainsKey(name) then 
             _variables.[name]
         else
-            this.AddLocalVariable(name)
+            this.AddLocalVariable(name, position)
             _variables.[name]
 
     member this.GetLabel(name: String, ip: Int32) : Symbol =
