@@ -5,8 +5,8 @@ open System
 module IrAst =
 
     type Expression =
-        | Number of Int32
-        | Identifier of String
+        | Number of NumberType
+        | Identifier of IdentifierType
         | StatementExpression of Statement
 
     and Statement =
@@ -85,4 +85,12 @@ module IrAst =
     and LabelType = {
         Name: String
         Statement: Statement
+    }
+
+    and IdentifierType = {
+        Name: String
+    }
+
+    and NumberType = {
+        Value: Int32
     }
