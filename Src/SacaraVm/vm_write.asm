@@ -11,6 +11,7 @@ vm_write PROC
 	mov edi, [ebp+arg0]
 	mov edi, (VmContext PTR [edi]).code
 	add edi, eax
+	push edi
 
 	; read opcode to write
 	push [ebp+arg0]
@@ -21,6 +22,7 @@ vm_write PROC
 	push [ebp+arg0]
 	call_vm_stack_pop_enc
 	pop ecx
+	pop edi
 	
 	; write the value according to type
 	cmp eax, 3
