@@ -31,7 +31,7 @@ module Program =
                 match s with
                 | Encrypt_OpCodes -> "encrypt the generated opcodes."
                 | Encrypt_Operands -> "encrypt the instruction operands."
-                | Add_Junk -> "insert junk instructions in the original source code."
+                | Add_Junk -> "[NOT IMPLEMENTED] insert junk instructions in the original source code."
                 | Reorder_Functions -> "the function order will be set casually inside the final code."
                 | Multiple_OpCodes -> "use different byte representation for the same opcode."
                 | Use_Nor -> "whenever possible use the NOR operator."
