@@ -14,8 +14,6 @@ type SacaraVm(sacaraVmDll: String) =
     let mutable _vmLocalVarSet : NativeMethods.VmLocalVarSetFunc option = None
     let mutable _vmLocalVarGet : NativeMethods.VmLocalVarGetFunc option = None
     let mutable _vmSetErrorHandler : NativeMethods.VmSetErrorHandler option = None
-
-    let mutable _localVars = List.empty<UInt32 * UInt32>
     let mutable _vmErrorHandlerCallback: Action<UInt32, UInt32> option = None
 
     do        
@@ -32,21 +30,25 @@ type SacaraVm(sacaraVmDll: String) =
 
     new() = new SacaraVm(Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "SacaraVm.dll"))
 
-    member this.Run(code: Byte array) =
-        _vmContext <- _vmInit.Value.Invoke(code, uint32 code.Length)
-        _localVars |> List.iter(fun (index, value) -> _vmLocalVarSet.Value.Invoke(_vmContext, index, value))
+    member this.Run(code: Byte array, args: Int32 seq) =
+        _vmContext <- _vmInit.Value.Invoke(code, uint32 code.Length)        
+        args
+        |> Seq.iteri(fun index value -> _vmLocalVarSet.Value.Invoke(_vmContext, uint32 index, uint32 value))
 
         if _vmErrorHandlerCallback.IsSome then
             let effectiveCallback(ip: UInt32) (errorCode: UInt32) = _vmErrorHandlerCallback.Value.Invoke(ip, errorCode)
             _vmSetErrorHandler.Value.Invoke(_vmContext, new NativeMethods.ErrorHandlerCallback(effectiveCallback))
 
         _vmRun.Value.Invoke(_vmContext) |> ignore
+        
+    member this.Run(code: Byte array) =
+        this.Run(code, Seq.empty)
+
+    member this.Run(code: IrAssemblyCode, args: Int32 seq) =
+        this.Run(code.GetBuffer(), args) 
 
     member this.Run(code: IrAssemblyCode) =
-        this.Run(code.GetBuffer())
-
-    member this.LocalVarSet(index: Int32, value: Int32) =
-        _localVars <- (uint32 index, uint32 value)::_localVars        
+        this.Run(code, Seq.empty)
 
     member this.LocalVarGet(index: Int32) =
         _vmLocalVarGet.Value.Invoke(_vmContext, uint32 index)
