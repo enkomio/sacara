@@ -100,7 +100,6 @@
     <None Include="vm_jump.asm">
       <Filter>vm_instructions</Filter>
     </None>
-    <None Include="sacara.def" />
     <None Include="vm_add.asm">
       <Filter>vm_instructions</Filter>
     </None>
@@ -126,6 +125,7 @@
     <None Include="vm_inc.asm">
       <Filter>vm_instructions</Filter>
     </None>
+    <None Include="vm_exports.inc" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="vm_instructions">
