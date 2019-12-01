@@ -6,7 +6,7 @@ vm_local_var_set PROC PUBLIC vm_context:DWORD, index:DWORD, value:DWORD
 	pushad
 
 	; decode vm context
-	call get_vm_dll_base_address
+ 	call get_vm_dll_base_address
 	xor eax, vm_context
 
 	; call the internal function
@@ -183,8 +183,8 @@ vm_loop:
 	je vm_loop
 	
 finish:
-	popad
 	mov eax, [ebp+local0]	
+	popad
 	ret 4h
 vm_run ENDP
 
