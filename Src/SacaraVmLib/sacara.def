@@ -1,4 +1,4 @@
-LIBRARY SacaraVmDll
+LIBRARY SacaraVm
 EXPORTS 
 	vm_init
 	vm_run
