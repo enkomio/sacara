@@ -1,5 +1,5 @@
 ﻿/// This simple program produce a text output with VM opcodes. 
-/// The generated opcode are saved in the apprppriate src directory.
+/// The generated opcode are saved in the appropriate src directory.
 namespace GeneratePreBuildInfo
 
 open System
