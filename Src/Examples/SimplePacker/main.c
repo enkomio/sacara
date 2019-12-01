@@ -20,15 +20,11 @@ You can now run SimplePacker.exe and test your AV :)
 #include <stdint.h>
 #include <Windows.h>
 
-#ifdef _DEBUG
-#include "debug.h"
-#endif
-
 extern uint32_t __stdcall vm_init(uint8_t[], uint32_t);
 extern uint32_t __stdcall vm_run(uint32_t);
 extern void __stdcall vm_set_error_handler(uint32_t, uint32_t);
 extern void __stdcall vm_local_var_set(uint32_t, uint32_t, uint32_t);
-extern void __stdcall vm_local_var_get(uint32_t, uint32_t);
+extern uint32_t __stdcall vm_local_var_get(uint32_t, uint32_t);
 extern void __stdcall vm_free(uint32_t);
 
 static char resource_name[] = "data";
@@ -46,7 +42,7 @@ static void *read_resource(char *name, uint32_t *res_size)
 	if (!res) return NULL;
 
 	*res_size = SizeofResource(NULL, res_info);
-	void *buffer = VirtualAlloc(NULL, *res_size, MEM_COMMIT, PAGE_READWRITE);	
+	void *buffer = VirtualAlloc(NULL, *res_size, MEM_COMMIT, PAGE_EXECUTE_READWRITE);	
 	memcpy(buffer, res, *res_size);
 	if (FreeResource(hres)) return NULL;
 
@@ -59,6 +55,8 @@ static uint32_t exec_vm_code(uint8_t *data, uint32_t data_size, uint8_t *vm_code
 	vm_context = vm_init(vm_code, vm_code_size);
 	vm_local_var_set(vm_context, 0, (uint32_t)data);
 	vm_local_var_set(vm_context, 1, data_size);
+	
+	// this code will never return, since the VM will run the code
 	result = vm_run(vm_context);
 	vm_free(vm_context);	
 	return result;
@@ -71,6 +69,7 @@ static void execute_data_code(uint8_t *data, uint32_t data_size)
 	((void(*)(void))data)();
 }
 
+
 int main()
 {
 	void *data = NULL;
@@ -78,19 +77,6 @@ int main()
 	void *vm_code = NULL;
 	uint32_t vm_code_size;
 
-#ifdef _DEBUG
-	data = test_data;
-	data_size = sizeof(test_data);
-
-	// encrypt data with password
-	for (uint32_t i = 0; i < data_size; i++)
-	{
-		((uint8_t*)data)[i] ^= password[i % sizeof(password)];
-	}
-
-	vm_code = test_vm_code;
-	vm_code_size = sizeof(test_vm_code);
-#else
 	// get resource content	
 	data = read_resource(resource_name, &data_size);
 	if (!data) goto complete;
@@ -98,7 +84,6 @@ int main()
 	// get vm code content	
 	vm_code = read_resource(code_name, &vm_code_size);
 	if (!vm_code) goto complete;
-#endif
 	
 	// run vm to decrypt code
 	uint32_t vm_result = exec_vm_code(data, data_size, vm_code, vm_code_size);

@@ -175,9 +175,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="debug.h" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\SacaraVm\SacaraVm.vcxproj">
       <Project>{2724956c-b73e-4f0f-a394-574900e8cd02}</Project>
     </ProjectReference>

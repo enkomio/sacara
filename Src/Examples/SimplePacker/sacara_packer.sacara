@@ -19,6 +19,12 @@ start:
 
 	// I have all the needed information to decrypt the buffer
     .decrypt(buffer, buffer_size, password_label, password_length)
+
+	// now that the code is decrypted, I can run it
+	push 0
+	push 0
+	push buffer
+	ncall
     halt
 endp
 
