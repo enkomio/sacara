@@ -10,10 +10,10 @@ module internal IrParserUtility =
         Empty
 
     let number(num: Int32) =
-        Number num
+        Number {Value = num}
 
     let identifier(name: String) =
-        Identifier name
+        Identifier {Name = name}
 
     let push(expr: Expression) =
         Push {Operand=expr}
@@ -168,7 +168,7 @@ module internal IrParserUtility =
             yield call()
         ] |> Block
 
-    let setLocalVariable(variable: String, value: Expression) =
+    let movDirective(variable: String, value: Expression) =
         [
             match value with
             | StatementExpression statement -> 
@@ -176,9 +176,9 @@ module internal IrParserUtility =
                 | Block statementList -> yield! statementList
                 | _ -> failwith "Invalid operation on local var set"
             | Number num -> 
-                yield push(number(num))
+                yield push(value)
             | Identifier ident -> 
-                yield push(identifier(ident))            
+                yield push(value)            
             yield pop(variable)
         ] |> Block 
 
@@ -383,3 +383,26 @@ module internal IrParserUtility =
 
     let nativeWriteDoubleWordDirective(value: Expression, address: Expression) =
         nativeWriteDirective(3, value, address)
+
+    let nativeInvoke(procName: Expression, args: Expression list) =
+        [
+            let mutable variableOffset = Int32.MaxValue
+            for arg in args |> List.rev do 
+                match arg with
+                | Identifier identType -> 
+                    let indexedName = String.Format("{0}#{1}", variableOffset, identType.Name)
+                    variableOffset <- variableOffset - 1
+                    yield push(Identifier({Name = indexedName}))
+                | _ -> 
+                    yield push(arg)
+            yield push(number(args.Length))
+                        
+            match procName with
+            | Identifier identType -> 
+                let indexedName = String.Format("{0}#{1}", variableOffset, identType.Name)                
+                yield push(Identifier({Name = indexedName}))
+            | _ -> 
+                yield push(procName)
+
+            yield callNative()
+        ] |> Block
