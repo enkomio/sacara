@@ -16,7 +16,7 @@ module internal IrLexerUtility =
     let directives =
         [
             (".jump", JUMP_DIRECTIVE)
-            (".set", SET_DIRECTIVE)
+            (".mov", MOV_DIRECTIVE)
             (".add", ADD_DIRECTIVE)
             (".sub", SUB_DIRECTIVE)
             (".mul", MUL_DIRECTIVE)
@@ -41,6 +41,7 @@ module internal IrLexerUtility =
             (".nwrite.b", NWRITEB_DIRECTIVE)
             (".nwrite.w", NWRITEW_DIRECTIVE)
             (".nwrite.dw", NWRITEDW_DIRECTIVE)
+            (".ncall", NCALL_DIRECTIVE)
         ]
         |> Map.ofList
 
