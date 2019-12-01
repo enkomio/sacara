@@ -14,7 +14,7 @@ let hexDigit = ['0'-'9' 'a'-'f' 'A'-'F']
 let character = ['a'-'z' 'A'-'Z']
 
 // identifier
-let identifier = character (character | digit | '_')*
+let identifier = (['0'-'9']+ '#')? character (character | digit | '_')*
 let label = '_'* identifier ':'
 let directive = '.' (identifier | '.')+
 
