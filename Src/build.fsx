@@ -216,7 +216,7 @@ Target.create "Summary" (fun _ ->
 
     let addFile(fileName: String) =
         let file = Path.Combine(deployDir, fileName)
-        summary.AppendFormat("|[**{0}**]https://github.com/enkomio/sacara/releases/download/{1}/{0}|``{2}``", fileName, githubVersion, sha1(file)).AppendLine() |> ignore
+        summary.AppendFormat("|[**{0}**](https://github.com/enkomio/sacara/releases/download/{1}/{0})|``{2}``", fileName, githubVersion, sha1(file)).AppendLine() |> ignore
            
     // create output
     summary.AppendLine("## Files").AppendLine().AppendLine("|File|SHA-1|").AppendLine("|-------|----|") |> ignore
