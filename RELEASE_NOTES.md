@@ -1,3 +1,20 @@
+### 2.3.0 - 24/11/2019
+* Added directives: .jump, .add, .sub, .mul, .div, .cmp, .and, .or, .shiftl, .shiftr, .xor, .nor, .inc, .read.b, .read.w, .read.dw, .write.b, .write.w, .write.dw, .nread.b, .nread.w, .nread.dw,
+ .nwrtie.b, .nwrite.w, .nwrite.dw, .ncall
+* Added directive to invoke methods in a more user friendly way
+* Improved proc definition syntax in order to specify the parameters
+* Added .mov directive to specify local var with a more powerfull expression evaluation
+* Added "include" statement to include an external script
+* Added single line comment via "//"
+* Removed set_loca_var function. Now the arguments to main can be specified via Run method.
+* read instruction now accepts an additional argument that specify the type to read (1 = byte, 2 = word, 3 = dword)
+* write instruction now accepts an additional argument that specify the type to write (1 = byte, 2 = word, 3 = dword)
+* nread instruction now accepts an additional argument that specify the type to read (1 = byte, 2 = word, 3 = dword)
+* nwrite instruction now accepts an additional argument that specify the type to write (1 = byte, 2 = word, 3 = dword)
+* It is now possible to specify the low level offset for local variable
+* remove flag to check for stack cleaning in ncall instruction
+* Fixed bugs and improved test suite
+
 ### 2.2.0 - 19/01/2019
 * Implemented virtual instruction INC
 * Implemented the .NET binding for vm_set_error_handler
