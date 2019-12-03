@@ -1,0 +1,24 @@
+﻿// result: 1128498630
+proc main	
+	// this is a very dirty trick to allows 'result' to be the second declared vairable	
+	.mov result, native_address
+	.mov result, 0
+
+	.mov byte_addr, native_address
+	.mov word_addr, (native_address + 1)
+	.mov dword_addr, (native_address + 3)
+
+	// write the values
+	.nwrite.b byte_addr, 0x41
+	.nwrite.w word_addr, 0x4242
+	.nwrite.dw dword_addr, 0x43434343
+
+	// read back the result
+	.nread.b byte_addr
+	.nread.w word_addr
+	.nread.dw dword_addr
+	add
+	add	
+	pop result
+	halt	 	   
+endp

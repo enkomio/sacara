@@ -1,0 +1,20 @@
+﻿// result: 25
+
+proc main
+	push 4
+	.jump step1
+
+step2:
+	push 5
+	mul
+	.jump finish
+
+step1:
+	push 1
+	add
+	.jump step2
+
+finish:
+	pop result
+	halt	 	   
+endp

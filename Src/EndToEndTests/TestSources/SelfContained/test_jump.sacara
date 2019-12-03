@@ -1,0 +1,22 @@
+﻿// result: 12
+proc main
+	push 4
+	push step1
+	jump
+
+step2:
+	push 2
+	mul
+	push finish
+	jump
+
+step1:
+	push 2
+	add
+	push step2
+	jump
+
+finish:
+	pop result
+	halt	 	   
+endp

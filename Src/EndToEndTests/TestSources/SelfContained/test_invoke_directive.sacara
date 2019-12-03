@@ -1,0 +1,11 @@
+﻿// result: 13
+proc main			
+	.add_numbers(3, 10)
+	pop result
+	halt	 	   
+endp
+
+proc add_numbers
+	add
+	ret
+endp

@@ -1,0 +1,9 @@
+﻿// result: 23
+proc main	
+	// if local variables are used in test, result must be the firsr one
+	.mov result, 0
+	.mov num1, 4
+	.mov same_as_num1, num1
+	.mov result, (3 - num1 + (same_as_num1 * 6))
+	halt	 	   
+endp

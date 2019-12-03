@@ -1,0 +1,40 @@
+﻿// result: 1128498630
+proc main
+	.read_byte()
+	.read_word()
+	.read_double_word()
+	add
+	add
+	pop result
+	halt	 	   
+endp
+
+proc read_byte
+	push start1
+	jump
+fake_code1:
+	byte 0x41
+start1:
+	.read.b fake_code1
+	ret
+endp
+
+proc read_word
+	push start2
+	jump
+fake_code2:
+	word 0x4242
+start2:
+	.read.w fake_code2	
+	ret
+endp
+
+proc read_double_word
+	push start3
+	jump
+fake_code3:
+	dword 0x43434343
+start3:
+	.read.dw fake_code3
+	ret
+endp

@@ -1,0 +1,6 @@
+﻿// result: 31337
+proc main
+	push 31337
+	pop result
+	halt
+endp

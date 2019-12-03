@@ -1,0 +1,6 @@
+﻿// result: 9
+proc main
+	.ncall(native_function, num1, num2)
+	pop result
+	halt	 	   
+endp
