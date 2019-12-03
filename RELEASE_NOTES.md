@@ -1,6 +1,5 @@
 ### 2.3.0 - 24/11/2019
-* Added directives: .jump, .add, .sub, .mul, .div, .cmp, .and, .or, .shiftl, .shiftr, .xor, .nor, .inc, .read.b, .read.w, .read.dw, .write.b, .write.w, .write.dw, .nread.b, .nread.w, .nread.dw,
- .nwrtie.b, .nwrite.w, .nwrite.dw, .ncall
+* Added directives: .jump, .add, .sub, .mul, .div, .cmp, .and, .or, .shiftl, .shiftr, .xor, .nor, .inc, .read.b, .read.w, .read.dw, .write.b, .write.w, .write.dw, .nread.b, .nread.w, .nread.dw, .nwrtie.b, .nwrite.w, .nwrite.dw, .ncall
 * Added directive to invoke methods in a more user friendly way
 * Improved proc definition syntax in order to specify the parameters
 * Added .mov directive to specify local var with a more powerfull expression evaluation
