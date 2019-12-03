@@ -1,12 +1,14 @@
 ﻿namespace ES.Sacara.Ir.Assembler
 
 open System
-open System.Linq
+open System.Reflection
+open System.Text.RegularExpressions
 open System.Collections.Generic
 open ES.Sacara.Ir.Parser
 open ES.Sacara.Ir.Parser.IrAst
 open ES.Sacara.Ir.Core
 open ES.Sacara.Ir.Obfuscator
+open System.IO
 
 type IrAssemblyCode = {
     Functions: VmFunction list
@@ -36,22 +38,30 @@ type SacaraAssembler(settings: AssemblerSettings) =
             opCode.Label <- _currentLabel
             _currentLabel <- None
         _currentFunction.Body.Add(opCode)
-
-    let rec parseExpression(expression: Expression) =
+        
+    let rec parseOperationExpression(expression: Expression) =
         match expression with
-        | Number num -> new Operand(num)
-        | Identifier identifier -> new Operand(identifier)
+        | Number num -> 
+            new Operand(num.Value) |> Some
+        | Identifier identifier -> 
+            new Operand(identifier.Name) |> Some
+        | StatementExpression statement ->
+            parseStatement(statement)
+            None 
 
-    let rec parseStatement(statement: Statement) =
+    and parseStatement(statement: Statement) =
         match statement with
         | Statement.Procedure procType ->            
             _currentFunction <- new IrFunction(procType.Name)
             _functions.Add(_currentFunction)
             procType.Body |> List.iter(parseStatement)
         | Statement.Push pushType ->
-            let push = new IrOpCode(IrInstruction.Push, settings.UseMultipleOpcodeForSameInstruction)
-            push.Operands.Add(parseExpression(pushType.Operand))
-            addOperation(push)
+            parseOperationExpression(pushType.Operand) 
+            |> Option.iter(fun op ->
+                let push = new IrOpCode(IrInstruction.Push, settings.UseMultipleOpcodeForSameInstruction)
+                push.Operands.Add(op)
+                addOperation(push)
+            )
         | Statement.Pop popType ->
             let pop = new IrOpCode(IrInstruction.Pop, settings.UseMultipleOpcodeForSameInstruction)
             pop.Operands.Add(new Operand(popType.Identifier))
@@ -135,12 +145,30 @@ type SacaraAssembler(settings: AssemblerSettings) =
             addOperation(new IrOpCode(IrInstruction.SetSp, settings.UseMultipleOpcodeForSameInstruction))
         | Statement.Inc ->
             addOperation(new IrOpCode(IrInstruction.Inc, settings.UseMultipleOpcodeForSameInstruction))
+        | Statement.Block statementList ->
+            statementList |> Seq.iter(parseStatement)
+        | Statement.IncludeFile fileName ->
+            includeFile(fileName)
 
-    let parseAst(ast: Program) =
+    and includeFile(rawFileName: String) =
+        let fileName = rawFileName.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar)
+        let fullPath = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), fileName)
+        if not <| File.Exists(fullPath) then
+            failwith(String.Format("Filename to include '{0}' not found.", fullPath))
+
+        let irCode = File.ReadAllText(fullPath)
+        parseCode(irCode)
+
+    and parseAst(ast: Program) =
         match ast with
-        | Program sl -> sl |> List.iter(parseStatement)    
+        | Program sl -> sl |> List.iter(parseStatement)  
+        
+    and parseCode(irCode: String) =
+        let astBuilder = new SacaraAstBuilder()
+        let ast = astBuilder.Parse(irCode)
+        parseAst(ast)
 
-    let assemblyIrOpCode(symbolTable: SymbolTable, settings: AssemblerSettings) (opCode: IrOpCode) =
+    let assemblyIrOpCode(symbolTable: SymbolTable) (opCode: IrOpCode) =
         if opCode.Label.IsSome then
             symbolTable.AddLabel(opCode.Label.Value, _currentIp)
 
@@ -165,7 +193,7 @@ type SacaraAssembler(settings: AssemblerSettings) =
 
     let assemblyFunctionBody(irFunctionBody: IrOpCode seq, symbolTable: SymbolTable, settings: AssemblerSettings) =
         irFunctionBody
-        |> Seq.map(assemblyIrOpCode(symbolTable, settings))
+        |> Seq.map(assemblyIrOpCode(symbolTable))
         |> Seq.toList
         
     let addAllocaInstruction(symbolTable: SymbolTable, opCodes: IrOpCode list) =
@@ -199,11 +227,75 @@ type SacaraAssembler(settings: AssemblerSettings) =
         else    
             opCodes
 
+    let parseIdentifierName(rawName: Object) =
+        let rawName = rawName.ToString()
+        let m = Regex.Match(rawName.ToString(), "^([0-9]+)#(.+)")
+        if m.Success then
+            let index = Int32.Parse(m.Groups.[1].Value)
+            let name = m.Groups.[2].Value
+            (name, Some index)
+        else
+            (rawName, None)
+
+    let getLocalVariables(irFunction: IrFunction, symbolTable: SymbolTable) =
+        irFunction.Body
+        |> Seq.collect(fun irCode -> irCode.Operands)
+        |> Seq.filter(fun operand -> 
+            operand.IsIdentifier && not(symbolTable.IsLabel(operand.Value.ToString()))
+        )       
+        |> Seq.distinctBy(fun op -> op.Value.ToString())
+        |> Seq.toList
+
+    let sortAllVariables(localVariables: Operand list, sortedIndexedVariables: IDictionary<String, Operand>) =
+        let mutable indexedOffset = 0
+        let keys = sortedIndexedVariables.Keys |> Seq.toList
+
+        localVariables
+        |> Seq.toList
+        |> List.map(fun op -> (op, parseIdentifierName(op)))
+        |> List.map(fun (op, (name, _)) ->
+            match sortedIndexedVariables.TryGetValue(name) with
+            | (true, _) -> 
+                let key = keys.[indexedOffset]
+                indexedOffset <- indexedOffset + 1
+                sortedIndexedVariables.[key]
+            | _ -> 
+                op
+        )
+
+    let sortIndexedVariables(localVariables: Operand list) =
+        localVariables
+        |> List.map(fun op -> (op, parseIdentifierName(op)))
+        |> List.filter(fun (_, (_, index)) -> index.IsSome)
+        |> List.sortBy(fun (_, (_, index)) -> index.Value) 
+        |> List.map(fun (op, (name, _)) -> (name, op))
+        |> dict
+
+    let rewriteLocalVariableOffset(sortedVariables: Operand list, irFunction: IrFunction) =
+        irFunction.Body
+        |> Seq.collect(fun irOpcode -> irOpcode.Operands)
+        |> Seq.iter(fun op ->   
+            let (name, _) = parseIdentifierName(op)
+            sortedVariables
+            |> List.iteri(fun index sop ->
+                let (sname, _) = parseIdentifierName(sop)
+                if name.Equals(sname, StringComparison.Ordinal) then
+                    let offsetName = String.Format("{0}#{1}", index, sname)
+                    op.Value <- offsetName
+            )            
+        )
+        
     let generateFunctionVmOpCodes(symbolTable: SymbolTable, settings: AssemblerSettings) (irFunction: IrFunction) =
         symbolTable.StartFunction()
         
         // the analyzed function is a symbol, this will ensure that instruction like call foo, will be correctly assembled
         symbolTable.AddLabel(irFunction.Name, _currentIp)
+
+        // correctly set offset for local variables
+        let localVariables = getLocalVariables(irFunction, symbolTable)
+        let sortedIndexedVariables = sortIndexedVariables(localVariables)
+        let sortedVariables = sortAllVariables(localVariables, sortedIndexedVariables)
+        rewriteLocalVariableOffset(sortedVariables, irFunction)
 
         let rawBody =
             if settings.UseNorOperator
@@ -291,10 +383,7 @@ type SacaraAssembler(settings: AssemblerSettings) =
         _functions.Clear()
         _currentIp <- 0
         
-        // generate AST
-        let astBuilder = new SacaraAstBuilder()
-        let ast = astBuilder.Parse(irCode)
-        parseAst(ast)
+        parseCode(irCode)
 
         // generate VM opcode
         {Functions=this.GenerateBinaryCode(_functions)}
