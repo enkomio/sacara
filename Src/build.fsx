@@ -5,6 +5,7 @@
 #load ".fake/build.fsx/intellisense.fsx"
 
 open System
+open System.Reflection
 open System.Text
 open System.IO
 open Fake.DotNet
@@ -12,6 +13,7 @@ open Fake.Core
 open Fake.IO
 open Fake.Core.TargetOperators
 open Fake.IO.Globbing.Operators
+open System.Security.Cryptography
  
 // The name of the project
 let project = "Sacara"
@@ -23,20 +25,21 @@ let description = "A VM stack based IR language well suite for code protection."
 let authors = [ "Enkomio" ]
 
 // Build dir
-let buildDir = "./build"
+let buildDir = Path.GetFullPath("build")
 
 // Package dir
-let deployDir = "./deploy"
+let deployDir = Path.GetFullPath("deploy")
 
 // project list
 let nativeProjects = [        
-    "SacaraVm.vcxproj"
-    "SacaraRun.vcxproj"
+    ("SacaraVm.vcxproj", Some "SacaraVm.props")
+    ("SacaraVmLib.vcxproj", Some "SacaraVmLib.props")
+    ("SacaraRun.vcxproj", Some "SacaraRun.props")
 ]
 
 let dotNetProjects = [        
-    "SacaraAsm.fsproj"
-    "ES.SacaraVm.fsproj"
+    ("SacaraAsm.fsproj", None)
+    ("ES.SacaraVm.fsproj", None)
 ]
 
 let buildOptions = [
@@ -48,20 +51,24 @@ let savedBuildOptions = File.ReadAllText(buildOptionsFilename)
 
 let projects = nativeProjects@dotNetProjects
 
-
 // Read additional information from the release notes document
 let releaseNotesData = 
     let changelogFile = Path.Combine("..", "RELEASE_NOTES.md")
     File.ReadAllLines(changelogFile)
-    |> ReleaseNotes.parseAll
+    |> ReleaseNotes.parse
     
-let releaseVersion = (List.head releaseNotesData)
-Trace.log("Build release: " + releaseVersion.AssemblyVersion)
+let releaseNoteVersion = Version.Parse(releaseNotesData.AssemblyVersion)
+let now = DateTime.UtcNow
+let timeSpan = now.Subtract(new DateTime(1980,2,1,0,0,0))
+let months = timeSpan.TotalDays / 30. |> int32
+let remaining = int32 timeSpan.TotalDays - months * 30
+let releaseVersion = string <| new Version(releaseNoteVersion.Major, releaseNoteVersion.Minor, months, remaining)
+Trace.trace("Build Version: " + releaseVersion)
 
-let genFSAssemblyInfo (projectPath) =
+let genFSAssemblyInfo (projectFile) =
+    let projectPath = Path.GetDirectoryName(projectFile)
     let projectName = Path.GetFileNameWithoutExtension(projectPath)
-    let folderName = Path.GetFileName(System.IO.Path.GetDirectoryName(projectPath))
-    let fileName = Path.Combine(folderName, "AssemblyInfo.fs")
+    let fileName = Path.Combine(projectPath, "AssemblyInfo.fs")
 
     AssemblyInfoFile.createFSharp fileName
         [ 
@@ -69,9 +76,10 @@ let genFSAssemblyInfo (projectPath) =
             AssemblyInfo.Product project
             AssemblyInfo.Company (authors |> String.concat ", ")
             AssemblyInfo.Description description
-            AssemblyInfo.Version (releaseVersion.AssemblyVersion + ".*")
-            AssemblyInfo.FileVersion (releaseVersion.AssemblyVersion + ".*")
-            AssemblyInfo.InformationalVersion (releaseVersion.NugetVersion + ".*") 
+            AssemblyInfo.Version releaseVersion
+            AssemblyInfo.FileVersion releaseVersion
+            AssemblyInfo.InformationalVersion releaseVersion
+            AssemblyInfo.Metadata("BuildDate", DateTime.UtcNow.ToString("yyyy-MM-dd")) 
         ]
         
 (*
@@ -79,7 +87,7 @@ let genFSAssemblyInfo (projectPath) =
 *)
 Target.create "Clean" (fun _ ->
     nativeProjects
-    |> List.iter(fun projectFile ->
+    |> List.iter(fun (projectFile, _) ->
         let projName = Path.GetFileNameWithoutExtension(projectFile)
         let projReleaseDir = Path.Combine(projName, "Release")
         Shell.cleanDir projReleaseDir
@@ -113,91 +121,126 @@ let setBuildOptions() =
 
 let restoreBuildOptions() =
     File.WriteAllText(buildOptionsFilename, savedBuildOptions)
-
-Target.create "Compile" (fun _ ->
-    let build(project: String, buildDir: String) =
-        Trace.log("Compile: " + project)
+    
+Target.create "Compile" (fun _ ->    
+    let build(project: String, buildDir: String, propsFile: String option) =        
         let fileName = Path.GetFileNameWithoutExtension(project)
         let buildAppDir = Path.Combine(buildDir, fileName)
         Directory.ensure buildAppDir
 
+        let setParams (defaults: MSBuildParams) =   
+            match propsFile with
+            | None -> defaults
+            | Some propsFile ->
+                let projPropsFile = Path.GetFullPath(propsFile)
+                Trace.log("Props file: " + projPropsFile)
+                { defaults with
+                    Properties = ["ForceImportBeforeCppTargets", projPropsFile]
+                 }
+
         // build the project
         [project]
-        |> MSBuild.runRelease id buildAppDir "Build"
+        |> MSBuild.runRelease setParams buildAppDir "ReBuild"
         |> Trace.logItems "AppBuild-Output: "
-
+    
     // build all projects
     try
         setBuildOptions()
         projects
-        |> List.map(fun projName ->
+        |> List.map(fun (projName, propsFile) ->
             let projDir = Path.GetFileNameWithoutExtension(projName)
             let projFile = Path.Combine(projDir, projName)
-            Trace.log("Build project: " + projFile)
-            projFile
+            (projFile, propsFile)
         )
-        |> List.iter(fun projectFile -> build(projectFile, buildDir))
+        |> List.iter(fun (projectFile, propsFile) -> 
+            build(projectFile, buildDir, propsFile)
+        )
     finally
         restoreBuildOptions()
 )
 
 Target.create "Release" (fun _ ->
-    let mutable dlls = []
-    let mutable exes = []
+    let forbiddens = [".pdb"; ".iobj"; ".ipdb"]   
+    let cleanDir(directory: String) =
+        Directory.GetFiles(directory, "*.*", SearchOption.AllDirectories)
+        |> Array.filter(fun file -> forbiddens |> List.contains (Path.GetExtension(file).ToLowerInvariant())) 
+        |> Array.iter(File.Delete)
+        
+    let deployProjectDir(projName: String) =
+        let destDir = Path.Combine(deployDir, projName)
+        Directory.CreateDirectory(destDir) |> ignore
+        Shell.copyDir destDir (Path.Combine(buildDir, projName)) (fun _ -> true)
+        cleanDir(destDir)
 
-    // copy native binaries to build directory
-    nativeProjects
-    |> Seq.iter(fun projName ->
-        let projBase = Path.GetFileNameWithoutExtension(projName)
-        let binaryNoExtension = Path.Combine(projBase, "Release", projBase)
-        let binary =
-            if File.Exists(binaryNoExtension + ".exe") then 
-                exes <- projBase::exes
-                binaryNoExtension + ".exe"
-            else
-                let dll = binaryNoExtension + ".dll"
-                dlls <- dll::dlls
-                dll
-                
-                
-        let projBuildDir = Path.Combine(buildDir, projBase)
-        Directory.ensure projBuildDir
-        Trace.log(String.Format("Copy file '{0}' to '{1}'", binary, projBuildDir))
-        Shell.copyFile projBuildDir binary        
-    )
+    // copy ES.Sacara
+    deployProjectDir("ES.SacaraVm")
 
-    // copy all DLLs in all EXE directory
-    exes
-    |> List.iter(fun exe ->
-        dlls
-        |> List.iter(fun dllFile ->
-            let exeDir = Path.Combine(buildDir, exe)
-            Shell.copyFile exeDir dllFile 
-        )
-    )
+    // copy SacaraAsm
+    deployProjectDir("SacaraAsm")
 
-    let forbidden = [".pdb"]    
-    !! (buildDir + "/**/*.*")         
-    |> Seq.filter(fun f -> 
-        forbidden 
-        |> List.contains (Path.GetExtension(f).ToLowerInvariant())
-        |> not
-    )
-    |> Zip.zip buildDir (Path.Combine(deployDir, "Sacara." + releaseVersion.AssemblyVersion + ".zip"))
+    // copy SacaraRun
+    Shell.copyFile (Path.Combine(deployDir, "SacaraRun.exe")) (Path.Combine(buildDir, "SacaraRun", "SacaraRun.exe"))
+
+    // copy lib
+    Shell.copyFile (Path.Combine(deployDir, "SacaraVm.lib")) (Path.Combine(buildDir, "SacaraVm", "SacaraVm.lib"))
+
+    // copy DLL
+    Shell.copyFile (Path.Combine(deployDir, "SacaraVm.dll")) (Path.Combine(buildDir, "SacaraVmLib", "SacaraVm.dll"))
+    Shell.copyFile (Path.Combine(deployDir, "ES.SacaraVm", "SacaraVm.dll")) (Path.Combine(buildDir, "SacaraVmLib", "SacaraVm.dll"))
+)
+
+Target.create "Package" (fun _ ->
+    // zip directories
+    !! (Path.Combine(deployDir, "ES.SacaraVm"))
+    |> Zip.zip buildDir (Path.Combine(deployDir, "ES.SacaraVm.zip"))
+    Shell.deleteDir (Path.Combine(deployDir, "ES.SacaraVm"))
+    
+    // zip
+    !! (Path.Combine(deployDir, "SacaraAsm"))
+    |> Zip.zip buildDir (Path.Combine(deployDir, "SacaraAsm.zip"))    
+    Shell.deleteDir (Path.Combine(deployDir, "SacaraAsm"))
+)
+
+Target.create "Summary" (fun _ ->
+    let v = Version.Parse(releaseVersion)
+    let githubVersion = String.Format("{0}.{1}", v.Major, v.Minor)
+    let summary = new StringBuilder()
+
+    let sha1(file: String) =
+        let bs = File.ReadAllBytes(file)
+        use ms = new MemoryStream()
+        ms.Write(bs, 0, bs.Length)
+        ms.Seek(0L, SeekOrigin.Begin) |> ignore
+        use sha = new SHA1Managed()
+        BitConverter.ToString(sha.ComputeHash(ms)).Replace("-", "").ToLower()
+
+    let addFile(fileName: String) =
+        let file = Path.Combine(deployDir, fileName)
+        summary.AppendFormat("|[**{0}**]https://github.com/enkomio/sacara/releases/download/{1}/{0}|``{2}``", fileName, githubVersion, sha1(file)).AppendLine() |> ignore
+           
+    // create output
+    summary.AppendLine("## Files").AppendLine().AppendLine("|File|SHA-1|").AppendLine("|-------|----|") |> ignore
+
+    addFile("SacaraVm.dll")
+    addFile("SacaraVm.lib")
+    addFile("ES.SacaraVm.zip")
+    addFile("SacaraAsm.zip")
+    addFile("SacaraRun.exe")
+
+    Console.WriteLine(summary)
 )
 
 Target.description "Default Build all artifacts"
-Target.create "Default" ignore
+Target.create "Full" ignore
 
-(*
-    Run task
-*)
-
+// define task chain
 "Clean"
     ==> "SetAssemblyInfo"
     ==> "Compile"
     ==> "Release"
-    ==> "Default"
-
+    ==> "Package"
+    ==> "Summary"
+    ==> "Full"
+    
 // start build
-Target.runOrDefault "Default"
+Target.runOrDefault "Full"
