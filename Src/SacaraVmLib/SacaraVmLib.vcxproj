@@ -91,6 +91,7 @@
       <AdditionalDependencies />
       <NoEntryPoint>true</NoEntryPoint>
       <ModuleDefinitionFile>sacara.def</ModuleDefinitionFile>
+      <OutputFile>$(OutDir)SacaraVm$(TargetExt)</OutputFile>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
@@ -110,6 +111,7 @@
       <AdditionalDependencies />
       <NoEntryPoint>true</NoEntryPoint>
       <ModuleDefinitionFile>sacara.def</ModuleDefinitionFile>
+      <OutputFile>$(OutDir)SacaraVm$(TargetExt)</OutputFile>
     </Link>
     <ProjectReference>
       <LinkLibraryDependencies>true</LinkLibraryDependencies>
