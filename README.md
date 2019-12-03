@@ -7,9 +7,11 @@
  
 _Sacara_ is a programming language very similar to the most common intermediate representation language, like MSIL or the Java bytecode. 
 It is executed inside a VM and its main purpose is to make difficult to understand the original purpose of the program.
-This make the project well suited for protecting the code from being reverse enginnering. 
+This make the project well suited for protecting the code from being reverse enginnering (of course nothing will stop a skilled reverse engineer). The project provides also an assembler for the _Sacara_ language.
 
-Of course nothing will stop an highly skilled reverse engineer :)
+I have also published some blog posts about using Sacara.
+
+* <a href="http://antonioparata.blogspot.com/2018/11/sacara-vm-vs-antivirus-industry.html">Sacara VM Vs Antivirus Industry</a>.
 
 ## Release Download
  - [Source code][1]
@@ -34,10 +36,6 @@ For more examples take a look at the <a href="https://github.com/enkomio/sacara/
 For documentation related to how the SacaraVM can be used, please read the [ISA][3] page. 
 
 If you are interested in using _Sacara_ in .NET take a look at <a href='https://github.com/enkomio/sacara/blob/master/Src/Examples/DotNetBinding/Program.fs'>this example</a>, which use the <a href='https://github.com/enkomio/sacara/tree/master/Src/ES.SacaraVm'>.NET Sacara Binding (ES.SacaraVm)</a>. In order to use the .NET binding the unmanaged _SacaraVm.dll_ file must be in the same directory as the _ES.SacaraVm.dll_ Assembly file.
-
-I have also published some blog posts about using Sacara.
-
-* <a href="http://antonioparata.blogspot.com/2018/11/sacara-vm-vs-antivirus-industry.html">Sacara VM Vs Antivirus Industry</a>.
 
 ## Build Sacara
 _Sacara_ is currently developed by using VisualStudio 2017 Community Edition (be sure to have the latest version installed). To build the source code you have to:
