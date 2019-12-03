@@ -10,6 +10,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		build.fsx = build.fsx
 		IrParser.bat = IrParser.bat
 		paket.dependencies = paket.dependencies
+		SacaraRun.props = SacaraRun.props
+		SacaraVm.props = SacaraVm.props
+		SacaraVmLib.props = SacaraVmLib.props
 	EndProjectSection
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "ES.Sacara.Ir.Parser", "ES.Sacara.Ir.Parser\ES.Sacara.Ir.Parser.fsproj", "{853ED852-DC8B-4796-A1B1-A53DB8672851}"
@@ -53,6 +56,15 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{2C0711ED-BD8B-4012-99E6-BDA5A502587E}"
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "EndToEndTests", "EndToEndTests\EndToEndTests.fsproj", "{0C155CBB-9699-4671-ABF7-8F0F30D7E9D5}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SimplePacker", "Examples\SimplePacker\ExecuteResource.vcxproj", "{E8433F5E-22D5-498C-AE6E-3C09618F1D7F}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SacaraVmLib", "SacaraVmLib\SacaraVmLib.vcxproj", "{7A26E70C-1A09-40DA-90C5-7EBFE57B7052}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libs", "Libs", "{7398E0FC-3137-431F-9749-8EC70856338A}"
+	ProjectSection(SolutionItems) = preProject
+		Libs\process.sacara = Libs\process.sacara
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -259,6 +271,26 @@ Global
 		{0C155CBB-9699-4671-ABF7-8F0F30D7E9D5}.Release|x64.Build.0 = Release|Any CPU
 		{0C155CBB-9699-4671-ABF7-8F0F30D7E9D5}.Release|x86.ActiveCfg = Release|Any CPU
 		{0C155CBB-9699-4671-ABF7-8F0F30D7E9D5}.Release|x86.Build.0 = Release|Any CPU
+		{E8433F5E-22D5-498C-AE6E-3C09618F1D7F}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{E8433F5E-22D5-498C-AE6E-3C09618F1D7F}.Debug|x64.ActiveCfg = Debug|x64
+		{E8433F5E-22D5-498C-AE6E-3C09618F1D7F}.Debug|x64.Build.0 = Debug|x64
+		{E8433F5E-22D5-498C-AE6E-3C09618F1D7F}.Debug|x86.ActiveCfg = Debug|Win32
+		{E8433F5E-22D5-498C-AE6E-3C09618F1D7F}.Debug|x86.Build.0 = Debug|Win32
+		{E8433F5E-22D5-498C-AE6E-3C09618F1D7F}.Release|Any CPU.ActiveCfg = Release|Win32
+		{E8433F5E-22D5-498C-AE6E-3C09618F1D7F}.Release|x64.ActiveCfg = Release|x64
+		{E8433F5E-22D5-498C-AE6E-3C09618F1D7F}.Release|x64.Build.0 = Release|x64
+		{E8433F5E-22D5-498C-AE6E-3C09618F1D7F}.Release|x86.ActiveCfg = Release|Win32
+		{E8433F5E-22D5-498C-AE6E-3C09618F1D7F}.Release|x86.Build.0 = Release|Win32
+		{7A26E70C-1A09-40DA-90C5-7EBFE57B7052}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{7A26E70C-1A09-40DA-90C5-7EBFE57B7052}.Debug|x64.ActiveCfg = Debug|x64
+		{7A26E70C-1A09-40DA-90C5-7EBFE57B7052}.Debug|x64.Build.0 = Debug|x64
+		{7A26E70C-1A09-40DA-90C5-7EBFE57B7052}.Debug|x86.ActiveCfg = Debug|Win32
+		{7A26E70C-1A09-40DA-90C5-7EBFE57B7052}.Debug|x86.Build.0 = Debug|Win32
+		{7A26E70C-1A09-40DA-90C5-7EBFE57B7052}.Release|Any CPU.ActiveCfg = Release|Win32
+		{7A26E70C-1A09-40DA-90C5-7EBFE57B7052}.Release|x64.ActiveCfg = Release|x64
+		{7A26E70C-1A09-40DA-90C5-7EBFE57B7052}.Release|x64.Build.0 = Release|x64
+		{7A26E70C-1A09-40DA-90C5-7EBFE57B7052}.Release|x86.ActiveCfg = Release|Win32
+		{7A26E70C-1A09-40DA-90C5-7EBFE57B7052}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -281,6 +313,8 @@ Global
 		{6FA73E74-13E3-4382-82AB-ECF34242CB12} = {CEAF308B-D528-408C-B8E2-AF2D827FC80C}
 		{7846242A-0EA2-4A29-BF62-520C0459A507} = {CEAF308B-D528-408C-B8E2-AF2D827FC80C}
 		{0C155CBB-9699-4671-ABF7-8F0F30D7E9D5} = {2C0711ED-BD8B-4012-99E6-BDA5A502587E}
+		{E8433F5E-22D5-498C-AE6E-3C09618F1D7F} = {CEAF308B-D528-408C-B8E2-AF2D827FC80C}
+		{7A26E70C-1A09-40DA-90C5-7EBFE57B7052} = {EFCE0E5F-3833-48C0-8EAB-02286F5882E1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {99DA6142-552E-4F17-9197-0D2A0659289A}
