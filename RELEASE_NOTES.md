@@ -5,7 +5,7 @@
 * Added .mov directive to specify local var with a more powerfull expression evaluation
 * Added "include" statement to include an external script
 * Added single line comment via "//"
-* Removed set_loca_var function. Now the arguments to main can be specified via Run method.
+* Now the arguments to main can be specified via Run method.
 * read instruction now accepts an additional argument that specify the type to read (1 = byte, 2 = word, 3 = dword)
 * write instruction now accepts an additional argument that specify the type to write (1 = byte, 2 = word, 3 = dword)
 * nread instruction now accepts an additional argument that specify the type to read (1 = byte, 2 = word, 3 = dword)
