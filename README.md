@@ -13,7 +13,10 @@ Under the _Sacara_ name belongs various projects:
 
 _Sacara_ was created  to learn how to create a project suited for protecting the code from being reverse enginnering. The Virtual Machine is implemented in Assembly x86 and contains some anti-analysis features. 
 
-To know how to program in SacaraVM please read the [ISA][3] page or see the [Examples][4] in the source folder. I have also published some blog posts about how to use _Sacara_ for some basic tasks.
+## Documentation
+To know how to program in SacaraVM you can have a look at the [ISA][3] page, see the [Examples][4] in the source folder or read the programs ([this][5] and [this][6]) used for testing. 
+
+I have also published some blog posts about how to use _Sacara_ for some basic tasks.
 
 * <a href="http://antonioparata.blogspot.com/2018/11/sacara-vm-vs-antivirus-industry.html">Sacara VM Vs Antivirus Industry</a>.
 
@@ -62,3 +65,5 @@ Sacara is licensed under the [MIT license](LICENSE.TXT).
   [2]: https://github.com/enkomio/sacara/releases/latest
   [3]: https://github.com/enkomio/sacara/blob/master/ISA.md
   [4]: https://github.com/enkomio/sacara/tree/master/Src/Examples
+  [5]: https://github.com/enkomio/sacara/tree/master/Src/EndToEndTests/TestSources/SelfContained
+  [6]: https://github.com/enkomio/sacara/tree/master/Src/EndToEndTests/TestSources/Custom
