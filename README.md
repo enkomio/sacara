@@ -4,12 +4,16 @@
     <a href="https://github.com/enkomio/sacara/releases/latest"><img alt="Release" src="https://img.shields.io/github/release/enkomio/sacara.svg?svg=true"></a>   
     <a href="https://github.com/enkomio/sacara/blob/master/LICENSE.md"><img alt="Software License" src="https://img.shields.io/badge/License-CC%20BY%204.0-brightgreen.svg"></a>
   </p>
- 
-_Sacara_ is a programming language very similar to the most common intermediate representation language, like MSIL or the Java bytecode. 
-It is executed inside a VM and its main purpose is to make difficult to understand the original purpose of the program.
-This make the project well suited for protecting the code from being reverse enginnering (of course nothing will stop a skilled reverse engineer). The project provides also an assembler for the _Sacara_ language.
 
-I have also published some blog posts about using Sacara.
+Under the _Sacara_ name belongs various projects:
+* A programming language very similar to the most common intermediate representation language, like MSIL or the Java bytecode
+* An assembler to transalate your _Sacara_ program in a binary format
+* An interpreter based on a Virtual Machine stack based
+* A .NET binding to use the unmanaged _Sacara_ DLL
+
+_Sacara_ was created  to learn how to create a project suited for protecting the code from being reverse enginnering. The Virtual Machine is implemented in Assembly x86 and contains some anti-analysis features. 
+
+To know how to program in SacaraVM please read the [ISA][3] page or see the [Examples][4] in the source folder. I have also published some blog posts about how to use _Sacara_ for some basic tasks.
 
 * <a href="http://antonioparata.blogspot.com/2018/11/sacara-vm-vs-antivirus-industry.html">Sacara VM Vs Antivirus Industry</a>.
 
@@ -31,9 +35,7 @@ Find below an example of execution:
 
 For more examples take a look at the <a href="https://github.com/enkomio/sacara/tree/master/Src/Examples">Examples folder</a>.
 
-## Documentation
-
-For documentation related to how the SacaraVM can be used, please read the [ISA][3] page. 
+## .NET Binding
 
 If you are interested in using _Sacara_ in .NET take a look at <a href='https://github.com/enkomio/sacara/blob/master/Src/Examples/DotNetBinding/Program.fs'>this example</a>, which use the <a href='https://github.com/enkomio/sacara/tree/master/Src/ES.SacaraVm'>.NET Sacara Binding (ES.SacaraVm)</a>. In order to use the .NET binding the unmanaged _SacaraVm.dll_ file must be in the same directory as the _ES.SacaraVm.dll_ Assembly file.
 
@@ -59,3 +61,4 @@ Sacara is licensed under the [MIT license](LICENSE.TXT).
   [1]: https://github.com/enkomio/sacara/tree/master/Src
   [2]: https://github.com/enkomio/sacara/releases/latest
   [3]: https://github.com/enkomio/sacara/blob/master/ISA.md
+  [4]: https://github.com/enkomio/sacara/tree/master/Src/Examples
