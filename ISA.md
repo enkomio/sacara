@@ -160,7 +160,45 @@ endp
 # Directives
 Since version **2.3** it was included a list of directives that speed up the development of script. These directive will lower the resistance to write a new script, they just translate the directive in a series of instructions.
 
-### .Mov directive
+### Function invocation directive
+<hr/>
+
+*Mnemonic*: **.[function name]([argument0], [argument1], ...)**
+
+*Pushed Arguments*: **1**
+
+This directive will invoke a method passing the given arguments and will push the result on top of the stack. Find below an example:
+
+```
+proc main			
+	.sum_numbers(44, 27)
+	pop result
+	halt	 	   
+endp
+
+proc sum_numbers(num1, num2)
+	push num1
+    push num2
+    add
+	ret
+endp
+```
+
+### Native Call directive
+<hr/>
+
+*Mnemonic*: **.ncall([address], [argument0], [argument1], ...)**
+
+*Pushed Arguments*: **1**
+
+This directive will call a function at the specified virtual address passing the given arguments and will push the _EAX_ register value on top of the stack. Find below some examples:
+
+```
+.ncall(native_function, num1, num2)     // call the native function which address is stored in variable native_function and push num2 and num1 on the native stack
+.ncall(0x00100045, num1, num2)          // call the native function which address is 0x00100045 and push num2 and num1 on the native stack
+```
+
+### Mov directive
 <hr/>
 
 *Mnemonic*: **.mov [variable name], [expression]**
@@ -176,7 +214,7 @@ This directive allows to easily set the value for local variables. It supports t
 .mov my_var, (((num1 + num2) * num3) - 197)       // set my_var to a result of the arithmetic expression
 ```
 
-### .Jump directive
+### Jump directive
 <hr/>
 
 *Mnemonic*: **.jump [label]**
@@ -189,7 +227,7 @@ This directive allows to easily jump to the specified label. Find below an examp
 .jump my_label
 ```
 
-### .Add directive
+### Add directive
 <hr/>
 
 *Mnemonic*: **.add [expression1], [expression2]**
@@ -202,7 +240,7 @@ This directive will add two expressions and will push the result on top of the s
 .add my_var, 55
 ```
 
-### .Sub directive
+### Sub directive
 <hr/>
 
 *Mnemonic*: **.sub [expression1], [expression2]**
@@ -215,6 +253,195 @@ This directive will subtract _expression2_ from _expression1_ and will push the 
 .sub my_var, 55
 ```
 
+### Mul directive
+<hr/>
+
+*Mnemonic*: **.mul [expression1], [expression2]**
+
+*Pushed Arguments*: **1**
+
+This directive will multiply the two expressions and will push the result on top of the stack. Find below an example:
+
+```
+.mul my_var, 55
+```
+
+### Div directive
+<hr/>
+
+*Mnemonic*: **.div [expression1], [expression2]**
+
+*Pushed Arguments*: **1**
+
+This directive will divide _expression1_ by _expression2_ and will push the result on top of the stack. Find below an example:
+
+```
+.div my_var, 2
+```
+
+### Cmp directive
+<hr/>
+
+*Mnemonic*: **.cmp [expression1], [expression2]**
+
+*Pushed Arguments*: **0**
+
+This directive will compare _expression1_ with _expression2_ and will set the internal flags accordingly. Find below an example:
+
+```
+.cmp my_var, 2
+```
+
+### And directive
+<hr/>
+
+*Mnemonic*: **.and [expression1], [expression2]**
+
+*Pushed Arguments*: **1**
+
+This directive will compute _bit and_ operation between _expression1_ and _expression2_ and will push the result on top of the stack. Find below an example:
+
+```
+.and my_var, 0xFFFFFFFF
+```
+
+### Or directive
+<hr/>
+
+*Mnemonic*: **.or [expression1], [expression2]**
+
+*Pushed Arguments*: **1**
+
+This directive will compute _bit or_ operation between _expression1_ and _expression2_ and will push the result on top of the stack. Find below an example:
+
+```
+.or my_var, 0xFFFFFFFF
+```
+
+### Shift left directive
+<hr/>
+
+*Mnemonic*: **.shiftl [expression1], [expression2]**
+
+*Pushed Arguments*: **1**
+
+This directive will _shift left_ _expression1_ of _expression2_ position and will push the result on top of the stack. Find below an example:
+
+```
+.shiftl my_var, 3
+```
+
+### Shift right directive
+<hr/>
+
+*Mnemonic*: **.shiftr [expression1], [expression2]**
+
+*Pushed Arguments*: **1**
+
+This directive will _shift right_ _expression1_ of _expression2_ position and will push the result on top of the stack. Find below an example:
+
+```
+.shiftr my_var, 3
+```
+
+### Xor directive
+<hr/>
+
+*Mnemonic*: **.xor [expression1], [expression2]**
+
+*Pushed Arguments*: **1**
+
+This directive will compute _xor_ operation between _expression1_ and _expression2_ and will push the result on top of the stack. Find below an example:
+
+```
+.xor my_var, 0x45
+```
+
+### Nor directive
+<hr/>
+
+*Mnemonic*: **.nor [expression1], [expression2]**
+
+*Pushed Arguments*: **1**
+
+This directive will compute _nor_ operation between _expression1_ and _expression2_ and will push the result on top of the stack. Find below an example:
+
+```
+.nor my_var, 0x4684
+```
+
+### Inc directive
+<hr/>
+
+*Mnemonic*: **.inc [variable]**
+
+*Pushed Arguments*: **1**
+
+This directive will increment by 1 _variable_ and will push the result on top of the stack. Find below an example:
+
+```
+.inc my_var
+```
+
+### Read directive
+<hr/>
+
+*Mnemonic*: **.read.[type] [offset]**
+
+*Pushed Arguments*: **1**
+
+This directive will read data at the specified SIL offset and will push the result on top of the stack. Find below some examples:
+
+```
+.read.b 0xFF    // will read a byte at SIL offset 0xFF
+.read.w 0xFF    // will read a word at SIL offset 0xFF
+.read.dw 0xFF   // will read a double word at SIL offset 0xFF
+```
+
+### Write directive
+<hr/>
+
+*Mnemonic*: **.write.[type] [offset], [value]**
+
+*Pushed Arguments*: **0**
+
+This directive will write data at the specified SIL offset. Find below some examples:
+
+```
+.write.b 0xFF, 0x41           // will write byte 0x41 at SIL offset 0xFF
+.write.w 0xFF, 0x4141         // will write word 0x4141 at SIL offset 0xFF
+.write.dw 0xFF, 0x41414141    // will write double word 0x41414141 at SIL offset 0xFF
+```
+
+### Native Read directive
+<hr/>
+
+*Mnemonic*: **.nread.[type] [address]**
+
+*Pushed Arguments*: **1**
+
+This directive will read data at the specified virtual address and will push the result on top of the stack. Find below some examples:
+
+```
+.nread.b 0x00100000    // will read a byte from virtual address 0x00100000
+.nread.w 0x00100000    // will read a word from virtual address 0x00100000
+.nread.dw 0x00100000   // will read a double word from virtual address 0x00100000
+```
+
+### Native Write directive
+<hr/>
+
+*Mnemonic*: **.write.[type] [address], [value]**
+
+*Pushed Arguments*: **0**
+
+This directive will write data at the specified virtual address. Find below some examples:
+
+```
+.nwrite.b 0x00100000, 0x41           // will write byte 0x41 at virtual address 0x00100000
+.nwrite.w 0x00100000, 0x4141         // will write word 0x4141 at virtual address 0x00100000
+.nwrite.dw 0x00100000, 0x41414141    // will write double word 0x41414141 at virtual address 0x00100000
+```
 
 # Instruction set
 *Sacara* supports a good amount of instructions. Each instruction can accept 0 or more arguments. Most of the instructions (except for *push* and *pop*) will get the arguments from the stack. When we refer to the first argument, it is the first value that is popped from the stack. The following image show an example of stack layout after pushing the given arguments:
