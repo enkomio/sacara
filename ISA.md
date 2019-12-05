@@ -20,7 +20,7 @@ You can create **SIL** code also programmatically. For an example of usage take 
 * **or** => **_or**
 * **not** => **_not**
 
-# Functions, status flags, labels, variables and comments
+# Functions, labels, variables and comments
 *Sacara* allows to define functions, to reference labels and to add comments to your code.
 
 ### Functions
@@ -328,6 +328,19 @@ This instruction allows to write data to the native memory space. It pops from t
 
 This instruction push into the stack the current VM IP. This value is the offset of the instruction that follow *getip*.
 
+### CMP
+<hr/>
+
+*Mnemonic*: **cmp**
+
+*Popped Arguments*: **2**
+
+*Pushed Arguments*: **0**
+
+This instruction compares two values from the stack and update the internal opaque flags accordingly. The flags are used by a _JXX_ instruction to decide if it must jump or not. It pops from the stack:
+* The first value to compare
+* The second value to compare
+
 ### JUMP
 <hr/>
 
@@ -447,19 +460,6 @@ This is not a real instruction, but a command for the Assembler that instruct it
 *Pushed Arguments*: **0**
 
 This instruction tell the VM to stop the execution.
-
-### CMP
-<hr/>
-
-*Mnemonic*: **cmp**
-
-*Popped Arguments*: **2**
-
-*Pushed Arguments*: **0**
-
-This instruction compares two values from the stack and update the internal flag accordingly. This flag is then used to decide if a jump in necessary or not. It pops from the stack:
-* The first value to compare
-* The second value to compare
 
 ### GETSP
 <hr/>
