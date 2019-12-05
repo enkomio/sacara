@@ -157,6 +157,65 @@ proc main
 endp
 ```
 
+# Directives
+Since version **2.3** it was included a list of directives that speed up the development of script. These directive will lower the resistance to write a new script, they just translate the directive in a series of instructions.
+
+### .Mov directive
+<hr/>
+
+*Mnemonic*: **.mov [variable name], [expression]**
+
+*Pushed Arguments*: **0**
+
+This directive allows to easily set the value for local variables. It supports the definition of complex operations that imply add, sum, mul or div. Find below some examples:
+
+```
+.mov my_var, 1                                    // set my_var to 1
+.mov my_var, input_arg                            // set my_var to the value stored in input_arg
+.mov my_var, (my_var + 1)                         // increment the value of my_var by 1
+.mov my_var, (((num1 + num2) * num3) - 197)       // set my_var to a result of the arithmetic expression
+```
+
+### .Jump directive
+<hr/>
+
+*Mnemonic*: **.jump [label]**
+
+*Pushed Arguments*: **0**
+
+This directive allows to easily jump to the specified label. Find below an example:
+
+```
+.jump my_label
+```
+
+### .Add directive
+<hr/>
+
+*Mnemonic*: **.add [expression1], [expression2]**
+
+*Pushed Arguments*: **1**
+
+This directive will add two expressions and will push the result on top of the stack. Find below an example:
+
+```
+.add my_var, 55
+```
+
+### .Sub directive
+<hr/>
+
+*Mnemonic*: **.sub [expression1], [expression2]**
+
+*Pushed Arguments*: **1**
+
+This directive will subtract _expression2_ from _expression1_ and will push the result on top of the stack. Find below an example:
+
+```
+.sub my_var, 55
+```
+
+
 # Instruction set
 *Sacara* supports a good amount of instructions. Each instruction can accept 0 or more arguments. Most of the instructions (except for *push* and *pop*) will get the arguments from the stack. When we refer to the first argument, it is the first value that is popped from the stack. The following image show an example of stack layout after pushing the given arguments:
 
