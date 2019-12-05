@@ -1,6 +1,6 @@
 # Architecture
 
-_Sacara_ is implemented by considering a stack based VM, this means that most of the instructions take their arguments from the stack. It also support local variables that are saved in a different memory area. Both local variables and stack frame are valid only in the current function execution context. Once that you return from a function their values is lost.
+_Sacara_ interpreter is implemented by considering a stack based VM, this means that most of the instructions take their arguments from the stack. It also supports local variables that are saved in a different memory area. Both local variables and stack frame are valid only in the current function execution context. Once that you return from a function their values is lost.
 
 Find below a diagram of the _Sacara_ architecture:
 
@@ -11,7 +11,7 @@ All values stored inside the stack and local variables are considered as *DOUBLE
 The main entry point is a function named **main**.
 
 ### Assembling a script
-In order to assemble a *Sacara* script you have to use the **SacaraAsm** utility. The utility support various kind of obfuscation options, print the help to know more.
+In order to assemble a *Sacara* script you have to use the **SacaraAsm** utility. The utility support various kind of obfuscation options (not all yet implemented), print the help to know more.
 
 The Sacara source code is called **SIL** which stands for **Sacara Intermediate Language**.
 
@@ -19,9 +19,6 @@ You can create **SIL** code also programmatically. For an example of usage take 
 * **and** => **_and**
 * **or** => **_or**
 * **not** => **_not**
-
-### Exported VM methods
-The *SacaraVM* DLL exports four methods that can be invoked programmatically. You can find an <a href="https://github.com/enkomio/sacara/blob/master/Src/Examples/InvokeNativeFunction/main.c#L42">example of usage in the <strong>Examples</strong> directory</a>.
 
 # Functions, status flags, labels, variables and comments
 *Sacara* allows to define functions, to reference labels and to add comments to your code.
@@ -36,8 +33,60 @@ proc main
 endp
 ```
 
+Starting from version **2.3** you can also define the function parameters. The parameter will be considered as local variables that you can reference in tour code. Find below an example:
+
+```
+proc main
+    push 0x123
+    push 0x456
+    push 2
+    push sum_numbers
+    call
+    halt
+endp
+
+proc sum_numbers(num1, num2)
+    push num1
+    push num2
+    add
+    ret
+endp
+```
+
+
+### External script
+From version **2.3** you can include an external script in your source code by using the **include** keyword following by a string of the file path to include. This is useful to better organize your code. During the program assembling, the _include_ statement will include the content of the specified file. Find below an example:
+
+_File **utility.sacara**_
+
+```
+proc sum_numbers(num1, num2)
+    push num1
+    push num2
+    add
+    ret
+endp
+```
+
+_File **main.sacara**_
+
+```
+include "utility.sacara"
+
+proc main
+    push 0x123
+    push 0x456
+    push 2
+    push sum_numbers
+    call
+    halt
+endp
+```
+
 ### Label
-You can define a **label** inside your code. In *Sacara* each *label* is absolute, this mean that you can reference a label defined in a function from an external function. This implies that all label names in your code must be unique. The function name is also considered a label, and you can reference it in the same exact way. Find below an example of label definition and referencing:
+You can define a **label** inside your code. In *Sacara* each *label* is absolute, this mean that you can reference a label defined in a function from an external function. This is useful to reference data defined in an external function which purpose is to declare all the global variables.
+
+This implies that all label names in your code must be unique. The function name is also considered a label, and you can reference it in the same exact way. Find below an example of label definition and referencing:
 
 ```
 proc main
@@ -68,8 +117,24 @@ endp
 
 When you want to retrieve the value of a local variable you have to specify it via its numeric index. This value is computed according to the order in which the variable appears in the code, starting from the top of the code and parsing each statement.
 
+Startgin from version **2.3** you can specify the local variable offset. To do so, you must specify the **offset value** followed by the **#** character and the **variable name** as in the following example:
+
+```
+proc main
+    pop 0#first_variable
+    pop 1#second_variable
+    push first_variable
+    halt
+endp
+```
+
+In the example above _first_variable_ value will be stored at offset 0. If no offset is specified _Sacara_ will try to find the correct one or create a new one. Be aware that _Sacara_ will reorder your offset, so if you have _0#first_variable_ and _9#second_variable_, the seconda variable will be reorder as _1#second_variable_. This feature is used internally by the _Sacara_ assembler and most of the time can be ignored by the user.
+
 ### Comments
-You can insert comments in your code to make it more understandable. *Sacara* support multi lines comment which starts with the string **/\*** and ends with the string **\*/** (this is the same exact pattern used in the C programming language). Find below an example of comment usages:
+You can insert comments in your code to make it more understandable. 
+
+#### Multiple lines comment
+*Sacara* support multi lines comment which starts with the string **/\*** and ends with the string **\*/** (this is the same exact pattern used in the C programming language). Find below an example of comment usages:
 
 ```
 proc main
@@ -77,6 +142,18 @@ proc main
     push 0x456   /* push first argument */
     add          /* sum */
     halt         /* stop execution */
+endp
+```
+
+#### Single line comment
+Starting from version **2.3** you can also use single line comment by using the character **//**. After that pattern all the remaining text will be considered a comment until the end of the line. Find below an example:
+
+```
+proc main
+    push 0x123   // push second argument
+    push 0x456   // push first argument
+    add          // sum
+    halt         // stop execution
 endp
 ```
 
@@ -133,10 +210,10 @@ This instruction accepts a parameter taken from the bytecode and push the value 
 
 ```
 proc main
-my_label:
+my_label(my_var):
     push my_label         /* push the offset of the label */
     push 0x123            /* push the immediate value 0x123 */
-    push local_var        /* push the value stored in local_var */
+    push my_var           /* push the value stored in my_var */
     push my_func          /* push the offset of the my_func function */
 endp
 
@@ -175,67 +252,70 @@ This instruction allows to call a user defined method. It pops from the stack:
 
 *Mnemonic*: **ncall**
 
-*Popped Arguments*: **at least 3**
+*Popped Arguments*: **at least 2**
 
 *Pushed Arguments*: **1**
 
 This instruction allows to call a *native* method outside of the VM. It pops from the stack:
 * the address of the method to call
 * the number of argument to push in the stack
-* a flag that indicates if the native stack must be cleaned after return from native function. True if not 0.
 * the arguments to the method
 
-When the native method returns, the value of the native *EAX* register is pushed on top of the stack.
+When the native method returns the value of the native *EAX* register is pushed on top of the stack. The native function call is agnosting in regarding to the used calling convention.
 
 ### READ
 <hr/>
 
 *Mnemonic*: **read**
 
-*Popped Arguments*: **1**
+*Popped Arguments*: **2**
 
 *Pushed Arguments*: **1**
 
-This instruction allows to read 1 byte from the Sacara SIL code at a given offset (which start from 0) and push the result into the stack. It pops from the stack:
+This instruction allows to read data from the Sacara SIL code at a given offset (which start from 0) and push the result into the stack. It pops from the stack:
 * the offset of the VM IP
+* the type of the data to read, where (1 = byte, 2 = word, 3 = dword)
 
 ### NATIVE READ
 <hr/>
 
 *Mnemonic*: **nread**
 
-*Popped Arguments*: **1**
+*Popped Arguments*: **2**
 
 *Pushed Arguments*: **1**
 
-This instruction allows to read 1 byte from the native memory space and push the result into the stack. It pops from the stack:
+This instruction allows to read data from the native memory space and push the result into the stack. It pops from the stack:
 * the native address to read
+* the type of the data to read, where (1 = byte, 2 = word, 3 = dword)
 
 ### WRITE
 <hr/>
 
 *Mnemonic*: **write**
 
-*Popped Arguments*: **2**
+*Popped Arguments*: **3**
 
 *Pushed Arguments*: **0**
 
-This instruction allows to write 1 byte to the Sacara SIL code at a given offset (which start from 0). It pops from the stack:
+This instruction allows to write data to the Sacara SIL code at a given offset (which start from 0). It pops from the stack:
 * the offset of the VM IP
 * the byte to write
+* the type of the data to write, where (1 = byte, 2 = word, 3 = dword)
 
 ### NATIVE WRITE
 <hr/>
 
 *Mnemonic*: **nwrite**
 
-*Popped Arguments*: **2**
+*Popped Arguments*: **3**
 
 *Pushed Arguments*: **0**
 
-This instruction allows to write 1 byte to the native memory space. It pops from the stack:
+This instruction allows to write data to the native memory space. It pops from the stack:
 * the native address where to write the value
 * the byte to write
+* the type of the data to write, where (1 = byte, 2 = word, 3 = dword)
 
 ### GETIP
 <hr/>
