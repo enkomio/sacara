@@ -30,9 +30,13 @@ In order to compile a script implemented in the Sacara Intermediate Language (SI
 
 To run a Sacara compiled script you can use the <a href="https://github.com/enkomio/sacara/tree/master/Src/SacaraRun">**SacaraRun**</a> utility, or embedd the code inside your source code and using the exported APIs to run the SIL in a more controlled environment.
 
-The Sacara VM is implemented in the <a href="https://github.com/enkomio/sacara/tree/master/Src/SacaraVm">**SacaraVM**</a> dll.
+### Static Library
+A static library (SacaraVm.lib) is available in order to avoid to bring with your program the DLL. [Here][7] an example of code using the static library.
 
-Find below an example of execution:
+### Exported VM methods
+The *SacaraVM* DLL exports various methods that can be invoked programmatically. You can find an <a href="https://github.com/enkomio/sacara/blob/master/Src/Examples/InvokeNativeFunction/main.c#L42">example of usage in the <strong>Examples</strong> directory</a>.
+
+Finally, find below an example of execution:
 
 <img src="https://raw.githubusercontent.com/enkomio/media/master/sacara/sacara_run.gif" />
 
@@ -67,3 +71,4 @@ Sacara is licensed under the [MIT license](LICENSE.TXT).
   [4]: https://github.com/enkomio/sacara/tree/master/Src/Examples
   [5]: https://github.com/enkomio/sacara/tree/master/Src/EndToEndTests/TestSources/SelfContained
   [6]: https://github.com/enkomio/sacara/tree/master/Src/EndToEndTests/TestSources/Custom
+  [7]: https://github.com/enkomio/sacara/blob/master/Src/Examples/SimplePacker/main.c
