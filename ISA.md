@@ -6,7 +6,7 @@ Find below a diagram of the _Sacara_ architecture:
 
 <img src="https://raw.githubusercontent.com/enkomio/media/master/sacara/sacara_architecture.png"/>
 
-All values stored inside the stack and local variables are considered as *DOUBLE WORD* in size. However, some instruction (as *read* or *write*) will convert the DOUBLE WORD value to a BYTE value.
+All values stored inside the stack and local variables are considered as *DOUBLE WORD* in size.
 
 The main entry point is a function named **main**.
 
