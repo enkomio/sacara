@@ -33,7 +33,7 @@ proc main
 endp
 ```
 
-Starting from version **2.3** you can also define the function parameters. The parameter will be considered as local variables that you can reference in tour code. Find below an example:
+Starting from version **2.3** you can also define the function parameters. The parameter will be considered as local variables that you can reference in your code. Find below an example:
 
 ```
 proc main
@@ -115,7 +115,7 @@ proc main
 endp
 ```
 
-When you want to retrieve the value of a local variable you have to specify it via its numeric index. This value is computed according to the order in which the variable appears in the code, starting from the top of the code and parsing each statement.
+When _Sacara_ needs to retrieve the value of a local variable it will specify the variable numeric index. This value is computed according to the order in which the variable appears in the code, starting from the top of the code and parsing each statement.
 
 Startgin from version **2.3** you can specify the local variable offset. To do so, you must specify the **offset value** followed by the **#** character and the **variable name** as in the following example:
 
@@ -128,7 +128,7 @@ proc main
 endp
 ```
 
-In the example above _first_variable_ value will be stored at offset 0. If no offset is specified _Sacara_ will try to find the correct one or create a new one. Be aware that _Sacara_ will reorder your offset, so if you have _0#first_variable_ and _9#second_variable_, the seconda variable will be reorder as _1#second_variable_. This feature is used internally by the _Sacara_ assembler and most of the time can be ignored by the user.
+In the example above _first_variable_ value will be stored at offset 0. If no offset is specified _Sacara_ will try to find the correct one or create a new one. Be aware that _Sacara_ will reorder your offset, so if you have _0#first_variable_ and _9#second_variable_, the second variable will be reordered as _1#second_variable_. This feature is used internally by the _Sacara_ assembler and most of the time can be ignored by end user.
 
 ### Comments
 You can insert comments in your code to make it more understandable. 
@@ -158,7 +158,7 @@ endp
 ```
 
 # Directives
-Since version **2.3** it was included a list of directives that speed up the development of script. These directive will lower the resistance to write a new script, they just translate the directive in a series of instructions.
+Since version **2.3** it was included a list of directives that speed up the development of _Sacara_ script. These directives will lower the resistance to write a new script, the _Sacara assembler_ will translate the directive in a series of instructions. All directives can be recognized since they start with the **.** character.
 
 ### Function invocation directive
 <hr/>
@@ -171,16 +171,16 @@ This directive will invoke a method passing the given arguments and will push th
 
 ```
 proc main			
-	.sum_numbers(44, 27)
-	pop result
-	halt	 	   
+    .sum_numbers(44, 27)
+    pop result
+    halt	 	   
 endp
 
 proc sum_numbers(num1, num2)
-	push num1
+    push num1
     push num2
     add
-	ret
+    ret
 endp
 ```
 
@@ -191,11 +191,11 @@ endp
 
 *Pushed Arguments*: **1**
 
-This directive will call a function at the specified virtual address passing the given arguments and will push the _EAX_ register value on top of the stack. Find below some examples:
+This directive will call a function at the specified virtual address passing the given arguments and will push the _EAX_ register value on top of the stack when the native function will return. Find below some examples:
 
 ```
-.ncall(native_function, num1, num2)     // call the native function which address is stored in variable native_function and push num2 and num1 on the native stack
-.ncall(0x00100045, num1, num2)          // call the native function which address is 0x00100045 and push num2 and num1 on the native stack
+.ncall(native_function, num1, num2)     // call the native function which address is stored in variable native_function and push num2 and num1 in the native stack
+.ncall(0x00100045, num1, num2)          // call the native function which address is 0x00100045 and push num2 and num1 in the native stack
 ```
 
 ### Mov directive
@@ -205,7 +205,7 @@ This directive will call a function at the specified virtual address passing the
 
 *Pushed Arguments*: **0**
 
-This directive allows to easily set the value for local variables. It supports the definition of complex operations that imply add, sum, mul or div. Find below some examples:
+This directive allows to easily set the value for local variables. It supports the definition of complex operations that use add, sum, mul or div. Find below some examples:
 
 ```
 .mov my_var, 1                                    // set my_var to 1
@@ -247,7 +247,7 @@ This directive will add two expressions and will push the result on top of the s
 
 *Pushed Arguments*: **1**
 
-This directive will subtract _expression2_ from _expression1_ and will push the result on top of the stack. Find below an example:
+This directive will subtract _expression2_ from _expression1_ and push the result on top of the stack. Find below an example:
 
 ```
 .sub my_var, 55
@@ -260,7 +260,7 @@ This directive will subtract _expression2_ from _expression1_ and will push the 
 
 *Pushed Arguments*: **1**
 
-This directive will multiply the two expressions and will push the result on top of the stack. Find below an example:
+This directive will multiply the two expressions and push the result on top of the stack. Find below an example:
 
 ```
 .mul my_var, 55
@@ -273,7 +273,7 @@ This directive will multiply the two expressions and will push the result on top
 
 *Pushed Arguments*: **1**
 
-This directive will divide _expression1_ by _expression2_ and will push the result on top of the stack. Find below an example:
+This directive will divide _expression1_ by _expression2_ and push the result on top of the stack. Find below an example:
 
 ```
 .div my_var, 2
@@ -325,7 +325,7 @@ This directive will compute _bit or_ operation between _expression1_ and _expres
 
 *Pushed Arguments*: **1**
 
-This directive will _shift left_ _expression1_ of _expression2_ position and will push the result on top of the stack. Find below an example:
+This directive will shift left _expression1_ of _expression2_ position and will push the result on top of the stack. Find below an example:
 
 ```
 .shiftl my_var, 3
@@ -338,7 +338,7 @@ This directive will _shift left_ _expression1_ of _expression2_ position and wil
 
 *Pushed Arguments*: **1**
 
-This directive will _shift right_ _expression1_ of _expression2_ position and will push the result on top of the stack. Find below an example:
+This directive will shift right _expression1_ of _expression2_ position and will push the result on top of the stack. Find below an example:
 
 ```
 .shiftr my_var, 3
@@ -351,7 +351,7 @@ This directive will _shift right_ _expression1_ of _expression2_ position and wi
 
 *Pushed Arguments*: **1**
 
-This directive will compute _xor_ operation between _expression1_ and _expression2_ and will push the result on top of the stack. Find below an example:
+This directive will compute a XOR operation between _expression1_ and _expression2_ and will push the result on top of the stack. Find below an example:
 
 ```
 .xor my_var, 0x45
@@ -364,7 +364,7 @@ This directive will compute _xor_ operation between _expression1_ and _expressio
 
 *Pushed Arguments*: **1**
 
-This directive will compute _nor_ operation between _expression1_ and _expression2_ and will push the result on top of the stack. Find below an example:
+This directive will compute a NOR operation between _expression1_ and _expression2_ and will push the result on top of the stack. Find below an example:
 
 ```
 .nor my_var, 0x4684
@@ -390,7 +390,7 @@ This directive will increment by 1 _variable_ and will push the result on top of
 
 *Pushed Arguments*: **1**
 
-This directive will read data at the specified SIL offset and will push the result on top of the stack. Find below some examples:
+This directive will read data at the specified SIL offset and will push the result on top of the stack. It is possible to specify the type of data to read. Find below some examples:
 
 ```
 .read.b 0xFF    // will read a byte at SIL offset 0xFF
@@ -405,7 +405,7 @@ This directive will read data at the specified SIL offset and will push the resu
 
 *Pushed Arguments*: **0**
 
-This directive will write data at the specified SIL offset. Find below some examples:
+This directive will write data at the specified SIL offset. It is possible to specify the type of data to write. Find below some examples:
 
 ```
 .write.b 0xFF, 0x41           // will write byte 0x41 at SIL offset 0xFF
@@ -420,7 +420,7 @@ This directive will write data at the specified SIL offset. Find below some exam
 
 *Pushed Arguments*: **1**
 
-This directive will read data at the specified virtual address and will push the result on top of the stack. Find below some examples:
+This directive will read data at the specified virtual address and will push the result on top of the stack. It is possible to specify the type of data to read. Find below some examples:
 
 ```
 .nread.b 0x00100000    // will read a byte from virtual address 0x00100000
@@ -435,7 +435,7 @@ This directive will read data at the specified virtual address and will push the
 
 *Pushed Arguments*: **0**
 
-This directive will write data at the specified virtual address. Find below some examples:
+This directive will write data at the specified virtual address. It is possible to specify the type of data to write. Find below some examples:
 
 ```
 .nwrite.b 0x00100000, 0x41           // will write byte 0x41 at virtual address 0x00100000
