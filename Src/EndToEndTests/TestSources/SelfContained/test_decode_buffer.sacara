@@ -1,0 +1,47 @@
+﻿// result: 1111703617
+
+// this routine will be used to stored the script global data
+proc global_data
+password: 
+	// encoded password
+	byte 0xe0, 0xe1, 0xe2, 0xe3
+endp
+
+proc decode_password(pwd, pwd_len)	
+	.mov index, 0
+	
+decode_pwd_loop:
+	// read the byte to decode
+	.mov pwd_offset, (pwd + index)
+	.read.b pwd_offset	
+	pop xored_char
+	
+	// decode the byte with hardcoded key
+	.xor xored_char, 0xA1
+	
+	// write back the result
+	pop xored_char
+	.write.b pwd_offset, xored_char
+	
+	// check if completed
+	.cmp index, pwd_len
+	.inc index
+	push decode_pwd_loop
+	jumpifl 
+	
+	ret
+endp
+
+proc main
+	// result must be the first variable if I want
+	// to retrieve the result with SacaraRun, so set it to 0
+	.mov result, 0
+	
+	// invoke the routine to decode the password
+	.decode_password(password, 4)
+	
+	// read the decoded password as a double word at the specified offset
+	.read.dw password
+	pop result
+	halt
+endp
