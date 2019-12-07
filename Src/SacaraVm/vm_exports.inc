@@ -183,8 +183,8 @@ vm_loop:
 	je vm_loop
 	
 finish:
-	mov eax, [ebp+local0]	
 	popad
+	mov eax, [ebp+local0]
 	ret 4h
 vm_run ENDP
 
