@@ -103,6 +103,9 @@
     <None Include="TestSources\SelfContained\test_jump_if_greater_equals.sacara">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="TestSources\SelfContained\test_decode_buffer.sacara">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="TestSources\Custom\test_nread.sacara">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
