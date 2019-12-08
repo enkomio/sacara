@@ -43,13 +43,18 @@ uint32_t run_code(char* filename, int argc, const char** argv)
 					vm_local_var_set(vm_context, i, num);
 				}
 
-				// this code will never return, since the VM will run the code
+				// run the code
+				printf("Execute file: %s\n", filename);
 				result = vm_run(vm_context);				
 								
 				if (result == 0)
 				{
 					uint32_t execution_result = vm_local_var_get(vm_context, 0);
-					printf("Code execution result: %d", execution_result);
+					printf("Code execution result: %d\n", execution_result);
+				}
+				else
+				{
+					printf("An error was generated at offset: %d\n", result);
 				}
 
 				// free the VM
