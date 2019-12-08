@@ -4,12 +4,21 @@
     <a href="https://github.com/enkomio/sacara/releases/latest"><img alt="Release" src="https://img.shields.io/github/release/enkomio/sacara.svg?svg=true"></a>   
     <a href="https://github.com/enkomio/sacara/blob/master/LICENSE.md"><img alt="Software License" src="https://img.shields.io/badge/License-CC%20BY%204.0-brightgreen.svg"></a>
   </p>
- 
-_Sacara_ is a programming language very similar to the most common intermediate representation language, like MSIL or the Java bytecode. 
-It is executed inside a VM and its main purpose is to make difficult to understand the original purpose of the program.
-This make the project well suited for protecting the code from being reverse enginnering. 
 
-Of course nothing will stop an highly skilled reverse engineer :)
+Under the _Sacara_ name belongs various projects:
+* A programming language very similar to the most common intermediate representation language, like MSIL or the Java bytecode
+* An assembler to transalate your _Sacara_ program in a binary format
+* An interpreter based on a Virtual Machine stack based
+* A .NET binding to use the unmanaged _Sacara_ DLL
+
+_Sacara_ was created  to learn how to create a project suited for protecting the code from being reverse enginnering. The Virtual Machine is implemented in Assembly x86 and contains some anti-analysis features. 
+
+## Documentation
+To know how to program in SacaraVM you can have a look at the [ISA][3] page, see the [Examples][4] in the source folder or read the programs ([this][5] and [this][6]) used for testing. 
+
+I have also published some blog posts about how to use _Sacara_ for some basic tasks.
+
+* <a href="http://antonioparata.blogspot.com/2018/11/sacara-vm-vs-antivirus-industry.html">Sacara VM Vs Antivirus Industry</a>.
 
 ## Release Download
  - [Source code][1]
@@ -21,23 +30,21 @@ In order to compile a script implemented in the Sacara Intermediate Language (SI
 
 To run a Sacara compiled script you can use the <a href="https://github.com/enkomio/sacara/tree/master/Src/SacaraRun">**SacaraRun**</a> utility, or embedd the code inside your source code and using the exported APIs to run the SIL in a more controlled environment.
 
-The Sacara VM is implemented in the <a href="https://github.com/enkomio/sacara/tree/master/Src/SacaraVm">**SacaraVM**</a> dll.
+### Static Library
+A static library (SacaraVm.lib) is available in order to avoid to bring with your program the DLL. [Here][7] an example of code using the static library.
 
-Find below an example of execution:
+### Exported VM methods
+The *SacaraVM* DLL exports various methods that can be invoked programmatically. You can find an <a href="https://github.com/enkomio/sacara/blob/master/Src/Examples/InvokeNativeFunction/main.c#L42">example of usage in the <strong>Examples</strong> directory</a>.
+
+Finally, find below an example of execution:
 
 <img src="https://raw.githubusercontent.com/enkomio/media/master/sacara/sacara_run.gif" />
 
 For more examples take a look at the <a href="https://github.com/enkomio/sacara/tree/master/Src/Examples">Examples folder</a>.
 
-## Documentation
-
-For documentation related to how the SacaraVM can be used, please read the [ISA][3] page. 
+## .NET Binding
 
 If you are interested in using _Sacara_ in .NET take a look at <a href='https://github.com/enkomio/sacara/blob/master/Src/Examples/DotNetBinding/Program.fs'>this example</a>, which use the <a href='https://github.com/enkomio/sacara/tree/master/Src/ES.SacaraVm'>.NET Sacara Binding (ES.SacaraVm)</a>. In order to use the .NET binding the unmanaged _SacaraVm.dll_ file must be in the same directory as the _ES.SacaraVm.dll_ Assembly file.
-
-I have also published some blog posts about using Sacara.
-
-* <a href="http://antonioparata.blogspot.com/2018/11/sacara-vm-vs-antivirus-industry.html">Sacara VM Vs Antivirus Industry</a>.
 
 ## Build Sacara
 _Sacara_ is currently developed by using VisualStudio 2017 Community Edition (be sure to have the latest version installed). To build the source code you have to:
@@ -61,3 +68,7 @@ Sacara is licensed under the [MIT license](LICENSE.TXT).
   [1]: https://github.com/enkomio/sacara/tree/master/Src
   [2]: https://github.com/enkomio/sacara/releases/latest
   [3]: https://github.com/enkomio/sacara/blob/master/ISA.md
+  [4]: https://github.com/enkomio/sacara/tree/master/Src/Examples
+  [5]: https://github.com/enkomio/sacara/tree/master/Src/EndToEndTests/TestSources/SelfContained
+  [6]: https://github.com/enkomio/sacara/tree/master/Src/EndToEndTests/TestSources/Custom
+  [7]: https://github.com/enkomio/sacara/blob/master/Src/Examples/SimplePacker/main.c
