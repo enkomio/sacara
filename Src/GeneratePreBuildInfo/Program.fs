@@ -1,4 +1,5 @@
-﻿/// This simple program produce a text output with VM opcodes. 
+﻿/// This simple program produce a text output with VM opcodes. it must be used each time 
+// that a new instruction is added to the VM.
 /// The generated opcode are saved in the appropriate src directory.
 namespace GeneratePreBuildInfo
 
