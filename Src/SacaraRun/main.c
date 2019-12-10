@@ -89,10 +89,6 @@ int main(int argc, const char** argv)
 	if (path != NULL)
 	{
 		result = run_code(path, argc, argv);
-		if (result)
-		{
-			printf("An error was encountered during the code execution. Error at offset: %d", result);
-		}
 	}		
 	else
 	{
