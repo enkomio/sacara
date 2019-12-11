@@ -18,6 +18,7 @@ You can now run SimplePacker.exe and test your AV :)
 */
 
 #include <stdint.h>
+#include <stdio.h>
 #include <Windows.h>
 
 extern uint32_t __stdcall vm_init(uint8_t[], uint32_t);
@@ -69,9 +70,9 @@ static void execute_data_code(uint8_t *data, uint32_t data_size)
 	((void(*)(void))data)();
 }
 
-
 int main()
 {
+	// execute code
 	void *data = NULL;
 	uint32_t data_size;
 	void *vm_code = NULL;
@@ -84,7 +85,7 @@ int main()
 	// get vm code content	
 	vm_code = read_resource(code_name, &vm_code_size);
 	if (!vm_code) goto complete;
-	
+
 	// run vm to decrypt code
 	uint32_t vm_result = exec_vm_code(data, data_size, vm_code, vm_code_size);
 	if (vm_code) VirtualFree(vm_code, vm_code_size, MEM_DECOMMIT);
@@ -96,5 +97,6 @@ int main()
 complete:
 	if (data) VirtualFree(data, data_size, MEM_DECOMMIT);
 	if (vm_code) VirtualFree(vm_code, vm_code_size, MEM_DECOMMIT);
+	
 	return 0;
 }
