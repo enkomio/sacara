@@ -10,7 +10,7 @@ open ES.Sacara.Ir.Parser.IrParserUtility
 %token PROC ENDP PUSH POP ADD NOP CALL NCALL WRITE NWRITE READ NREAD 
 %token GETIP RET JUMP JUMPIFL JUMPIFLE JUMPIFG JUMPIFGE ALLOCA HALT 
 %token CMP GETSP SWRITE SREAD BYTE WORD DWORD NEWLINE COMMA SUB MUL 
-%token DIV AND SHIFTR SHIFTL OR NOT XOR NOR SETIP SETSP INC EOF
+%token DIV MOD AND SHIFTR SHIFTL OR NOT XOR NOR SETIP SETSP INC EOF
 %token LPAREN RPAREN JUMP_DIRECTIVE MOV_DIRECTIVE PLUS_OP MINUS_OP MUL_OP DIV_OP
 %token ADD_DIRECTIVE SUB_DIRECTIVE MUL_DIRECTIVE DIV_DIRECTIVE CMP_DIRECTIVE AND_DIRECTIVE OR_DIRECTIVE 
 %token READB_DIRECTIVE READW_DIRECTIVE READDW_DIRECTIVE
@@ -89,6 +89,7 @@ statementNoLabel:
 	| SUB																					{ sub() }
 	| MUL																					{ mul() }
 	| DIV																					{ div() }
+	| MOD																					{ modOperation() }
 	| AND																					{ bitAnd() }
 	| OR																					{ bitOr() }
 	| NOT																					{ bitNot() }
