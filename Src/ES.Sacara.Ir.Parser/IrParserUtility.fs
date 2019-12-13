@@ -125,6 +125,9 @@ module internal IrParserUtility =
     let div() =
         Div
 
+    let modOperation() =
+        Mod
+
     let bitAnd() =
         And
 
