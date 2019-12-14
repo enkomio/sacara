@@ -41,6 +41,7 @@ type token =
   | MUL_OP
   | DIV_OP
   | DIV
+  | MOD
   | AND
   | SHIFTR
   | SHIFTL
@@ -125,6 +126,7 @@ type tokenId =
     | TOKEN_MUL_OP
     | TOKEN_DIV_OP
     | TOKEN_DIV
+    | TOKEN_MOD
     | TOKEN_AND
     | TOKEN_SHIFTR
     | TOKEN_SHIFTL
