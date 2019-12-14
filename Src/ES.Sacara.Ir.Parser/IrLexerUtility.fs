@@ -92,6 +92,7 @@ module internal IrLexerUtility =
             (IrInstruction.SetIp, SETIP)
             (IrInstruction.SetSp, SETSP)            
             (IrInstruction.Inc, INC)
+            (IrInstruction.Mod, MOD)
         ] 
         |> List.map(fun (irInstruction, token) -> (string irInstruction, token))
         |> fun bindingList -> ([
