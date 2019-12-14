@@ -29,6 +29,7 @@ type token =
   | SUB_DIRECTIVE
   | MUL_DIRECTIVE
   | DIV_DIRECTIVE
+  | MOD_DIRECTIVE
   | CMP_DIRECTIVE
   | AND_DIRECTIVE
   | OR_DIRECTIVE
@@ -40,6 +41,7 @@ type token =
   | MINUS_OP
   | MUL_OP
   | DIV_OP
+  | MOD_OP
   | DIV
   | MOD
   | AND
@@ -114,6 +116,7 @@ type tokenId =
     | TOKEN_SUB_DIRECTIVE
     | TOKEN_MUL_DIRECTIVE
     | TOKEN_DIV_DIRECTIVE
+    | TOKEN_MOD_DIRECTIVE
     | TOKEN_CMP_DIRECTIVE
     | TOKEN_AND_DIRECTIVE
     | TOKEN_OR_DIRECTIVE
@@ -125,6 +128,7 @@ type tokenId =
     | TOKEN_MINUS_OP
     | TOKEN_MUL_OP
     | TOKEN_DIV_OP
+    | TOKEN_MOD_OP
     | TOKEN_DIV
     | TOKEN_MOD
     | TOKEN_AND
