@@ -126,6 +126,9 @@
       <Filter>vm_instructions</Filter>
     </None>
     <None Include="vm_exports.inc" />
+    <None Include="vm_mod.asm">
+      <Filter>vm_instructions</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="vm_instructions">

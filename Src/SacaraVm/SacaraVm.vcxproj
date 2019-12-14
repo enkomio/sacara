@@ -182,6 +182,7 @@
     <None Include="vm_jump.asm" />
     <None Include="vm_jump_if_greater.asm" />
     <None Include="vm_jump_if_less.asm" />
+    <None Include="vm_mod.asm" />
     <None Include="vm_mul.asm" />
     <None Include="vm_and.asm" />
     <None Include="vm_native_call.asm" />
