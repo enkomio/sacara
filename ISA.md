@@ -206,7 +206,7 @@ This directive will call a function at the specified virtual address passing the
 
 *Pushed Arguments*: **0**
 
-This directive allows to easily set the value for local variables. It supports the definition of complex operations that use add, sum, mul or div. Find below some examples:
+This directive allows to easily set the value for local variables. It supports the definition of complex operations that use add (+), sub (-), mul (*), div (/) or mod (%). Find below some examples:
 
 ```
 .mov my_var, 1                                    // set my_var to 1
