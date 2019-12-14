@@ -60,6 +60,11 @@ module internal Utility =
         let assembler = new SacaraAssembler(assemblerSettings)
         let vmCode = assembler.Assemble(script)
 
+        if vmCode.Warnings.Length > 0 then            
+            vmCode.Warnings
+            |> List.iter(Console.Error.WriteLine)
+            failwith "Bad test script"
+
         // print code for debugging
         Console.WriteLine(vmCode)
 
