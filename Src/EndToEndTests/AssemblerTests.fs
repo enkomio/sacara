@@ -37,6 +37,7 @@ module AssemblerTests =
         Utility.assembleInstruction(IrInstruction.Sub, VmInstruction.VmSub)
         Utility.assembleInstruction(IrInstruction.Mul, VmInstruction.VmMul)
         Utility.assembleInstruction(IrInstruction.Div, VmInstruction.VmDiv)
+        Utility.assembleInstruction(IrInstruction.Mod, VmInstruction.VmMod)
         Utility.assembleInstruction(IrInstruction.And, VmInstruction.VmAnd)
         Utility.assembleInstruction(IrInstruction.ShiftRight, VmInstruction.VmShiftRight)
         Utility.assembleInstruction(IrInstruction.ShiftLeft, VmInstruction.VmShiftLeft)
