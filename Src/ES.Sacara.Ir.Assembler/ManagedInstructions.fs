@@ -71,6 +71,7 @@ module ManagedInstructions =
     let _or: Ctx -> unit = createInstruction(IrInstruction.Or)
     let _not: Ctx -> unit = createInstruction(IrInstruction.Not)
     let xor: Ctx -> unit = createInstruction(IrInstruction.Xor)
+    let _mod: Ctx -> unit = createInstruction(IrInstruction.Mod)
     let nor: Ctx -> unit = createInstruction(IrInstruction.Nor)
     let setip: Ctx -> unit = createInstruction(IrInstruction.SetIp)
     let setsp: Ctx -> unit = createInstruction(IrInstruction.SetSp)
