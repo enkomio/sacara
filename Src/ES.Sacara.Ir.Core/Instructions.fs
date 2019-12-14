@@ -39,6 +39,7 @@ type IrInstruction =
     | Sub
     | Mul
     | Div
+    | Mod
     | And
     | ShiftRight
     | ShiftLeft
@@ -81,6 +82,7 @@ type IrInstruction =
         | Sub -> "sub"
         | Mul -> "mul"
         | Div -> "div"
+        | Mod -> "mod"
         | And -> "and"
         | ShiftRight -> "shiftr"
         | ShiftLeft -> "shiftl"
@@ -134,6 +136,7 @@ type VmInstruction =
     | VmSetIp
     | VmSetSp
     | VmInc
+    | VmMod
 
 module Instructions =
     type VmOpCodeItem() =
