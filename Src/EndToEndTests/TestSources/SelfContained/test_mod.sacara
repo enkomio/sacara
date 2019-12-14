@@ -1,0 +1,8 @@
+﻿// result: 2
+proc main
+	push 5
+	push 27
+	mod
+	pop result
+	halt
+endp
