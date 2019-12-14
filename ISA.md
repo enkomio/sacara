@@ -17,8 +17,9 @@ The Sacara source code is called **SIL** which stands for **Sacara Intermediate 
 
 You can create **SIL** code also programmatically. For an example of usage take a look at <a href="https://github.com/enkomio/sacara/blob/master/Src/Examples/AssembleManagedInstructions/Program.fs#L16"><i>this example</i></a>. All the supported functions have the same name as the one from the Instruction set below. The only notable differences are: 
 * **and** => **_and**
-* **or** => **_or**
+* **or**  => **_or**
 * **not** => **_not**
+* **mod** => **_mod**
 
 # Functions, labels, variables and comments
 *Sacara* allows to define functions, to reference labels and to add comments to your code.
@@ -277,6 +278,19 @@ This directive will divide _expression1_ by _expression2_ and push the result on
 
 ```
 .div my_var, 2
+```
+
+### Mod directive
+<hr/>
+
+*Mnemonic*: **.mod [expression1], [expression2]**
+
+*Pushed Arguments*: **1**
+
+This directive compute the module between _expression1_ and _expression2_ and push the result on top of the stack. Find below an example:
+
+```
+.mod my_var, 7
 ```
 
 ### Cmp directive
@@ -819,6 +833,19 @@ This instruction multiplies the first value with the second value and push back 
 *Pushed Arguments*: **1**
 
 This instruction divides the first value with the second value and push back the result. It pops from the stack:
+* The first value
+* The second value
+
+### MOD
+<hr/>
+
+*Mnemonic*: **mod**
+
+*Popped Arguments*: **2**
+
+*Pushed Arguments*: **1**
+
+This instruction computes the module the first value with the second value and push back the result. It pops from the stack:
 * The first value
 * The second value
 
