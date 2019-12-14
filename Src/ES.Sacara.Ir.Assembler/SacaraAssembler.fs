@@ -149,6 +149,8 @@ type SacaraAssembler(settings: AssemblerSettings) =
             statementList |> Seq.iter(parseStatement)
         | Statement.IncludeFile fileName ->
             includeFile(fileName)
+        | Statement.Mod ->
+            addOperation(new IrOpCode(IrInstruction.Mod, settings.UseMultipleOpcodeForSameInstruction))
 
     and includeFile(rawFileName: String) =
         let fileName = rawFileName.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar)
