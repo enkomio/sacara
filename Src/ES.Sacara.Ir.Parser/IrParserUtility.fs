@@ -228,6 +228,17 @@ module internal IrParserUtility =
 
     let divDirectiveExpression(expression1: Expression, expression2: Expression) =
         StatementExpression <| divDirective(expression1, expression2)
+            
+    let modDirective(expression1: Expression, expression2: Expression) =
+        [
+            push(expression2)
+            push(expression1)
+            modOperation()
+        ] 
+        |> Block
+
+    let modDirectiveExpression(expression1: Expression, expression2: Expression) =
+        StatementExpression <| modDirective(expression1, expression2)
 
     let cmpDirective(expression1: Expression, expression2: Expression) =
         [
