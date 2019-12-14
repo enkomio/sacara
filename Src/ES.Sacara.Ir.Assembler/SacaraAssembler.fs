@@ -12,6 +12,7 @@ open System.IO
 
 type IrAssemblyCode = {
     Functions: VmFunction list
+    Warnings: String list
 } with
     member this.GetBuffer() =
         this.Functions
@@ -336,7 +337,22 @@ type SacaraAssembler(settings: AssemblerSettings) =
             |> Seq.iter(fun irOpCode -> symbolTable.AddLabelName(irOpCode.Label.Value))
         )
 
+    let hasReturnOrHalt(irFun: IrFunction) =
+        if irFun.Body |> Seq.exists(fun opCode -> [IrInstruction.Ret; IrInstruction.Halt] |> List.contains opCode.Type)
+        then None
+        else Some(String.Format("Function '{0}' doesn't contains a RET or HALT instruction, this may cause an infinite loop", irFun.Name))
+
+    let checkForWarnings(functions: List<IrFunction>) =
+        functions
+        |> Seq.toList
+        |> List.choose(hasReturnOrHalt)
+
     new() = new SacaraAssembler(new AssemblerSettings())
+
+    member private this.GenerateIrAssemblyCode() = {
+        Functions=this.GenerateBinaryCode(_functions)
+        Warnings = checkForWarnings(_functions)
+    }
 
     member this.GenerateBinaryCode(functions: List<IrFunction>) =
         let symbolTable = new SymbolTable()
@@ -379,7 +395,7 @@ type SacaraAssembler(settings: AssemblerSettings) =
             ))
 
         // generate VM opcode
-        {Functions=this.GenerateBinaryCode(_functions)}
+        this.GenerateIrAssemblyCode()
 
     member this.Assemble(irCode: String) =
         _functions.Clear()
@@ -388,5 +404,5 @@ type SacaraAssembler(settings: AssemblerSettings) =
         parseCode(irCode)
 
         // generate VM opcode
-        {Functions=this.GenerateBinaryCode(_functions)}
+        this.GenerateIrAssemblyCode()
 
