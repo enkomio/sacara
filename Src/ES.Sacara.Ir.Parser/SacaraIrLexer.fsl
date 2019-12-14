@@ -44,6 +44,7 @@ rule irCode = parse
 	| '*'																{ newToken MUL_OP lexbuf }
 	| "//" [^ '\n' '\r']* lineTerminator								{ newToken NEWLINE (nextLine lexbuf) }
 	| '/'																{ newToken DIV_OP lexbuf }
+	| '%'																{ newToken MOD_OP lexbuf }
 	| ','																{ newToken COMMA lexbuf }
 	| '"'																{ doubleQuoteString String.Empty false lexbuf }
 	| '('																{ newToken LPAREN lexbuf }
