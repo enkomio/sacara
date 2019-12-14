@@ -159,6 +159,7 @@ module Program =
                     |> info "CCreated" "Create C file: {0}"
                     |> info "OutputCreated" "VM code written to file: {0}"
                     |> info "IntermediateCreated"  "Create intermediate file: {0}"
+                    |> warning "WarningMessage" "{0}"
                     |> buildAndAdd(getLogProvider(results.Contains(<@ Verbose @>)))
 
                 if not <| File.Exists(sourceFilename) then
@@ -168,6 +169,10 @@ module Program =
                     let sourceCode = File.ReadAllText(sourceFilename)
                     let assembler = new SacaraAssembler(settings)   
                     let irCode = assembler.Assemble(sourceCode)
+
+                    // print warnings
+                    irCode.Warnings
+                    |> List.iter(fun warning -> logger?WarningMessage(warning))
 
                     if createAsmFile then
                         let asmFile = Path.GetFileNameWithoutExtension(outputFile) + ".asm"
