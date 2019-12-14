@@ -11,8 +11,8 @@ open ES.Sacara.Ir.Parser.IrParserUtility
 %token GETIP RET JUMP JUMPIFL JUMPIFLE JUMPIFG JUMPIFGE ALLOCA HALT 
 %token CMP GETSP SWRITE SREAD BYTE WORD DWORD NEWLINE COMMA SUB MUL 
 %token DIV MOD AND SHIFTR SHIFTL OR NOT XOR NOR SETIP SETSP INC EOF
-%token LPAREN RPAREN JUMP_DIRECTIVE MOV_DIRECTIVE PLUS_OP MINUS_OP MUL_OP DIV_OP
-%token ADD_DIRECTIVE SUB_DIRECTIVE MUL_DIRECTIVE DIV_DIRECTIVE CMP_DIRECTIVE AND_DIRECTIVE OR_DIRECTIVE 
+%token LPAREN RPAREN JUMP_DIRECTIVE MOV_DIRECTIVE PLUS_OP MINUS_OP MUL_OP DIV_OP MOD_OP
+%token ADD_DIRECTIVE SUB_DIRECTIVE MUL_DIRECTIVE DIV_DIRECTIVE MOD_DIRECTIVE CMP_DIRECTIVE AND_DIRECTIVE OR_DIRECTIVE 
 %token READB_DIRECTIVE READW_DIRECTIVE READDW_DIRECTIVE
 %token WRITEB_DIRECTIVE WRITEW_DIRECTIVE WRITEDW_DIRECTIVE
 %token NREADB_DIRECTIVE NREADW_DIRECTIVE NREADDW_DIRECTIVE
@@ -26,7 +26,7 @@ open ES.Sacara.Ir.Parser.IrParserUtility
 %token <string> LABEL
 %token <int32> INTEGER
 
-%left PLUS_OP MINUS_OP MUL_OP DIV_OP
+%left PLUS_OP MINUS_OP MUL_OP DIV_OP MOD_OP
 
 %type < Program > program
 
@@ -114,6 +114,7 @@ directives:
 	| SUB_DIRECTIVE primaryExpression COMMA primaryExpression								{ subDirective($2, $4) }
 	| MUL_DIRECTIVE primaryExpression COMMA primaryExpression								{ mulDirective($2, $4) }
 	| DIV_DIRECTIVE primaryExpression COMMA primaryExpression								{ divDirective($2, $4) }
+	| MOD_DIRECTIVE primaryExpression COMMA primaryExpression								{ modDirective($2, $4) }
 	| CMP_DIRECTIVE primaryExpression COMMA primaryExpression								{ cmpDirective($2, $4) }
 	| AND_DIRECTIVE primaryExpression COMMA primaryExpression								{ andDirective($2, $4) }
 	| OR_DIRECTIVE primaryExpression COMMA primaryExpression								{ orDirective($2, $4) }
@@ -156,6 +157,7 @@ multiplicativeExpression:
     | primaryExpression																		{ $1 }
     | multiplicativeExpression MUL_OP primaryExpression										{ mulDirectiveExpression($1, $3) }
     | multiplicativeExpression DIV_OP primaryExpression										{ divDirectiveExpression($1, $3) }
+	| multiplicativeExpression MOD_OP primaryExpression										{ modDirectiveExpression($1, $3) }
 	| LPAREN expression RPAREN																{ $2 }
 
 integerList:
