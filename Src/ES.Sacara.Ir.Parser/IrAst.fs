@@ -35,6 +35,7 @@ module IrAst =
         | Sub
         | Mul
         | Div
+        | Mod
         | And
         | Or
         | Not
