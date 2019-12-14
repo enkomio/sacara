@@ -275,6 +275,7 @@ and IrOpCode(opType: IrInstruction, useMultipleOpcodeForSameInstruction: Boolean
             | Word -> getMacroOpCodeBytes(VmWord)
             | DoubleWord -> getMacroOpCodeBytes(VmDoubleWord)    
             | Inc -> getVmOpCode(VmInc)
+            | Mod -> getVmOpCode(VmMod)
             
         // encode the operands
         this.Operands
