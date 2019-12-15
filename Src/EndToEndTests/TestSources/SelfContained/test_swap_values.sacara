@@ -1,0 +1,29 @@
+﻿// result: 8353
+proc swap(i, j)
+	.read.b (data + i)
+	pop data_i
+
+	.read.b (data + j)
+	pop data_j
+	
+	.write.b (data + i), data_j
+	.write.b (data + j), data_i	
+	ret
+endp
+
+proc main
+	.mov result, 0
+	.mov i, 0
+	.mov j, 1
+
+	.swap(i, j)
+
+	.read.w data
+	
+	pop result
+	.div result, 2
+	pop result	
+	halt
+data:
+	byte 0x41, 0x42 
+endp
