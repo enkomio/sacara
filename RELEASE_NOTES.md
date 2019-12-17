@@ -1,5 +1,5 @@
 ### 2.4 - 17/12/2019
-* Implemente mod instruction to compute module operation
+* Implemented mod instruction to compute module operation
 * Assembler now print warning message for not well written functions
 * Added .mod directive
 * .read, .write, .nread, .nwrite now support complex expression as .mov directive
