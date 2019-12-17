@@ -122,18 +122,18 @@ directives:
 	| SHIFTL_DIRECTIVE primaryExpression COMMA primaryExpression							{ shiftlDirective($2, $4) }
 	| XOR_DIRECTIVE primaryExpression COMMA primaryExpression								{ xorDirective($2, $4) }
 	| NOR_DIRECTIVE primaryExpression COMMA primaryExpression								{ norDirective($2, $4) }
-	| READB_DIRECTIVE primaryExpression														{ readByteDirective($2) }
-	| READW_DIRECTIVE primaryExpression														{ readWordDirective($2) }
-	| READDW_DIRECTIVE primaryExpression													{ readDoubleWordDirective($2) }
-	| NREADB_DIRECTIVE primaryExpression													{ nativeReadByteDirective($2) }
-	| NREADW_DIRECTIVE primaryExpression													{ nativeReadWordDirective($2) }
-	| NREADDW_DIRECTIVE primaryExpression													{ nativeReadDoubleWordDirective($2) }
-	| WRITEB_DIRECTIVE primaryExpression COMMA primaryExpression							{ writeByteDirective($4, $2) }
-	| WRITEW_DIRECTIVE primaryExpression COMMA primaryExpression							{ writeWordDirective($4, $2) }
-	| WRITEDW_DIRECTIVE primaryExpression COMMA primaryExpression							{ writeDoubleWordDirective($4, $2) }
-	| NWRITEB_DIRECTIVE primaryExpression COMMA primaryExpression							{ nativeWriteByteDirective($4, $2) }
-	| NWRITEW_DIRECTIVE primaryExpression COMMA primaryExpression							{ nativeWriteWordDirective($4, $2) }
-	| NWRITEDW_DIRECTIVE primaryExpression COMMA primaryExpression							{ nativeWriteDoubleWordDirective($4, $2) }
+	| READB_DIRECTIVE expression															{ readByteDirective($2) }
+	| READW_DIRECTIVE expression															{ readWordDirective($2) }
+	| READDW_DIRECTIVE expression															{ readDoubleWordDirective($2) }
+	| NREADB_DIRECTIVE expression															{ nativeReadByteDirective($2) }
+	| NREADW_DIRECTIVE expression															{ nativeReadWordDirective($2) }
+	| NREADDW_DIRECTIVE expression															{ nativeReadDoubleWordDirective($2) }
+	| WRITEB_DIRECTIVE expression COMMA expression											{ writeByteDirective($4, $2) }
+	| WRITEW_DIRECTIVE expression COMMA expression											{ writeWordDirective($4, $2) }
+	| WRITEDW_DIRECTIVE expression COMMA expression											{ writeDoubleWordDirective($4, $2) }
+	| NWRITEB_DIRECTIVE expression COMMA expression											{ nativeWriteByteDirective($4, $2) }
+	| NWRITEW_DIRECTIVE expression COMMA expression											{ nativeWriteWordDirective($4, $2) }
+	| NWRITEDW_DIRECTIVE expression COMMA expression										{ nativeWriteDoubleWordDirective($4, $2) }
 	| INC_DIRECTIVE IDENTIFIER																{ incDirective($2) }
 
 argumentList:
