@@ -1,3 +1,11 @@
+### 2.4 - 17/12/2019
+* Implemente mod instruction to compute module operation
+* Assembler now print warning message for not well written functions
+* Added .mod directive
+* .read, .write, .nread, .nwrite now support complex expression as .mov directive
+* Added more test scripts
+* Fixed minor bugs
+
 ### 2.3.0 - 24/11/2019
 * Added directives: .jump, .add, .sub, .mul, .div, .cmp, .and, .or, .shiftl, .shiftr, .xor, .nor, .inc, .read.b, .read.w, .read.dw, .write.b, .write.w, .write.dw, .nread.b, .nread.w, .nread.dw, .nwrite.b, .nwrite.w, .nwrite.dw, .ncall
 * Added directive to invoke methods in a more user friendly way
