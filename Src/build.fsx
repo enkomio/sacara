@@ -159,16 +159,18 @@ Target.create "Compile" (fun _ ->
         restoreBuildOptions()
 )
 
-Target.create "Release" (fun _ ->
-    let forbiddens = [".pdb"; ".iobj"; ".ipdb"]   
+Target.create "Release" (fun _ ->    
+    let filterFile(file: String) =
+        [".pdb"; ".iobj"; ".ipdb"]
+        |> List.contains (Path.GetExtension(file).ToLowerInvariant())
+
     let cleanDir(directory: String) =
         Directory.GetFiles(directory, "*.*", SearchOption.AllDirectories)
-        |> Array.filter(fun file -> forbiddens |> List.contains (Path.GetExtension(file).ToLowerInvariant())) 
+        |> Array.filter(filterFile) 
         |> Array.iter(File.Delete)
         
     let deployProjectDir(projName: String) =
         let destDir = Path.Combine(deployDir, projName)
-        Directory.CreateDirectory(destDir) |> ignore
         Shell.copyDir destDir (Path.Combine(buildDir, projName)) (fun _ -> true)
         cleanDir(destDir)
 
@@ -191,13 +193,13 @@ Target.create "Release" (fun _ ->
 
 Target.create "Package" (fun _ ->
     // zip directories
-    !! (Path.Combine(deployDir, "ES.SacaraVm"))
-    |> Zip.zip buildDir (Path.Combine(deployDir, "ES.SacaraVm.zip"))
+    Directory.GetFiles(Path.Combine(deployDir, "ES.SacaraVm"), "*.*", SearchOption.AllDirectories)
+    |> Zip.zip (Path.Combine(deployDir, "ES.SacaraVm")) (Path.Combine(deployDir, "ES.SacaraVm.zip"))
     Shell.deleteDir (Path.Combine(deployDir, "ES.SacaraVm"))
     
     // zip
-    !! (Path.Combine(deployDir, "SacaraAsm"))
-    |> Zip.zip buildDir (Path.Combine(deployDir, "SacaraAsm.zip"))    
+    Directory.GetFiles(Path.Combine(deployDir, "SacaraAsm"), "*.*", SearchOption.AllDirectories)
+    |> Zip.zip (Path.Combine(deployDir, "SacaraAsm")) (Path.Combine(deployDir, "SacaraAsm.zip"))    
     Shell.deleteDir (Path.Combine(deployDir, "SacaraAsm"))
 )
 
