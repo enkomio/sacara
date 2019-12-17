@@ -252,6 +252,7 @@ type SacaraAssembler(settings: AssemblerSettings) =
     let sortAllVariables(localVariables: Operand list, sortedIndexedVariables: IDictionary<String, Operand>) =
         let mutable indexedOffset = 0
         let keys = sortedIndexedVariables.Keys |> Seq.toList
+        let returnedOperands = new Dictionary<String, Operand>()
 
         localVariables
         |> Seq.toList
@@ -259,12 +260,18 @@ type SacaraAssembler(settings: AssemblerSettings) =
         |> List.map(fun (op, (name, _)) ->
             match sortedIndexedVariables.TryGetValue(name) with
             | (true, _) -> 
-                let key = keys.[indexedOffset]
-                indexedOffset <- indexedOffset + 1
-                sortedIndexedVariables.[key]
+                match returnedOperands.TryGetValue(name) with
+                | (true, operand) -> operand
+                | _ ->
+                    let key = keys.[indexedOffset]
+                    indexedOffset <- indexedOffset + 1
+                    let operand = sortedIndexedVariables.[key]
+                    returnedOperands.[name] <- operand
+                    operand
             | _ -> 
                 op
         )
+        |> List.distinctBy(fun op -> op.Value)
 
     let sortIndexedVariables(localVariables: Operand list) =
         localVariables
@@ -339,13 +346,17 @@ type SacaraAssembler(settings: AssemblerSettings) =
 
     let hasReturnOrHalt(irFun: IrFunction) =
         if irFun.Body |> Seq.exists(fun opCode -> [IrInstruction.Ret; IrInstruction.Halt] |> List.contains opCode.Type)
-        then None
-        else Some(String.Format("Function '{0}' doesn't contains a RET or HALT instruction, this may cause an infinite loop", irFun.Name))
+        then List.empty
+        else [(String.Format("Function '{0}' doesn't contains a RET or HALT instruction, this may cause an infinite loop", irFun.Name))]
 
-    let checkForWarnings(functions: List<IrFunction>) =
+    let checkFunctionForWarnings(warnings: String list) (irFunction: IrFunction) =
+        hasReturnOrHalt(irFunction)@
+        warnings
+
+    let checkForWarnings(functions: List<IrFunction>) =        
         functions
-        |> Seq.toList
-        |> List.choose(hasReturnOrHalt)
+        |> Seq.toList        
+        |> List.fold(checkFunctionForWarnings) List.empty
 
     new() = new SacaraAssembler(new AssemblerSettings())
 
