@@ -25,8 +25,9 @@ module internal Utility =
         let args = Environment.GetCommandLineArgs()
         if args.Length > 1 then args.[1]
         else 
+            let execDir = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location)
             let dllName = "SacaraVm.dll"
-            let debugPath = Path.Combine("..", "..", "..", "Debug", dllName)
+            let debugPath = Path.Combine(execDir, "..", "..", "..", "Debug", dllName)
             if not <| File.Exists(debugPath) then
                 let releasePath = Path.Combine("..", "..", "..", "Release", dllName)
                 if not <| File.Exists(releasePath) then
