@@ -106,13 +106,16 @@
     <None Include="TestSources\SelfContained\test_decode_buffer.sacara">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="TestSources\SelfContained\__test_decrypt_RC4_buffer.sacara">
+    <None Include="TestSources\SelfContained\test_decrypt_RC4_buffer.sacara">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="TestSources\SelfContained\test_div.sacara">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="TestSources\SelfContained\test_mod.sacara">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="TestSources\SelfContained\test_swap_values.sacara">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="TestSources\Custom\test_nread.sacara">
