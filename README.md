@@ -18,6 +18,7 @@ To know how to program in SacaraVM you can have a look at the [ISA][3] page, see
 
 I have also published some blog posts about how to use _Sacara_ for some basic tasks.
 
+* <a href="http://antonioparata.blogspot.com/2019/12/writing-packer-in-sacara.html">Writing a packer in Sacara</a>
 * <a href="http://antonioparata.blogspot.com/2018/11/sacara-vm-vs-antivirus-industry.html">Sacara VM Vs Antivirus Industry</a>.
 
 ## Release Download
