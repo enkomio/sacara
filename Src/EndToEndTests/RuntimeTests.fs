@@ -125,7 +125,7 @@ module RuntimeTests =
         Directory.GetFiles(selfContainedScript, "test_*.sacara")
         |> Array.iter(runScript)
                 
-    let run() =        
+    let run() =      
         _executedScripts.Clear()
         runSelfContainedTests()
         runTests("RuntimeTests")
