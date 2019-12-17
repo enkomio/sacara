@@ -5,6 +5,7 @@ proc global_data
 password: 
 	// encoded password
 	byte 0xe0, 0xe1, 0xe2, 0xe3
+	ret
 endp
 
 proc decode_password(pwd, pwd_len)	
