@@ -131,14 +131,14 @@ module internal IrLexerUtility =
         | None -> newToken (INVOKE_DIRECTIVE directive) lexbuf
 
     let identifier(lexbuf: LexBuffer<_>) =
-        let identifier = Regex.Unescape(getString lexbuf).ToLower()
-        match keywords |> Map.tryFind identifier with
+        let identifier = Regex.Unescape(getString lexbuf)
+        match keywords |> Map.tryFind(identifier.ToLower()) with
         | Some identifierToken -> newToken identifierToken lexbuf
         | None -> newToken (IDENTIFIER identifier) lexbuf
 
     let globalStatement(lexbuf: LexBuffer<_>) =
-        let keyword = Regex.Unescape(getString lexbuf).ToLower()
-        let keywordToken = globalStatements |> Map.find keyword
+        let keyword = Regex.Unescape(getString lexbuf)
+        let keywordToken = globalStatements |> Map.find(keyword.ToLower())
         newToken keywordToken lexbuf
 
     let integer(lexbuf: LexBuffer<_>) =
